@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-public class Buyer implements User {
+public class Buyer extends User {
     @Column
     private ArrayList<Product> Products;
 
