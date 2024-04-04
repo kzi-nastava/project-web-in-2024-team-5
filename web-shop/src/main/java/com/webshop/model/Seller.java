@@ -6,13 +6,13 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-public class Seller implements User {
+public class Seller extends User {
     @Column
     private ArrayList<Product> Products;
 
     @Column
     private ArrayList<Review> Reviews;
 
-    @column
+    @Column
     private double averageRating;
 }
