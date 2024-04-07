@@ -3,16 +3,27 @@ package com.webshop.model;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Seller extends User {
-    @Column
+    @OneToMany
     private ArrayList<Product> Products;
 
-    @Column
+    @OneToMany
     private ArrayList<Review> Reviews;
 
     @Column
     private double averageRating;
+    @Id
+    private Long id;
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
+    }
 }
