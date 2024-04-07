@@ -7,9 +7,9 @@ import java.util.List;
 @Entity
 public class Seller extends User {
     // @OneToMany
-    // private ArrayList<Product> Products;
+    // private List<Product> Products;
 
-    @OneToMany
+    @OneToMany(mappedBy = "seller")
     private List<Review> Reviews;
 
     @Column

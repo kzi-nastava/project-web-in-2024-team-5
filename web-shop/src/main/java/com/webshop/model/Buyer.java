@@ -8,9 +8,9 @@ import java.util.List;
 public class Buyer extends User {
 
     // @OneToMany(mappedBy = "Buyer", cascade = CascadeType.ALL)
-    // private ArrayList<Product> Products;
+    // private List<Product> Products;
 
-    @OneToMany
+    @OneToMany(mappedBy = "buyer")
     private List<Review> Reviews;
 
     @Column
