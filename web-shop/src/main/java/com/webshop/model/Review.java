@@ -1,25 +1,27 @@
 package com.webshop.model;
 import jakarta.persistence.*;
 
-import javax.swing.plaf.nimbus.State;
+import java.io.Serializable;
 import java.util.Date;
-/**
- * Review
- */
+
 @Entity
-public class Review {
-    private Integer score;
-    private String comment;
-    private Date reviewDate;
-    private User user;
+public class Review implements Serializable {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @Column
+    private Integer score;
 
-    public Long getId() {
-        return id;
-    }
+    @Column
+    private String comment;
+
+    @Temporal(TemporalType.DATE)
+    private Date reviewDate;
+
+    @ManyToOne
+    private Buyer buyer;
+
+    @ManyToOne
+    private Seller seller;
 }

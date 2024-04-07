@@ -5,31 +5,44 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 
-enum typeOfSale {FIXED_PRICE, AUCTION}
+enum typeOfSale {
+    FIXED_PRICE,
+    AUCTION
+}
 
-/**
- * Product
- */
 @Entity
 public class Product {
-    private String name;
-    private String imagePath; // mozda, mozda i ne ?
-    private String description;
-    @ManyToOne
-    private Category category;
-    private Float price;
-    private typeOfSale typeOfSale;
-    private Date saleStartDate;
-    @ManyToOne
-    private Seller seller;
-    private Boolean buyerReview;
-    private Boolean sellerReview;
-    private Boolean sold;
-    @OneToMany
-    private ArrayList<Offer> offers;
-
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column
+    private String name;
+
+    private String imagePath;
+
+    private String description;
+
+    // @ManyToOne(cascade = CascadeType.ALL)
+    // private Category category;
+
+    private Float price;
+
+    private typeOfSale typeOfSale;
+
+    private Date saleStartDate;
+
+    // @ManyToOne
+    // private Seller seller;
+
+    private Boolean buyerReview;
+
+    private Boolean sellerReview;
+
+    private Boolean sold;
+
+    // @OneToMany
+    // private ArrayList<Offer> offers;
 
     public void setId(Long id) {
         this.id = id;
