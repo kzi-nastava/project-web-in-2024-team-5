@@ -5,7 +5,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.webshop.model.Admin;
-import com.webshop.model.Role;
 
 /*
    @SpringBootApplication anotacija nastala je od @EnableAutoConfiguration anotacije koja
@@ -20,8 +19,6 @@ public class WebShopApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        Admin marko = new Admin();
-        marko.setRole(Role.buyer);
     }
 
 }
