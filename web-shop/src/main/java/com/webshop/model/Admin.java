@@ -1,6 +1,6 @@
 package com.webshop.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
 
 @Entity
 public class Admin extends User {
