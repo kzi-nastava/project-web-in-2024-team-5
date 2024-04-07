@@ -16,4 +16,14 @@ public class Buyer extends User {
 
     @Column
     private double averageRating;
+    @Id
+    private Long id;
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
+    }
 }
