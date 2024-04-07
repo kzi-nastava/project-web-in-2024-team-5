@@ -9,6 +9,15 @@ import jakarta.persistence.Id;
 @Entity
 public class Category implements Serializable {
     @Id
-    @Column(unique = true)
+    @Column(unique = true, name = "category_name")
     private String categoryName;
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
 }

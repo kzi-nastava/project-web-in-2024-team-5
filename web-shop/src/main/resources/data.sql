@@ -29,4 +29,8 @@ VALUES (1, 5, 'Great seller, highly recommended!', '2024-04-07', 2, 1, 1),
 (3, 3, 'Product was okay, could be better.', '2024-04-05', 1, 1, 1),
 (4, 5, 'Excellent seller, very satisfied!', '2024-04-04', 2, 2, 1);
 
-INSERT INTO category (category_name) VALUES ( 'patike' )
+INSERT INTO category (category_name)
+VALUES ( 'patike' ),
+       ('naocare'),
+       ('carape'),
+       ('monitori')
