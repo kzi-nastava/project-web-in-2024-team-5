@@ -5,6 +5,12 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
+enum Role {
+    buyer,
+    seller,
+    admin
+}
+
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public class User implements Serializable {
@@ -27,7 +33,7 @@ public class User implements Serializable {
     @Column
     private String phoneNumber;
 
-    @Column
+    @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
 
     @Column
@@ -37,7 +43,7 @@ public class User implements Serializable {
     private String description;
 
     @Column
-    private String role;
+    private Role role;
 
     @Column
     private Boolean blocked;

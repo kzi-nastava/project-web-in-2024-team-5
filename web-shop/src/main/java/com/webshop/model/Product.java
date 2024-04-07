@@ -2,7 +2,8 @@ package com.webshop.model;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
+import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 enum typeOfSale {
@@ -11,7 +12,7 @@ enum typeOfSale {
 }
 
 @Entity
-public class Product {
+public class Product implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,37 +20,36 @@ public class Product {
     @Column
     private String name;
 
+    @Column
     private String imagePath;
 
+    @Column
     private String description;
 
     // @ManyToOne(cascade = CascadeType.ALL)
     // private Category category;
 
-    private Float price;
+    @Column
+    private BigDecimal price;
 
+    @Column
     private typeOfSale typeOfSale;
 
+    @Temporal(TemporalType.DATE)
     private Date saleStartDate;
 
     // @ManyToOne
     // private Seller seller;
 
+    @Column
     private Boolean buyerReview;
 
+    @Column
     private Boolean sellerReview;
 
+    @Column
     private Boolean sold;
 
     // @OneToMany
     // private ArrayList<Offer> offers;
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
 }
-
