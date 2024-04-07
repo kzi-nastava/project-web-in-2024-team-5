@@ -1,11 +1,11 @@
 package com.webshop;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.List;
+import com.webshop.model.Admin;
+import com.webshop.model.Role;
 
 /*
    @SpringBootApplication anotacija nastala je od @EnableAutoConfiguration anotacije koja
@@ -14,14 +14,14 @@ import java.util.List;
 @SpringBootApplication
 public class WebShopApplication implements CommandLineRunner {
 
-	@Override
-	public void run(String... args) {
+    public static void main(String[] args) {
+        SpringApplication.run(WebShopApplication.class, args);
+    }
 
-	}
-
-
-	public static void main(String[] args) {
-		SpringApplication.run(WebShopApplication.class, args);
-	}
+    @Override
+    public void run(String... args) {
+        Admin marko = new Admin();
+        marko.setRole(Role.buyer);
+    }
 
 }

@@ -16,4 +16,21 @@ public class Seller extends User {
 
     @Column
     private double averageRating;
+
+    public List<Review> getReviews() {
+        return Reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        Reviews = reviews;
+    }
+
+    public double getAverageRating() {
+        return averageRating;
+    }
+
+    public void setAverageRating(double averageRating) {
+        this.averageRating = averageRating;
+    }
+
 }
