@@ -3,14 +3,15 @@ package com.webshop.model;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 
 @Entity
 public class Buyer extends User {
-    @Column
+    @OneToMany
     private ArrayList<Product> Products;
 
-    @Column
+    @OneToMany
     private ArrayList<Review> Reviews;
 
     @Column
