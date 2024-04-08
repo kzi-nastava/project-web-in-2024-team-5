@@ -18,7 +18,7 @@ import jakarta.persistence.Table;
 @Table(name = "reviews")
 public class Review implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
@@ -44,10 +44,6 @@ public class Review implements Serializable {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Integer getScore() {

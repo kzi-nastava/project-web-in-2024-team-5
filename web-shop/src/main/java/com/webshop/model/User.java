@@ -45,15 +45,11 @@ public abstract class User implements Serializable {
     @Column(length = 1000)
     private String description;
 
-    @Column
+    @Column(columnDefinition = "boolean default false")
     private Boolean blocked;
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {

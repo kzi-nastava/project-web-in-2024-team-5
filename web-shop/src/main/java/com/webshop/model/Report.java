@@ -10,7 +10,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -30,22 +30,30 @@ public class Report implements Serializable {
     @Column
     private ReportStatus status;
 
-    @OneToOne
-    private Buyer buyer;
+    @ManyToOne
+    private User whoReported;
 
-    @OneToOne
-    private Seller seller;
-
-    @Enumerated(EnumType.STRING)
-    @Column
-    private Poster poster;
+    @ManyToOne
+    private User whoIsReported;
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public User getWhoReported() {
+        return whoReported;
+    }
+
+    public void setWhoReported(User whoReported) {
+        this.whoReported = whoReported;
+    }
+
+    public User getWhoIsReported() {
+        return whoIsReported;
+    }
+
+    public void setWhoIsReported(User whoIsReported) {
+        this.whoIsReported = whoIsReported;
     }
 
     public String getReason() {
@@ -70,30 +78,6 @@ public class Report implements Serializable {
 
     public void setStatus(ReportStatus status) {
         this.status = status;
-    }
-
-    public Buyer getBuyer() {
-        return buyer;
-    }
-
-    public void setBuyer(Buyer buyer) {
-        this.buyer = buyer;
-    }
-
-    public Seller getSeller() {
-        return seller;
-    }
-
-    public void setSeller(Seller seller) {
-        this.seller = seller;
-    }
-
-    public Poster getPoster() {
-        return poster;
-    }
-
-    public void setPoster(Poster poster) {
-        this.poster = poster;
     }
 
 }
