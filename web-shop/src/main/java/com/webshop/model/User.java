@@ -1,7 +1,7 @@
 package com.webshop.model;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
@@ -12,8 +12,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 
 @Entity(name = "users")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -38,13 +36,13 @@ public abstract class User implements Serializable {
     @Column
     private String phoneNumber;
 
-    @Temporal(TemporalType.DATE)
-    private Date dateOfBirth;
+    @Column
+    private LocalDateTime dateOfBirth;
 
     @Column
     private String profilePicture;
 
-    @Column
+    @Column(length = 1000)
     private String description;
 
     @Column
@@ -98,11 +96,11 @@ public abstract class User implements Serializable {
         this.phoneNumber = phoneNumber;
     }
 
-    public Date getDateOfBirth() {
+    public LocalDateTime getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(LocalDateTime dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 

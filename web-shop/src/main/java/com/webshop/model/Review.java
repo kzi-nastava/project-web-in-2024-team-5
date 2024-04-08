@@ -1,18 +1,18 @@
 package com.webshop.model;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "reviews")
@@ -24,11 +24,11 @@ public class Review implements Serializable {
     @Column
     private Integer score;
 
-    @Column
+    @Column(length = 1000)
     private String comment;
 
-    @Temporal(TemporalType.DATE)
-    private Date reviewDate;
+    @Column
+    private LocalDateTime reviewDate;
 
     @ManyToOne
     @JoinColumn(name = "buyer_id")
@@ -38,6 +38,7 @@ public class Review implements Serializable {
     @JoinColumn(name = "seller_id")
     private Seller seller;
 
+    @Enumerated(EnumType.STRING)
     @Column
     private Poster poster;
 
@@ -65,11 +66,11 @@ public class Review implements Serializable {
         this.comment = comment;
     }
 
-    public Date getReviewDate() {
+    public LocalDateTime getReviewDate() {
         return reviewDate;
     }
 
-    public void setReviewDate(Date reviewDate) {
+    public void setReviewDate(LocalDateTime reviewDate) {
         this.reviewDate = reviewDate;
     }
 

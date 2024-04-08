@@ -12,10 +12,10 @@ import jakarta.persistence.OneToMany;
 @DiscriminatorValue(value = "buyer")
 public class Buyer extends User {
 
-    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> Products;
 
-    @OneToMany(mappedBy = "buyer")
+    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> Reviews;
 
     @Column
@@ -35,5 +35,13 @@ public class Buyer extends User {
 
     public void setAverageRating(double averageRating) {
         this.averageRating = averageRating;
+    }
+
+    public List<Product> getProducts() {
+        return Products;
+    }
+
+    public void setProducts(List<Product> products) {
+        Products = products;
     }
 }

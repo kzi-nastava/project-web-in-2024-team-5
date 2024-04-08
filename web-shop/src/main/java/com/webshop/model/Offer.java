@@ -1,11 +1,13 @@
 package com.webshop.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "offers")
-public class Offer {
+// TODO:
+public class Offer implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

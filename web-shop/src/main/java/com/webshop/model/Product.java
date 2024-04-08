@@ -2,23 +2,19 @@ package com.webshop.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "products")
@@ -33,21 +29,22 @@ public class Product implements Serializable {
     @Column
     private String imagePath;
 
-    @Column
+    @Column(length = 1000)
     private String description;
 
-    @ManyToMany
-    @JoinTable(name = "product_category", joinColumns = @JoinColumn(name = "product_id"), inverseJoinColumns = @JoinColumn(name = "category_id"))
-    private Set<Category> categories = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "category", referencedColumnName = "category_name")
+    private Category category;
 
     @Column
     private BigDecimal price;
 
+    @Enumerated(EnumType.STRING)
     @Column
-    private typeOfSale typeOfSale;
+    private TypeOfSale typeOfSale;
 
-    @Temporal(TemporalType.DATE)
-    private Date saleStartDate;
+    @Column
+    private LocalDateTime saleStartDate;
 
     @ManyToOne
     @JoinColumn(name = "seller_id")
@@ -102,14 +99,6 @@ public class Product implements Serializable {
         this.description = description;
     }
 
-    public Set<Category> getCategories() {
-        return categories;
-    }
-
-    public void setCategories(Set<Category> categories) {
-        this.categories = categories;
-    }
-
     public BigDecimal getPrice() {
         return price;
     }
@@ -118,19 +107,19 @@ public class Product implements Serializable {
         this.price = price;
     }
 
-    public typeOfSale getTypeOfSale() {
+    public TypeOfSale getTypeOfSale() {
         return typeOfSale;
     }
 
-    public void setTypeOfSale(typeOfSale typeOfSale) {
-        this.typeOfSale = typeOfSale;
+    public void setTypeOfSale(TypeOfSale type) {
+        this.typeOfSale = type;
     }
 
-    public Date getSaleStartDate() {
+    public LocalDateTime getSaleStartDate() {
         return saleStartDate;
     }
 
-    public void setSaleStartDate(Date saleStartDate) {
+    public void setSaleStartDate(LocalDateTime saleStartDate) {
         this.saleStartDate = saleStartDate;
     }
 
@@ -158,9 +147,20 @@ public class Product implements Serializable {
         this.sold = sold;
     }
 
-}
+    public Seller getSeller() {
+        return seller;
+    }
 
-enum typeOfSale {
-    FIXED_PRICE,
-    AUCTION
+    public void setSeller(Seller seller) {
+        this.seller = seller;
+    }
+
+    public Buyer getBuyer() {
+        return buyer;
+    }
+
+    public void setBuyer(Buyer buyer) {
+        this.buyer = buyer;
+    }
+
 }

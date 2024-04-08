@@ -39,4 +39,61 @@ public class Report implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column
     private Poster poster;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    public LocalDateTime getDatePosted() {
+        return datePosted;
+    }
+
+    public void setDatePosted(LocalDateTime datePosted) {
+        this.datePosted = datePosted;
+    }
+
+    public ReportStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(ReportStatus status) {
+        this.status = status;
+    }
+
+    public Buyer getBuyer() {
+        return buyer;
+    }
+
+    public void setBuyer(Buyer buyer) {
+        this.buyer = buyer;
+    }
+
+    public Seller getSeller() {
+        return seller;
+    }
+
+    public void setSeller(Seller seller) {
+        this.seller = seller;
+    }
+
+    public Poster getPoster() {
+        return poster;
+    }
+
+    public void setPoster(Poster poster) {
+        this.poster = poster;
+    }
+
 }
