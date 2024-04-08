@@ -66,7 +66,7 @@ public class Product implements Serializable {
     @Column
     private Boolean sold;
 
-    @OneToMany(mappedBy = "products", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Offer> offers;
 
     public Long getId() {
@@ -159,6 +159,26 @@ public class Product implements Serializable {
 
     public void setBuyer(Buyer buyer) {
         this.buyer = buyer;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public List<Offer> getOffers() {
+        return offers;
+    }
+
+    public void setOffers(List<Offer> offers) {
+        this.offers = offers;
     }
 
 }

@@ -4,6 +4,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.webshop.model.Poster;
+import com.webshop.model.Review;
+
 /*
    @SpringBootApplication anotacija nastala je od @EnableAutoConfiguration anotacije koja
    upravlja konfiguracijom aplikacije.
@@ -17,6 +20,7 @@ public class WebShopApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+
     }
 
 }

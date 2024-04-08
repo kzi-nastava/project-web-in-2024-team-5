@@ -124,4 +124,8 @@ public abstract class User implements Serializable {
         this.blocked = blocked;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
 }
