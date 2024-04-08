@@ -12,8 +12,8 @@ import jakarta.persistence.OneToMany;
 @DiscriminatorValue(value = "buyer")
 public class Buyer extends User {
 
-    // @OneToMany(mappedBy = "Buyer", cascade = CascadeType.ALL)
-    // private List<Product> Products;
+    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL)
+    private List<Product> Products;
 
     @OneToMany(mappedBy = "buyer")
     private List<Review> Reviews;
