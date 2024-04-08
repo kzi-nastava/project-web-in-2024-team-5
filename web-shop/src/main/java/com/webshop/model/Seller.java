@@ -10,8 +10,8 @@ import jakarta.persistence.OneToMany;
 @Entity
 @DiscriminatorValue(value = "seller")
 public class Seller extends User {
-    // @OneToMany
-    // private List<Product> Products;
+    @OneToMany(mappedBy = "seller")
+    private List<Product> Products;
 
     @OneToMany(mappedBy = "seller")
     private List<Review> Reviews;
@@ -34,5 +34,4 @@ public class Seller extends User {
     public void setAverageRating(double averageRating) {
         this.averageRating = averageRating;
     }
-
 }

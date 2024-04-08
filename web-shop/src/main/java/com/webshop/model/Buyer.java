@@ -2,6 +2,7 @@ package com.webshop.model;
 
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -35,5 +36,4 @@ public class Buyer extends User {
     public void setAverageRating(double averageRating) {
         this.averageRating = averageRating;
     }
-
 }

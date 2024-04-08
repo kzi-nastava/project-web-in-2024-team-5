@@ -14,10 +14,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
 @Entity
+@Table(name = "products")
 public class Product implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,9 +48,9 @@ public class Product implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date saleStartDate;
 
-    // TODO:
-    // @ManyToOne
-    // private Seller seller;
+    @ManyToOne
+    @JoinColumn(name = "seller_id")
+    private Seller seller;
 
     @Column
     private Boolean buyerReview;
@@ -60,7 +63,7 @@ public class Product implements Serializable {
 
     // TODO:
     // @OneToMany
-    // private ArrayList<Offer> offers;
+    // private List<Offer> offers;
 
     public Long getId() {
         return id;

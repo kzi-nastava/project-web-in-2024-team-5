@@ -23,13 +23,13 @@ VALUES ('buyer','Emily', 'Johnson', 'emilyjohnson', 'emily@example.com', '555123
 ('buyer','Michael', 'Williams', 'michaelwilliams', 'michael@example.com', '555987654', '1985-07-12', 'michael.jpg', 'I am also a buyer', FALSE);
 
 -- Inserting data into the Review table
-INSERT INTO Review (id, score, comment, review_date, buyer_id, seller_id, poster)
+INSERT INTO Reviews (id, score, comment, review_date, buyer_id, seller_id, poster)
 VALUES (1, 5, 'Great seller, highly recommended!', '2024-04-07', 2, 1, 1),
 (2, 4, 'Good service, thank you!', '2024-04-06', 1, 2, 1),
 (3, 3, 'Product was okay, could be better.', '2024-04-05', 1, 1, 1),
 (4, 5, 'Excellent seller, very satisfied!', '2024-04-04', 2, 2, 1);
 
-INSERT INTO category (category_name)
+INSERT INTO categories (category_name)
 VALUES ( 'patike' ),
        ('naocare'),
        ('carape'),
