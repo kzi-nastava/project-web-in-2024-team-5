@@ -27,10 +27,11 @@ public abstract class User implements Serializable {
     @Column
     private String surname;
 
-    @Column
+    @Column(unique = true)
     private String username;
-
     @Column
+    private String password;
+    @Column(unique = true)
     private String email;
 
     @Column
