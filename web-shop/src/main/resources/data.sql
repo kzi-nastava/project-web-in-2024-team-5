@@ -1,9 +1,10 @@
-INSERT INTO USERS (user_role, name, surname, username, email, phone_number, date_of_birth, profile_picture, description)
+INSERT INTO USERS (user_role, name, lastname, username, password, email, phone_number, date_of_birth, profile_picture, description)
 VALUES (
     'admin',
     'John',
     'Doe',
     'johndoe',
+    'password',
     'john.doe@example.com',
     '+1234567890',
     '1990-01-01',
@@ -12,14 +13,14 @@ VALUES (
 );
 
 -- Inserting data into the User table
-INSERT INTO USERS (user_role, name, surname, username, email, phone_number, date_of_birth, profile_picture, description,  blocked)
-VALUES ('seller','John', 'Doe', 'johndoe', 'john@example.com', '123456789', '1990-01-01', 'profile.jpg', 'I am a seller', FALSE),
-('seller','Alice', 'Smith', 'alicesmith', 'alice@example.com', '987654321', '1995-05-15', 'avatar.jpg', 'I am also a seller', FALSE);
+INSERT INTO USERS (user_role, name, lastname, username, password, email, phone_number, date_of_birth, profile_picture, description,  blocked)
+VALUES ('seller','John', 'Doe', 'johndoe2', 'password', 'john@example.com', '123456789', '1990-01-01', 'profile.jpg', 'I am a seller', FALSE),
+('seller','Alice', 'Smith', 'alicesmith', 'password',  'alice@example.com', '987654321', '1995-05-15', 'avatar.jpg', 'I am also a seller', FALSE);
 
 -- Inserting data into the User table for buyers
-INSERT INTO USERS (user_role, name, surname, username, email, phone_number, date_of_birth, profile_picture, description,  blocked)
-VALUES ('buyer','Emily', 'Johnson', 'emilyjohnson', 'emily@example.com', '555123456', '1992-09-20', 'emily.jpg', 'I am a buyer', FALSE),
-('buyer','Michael', 'Williams', 'michaelwilliams', 'michael@example.com', '555987654', '1985-07-12', 'michael.jpg', 'I am also a buyer', FALSE);
+INSERT INTO USERS (user_role, name, lastname, username, password, email, phone_number, date_of_birth, profile_picture, description,  blocked)
+VALUES ('buyer','Emily', 'Johnson', 'emilyjohnson', 'password', 'emily@example.com', '555123456', '1992-09-20', 'emily.jpg', 'I am a buyer', FALSE),
+('buyer','Michael', 'Williams', 'michaelwilliams', 'password', 'michael@example.com', '555987654', '1985-07-12', 'michael.jpg', 'I am also a buyer', FALSE);
 
 -- Inserting data into the Review table
 INSERT INTO REVIEWS (score, comment, review_date, buyer_id, seller_id, poster)

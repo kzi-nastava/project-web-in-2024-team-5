@@ -8,6 +8,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByEmail(String email);
     List<User> findByUsername(String username);
     List<User> findByEmailAndLastname(String email, String lastname);
-    List<User> findDistinctPeopleByFirstnameOrLastname(String firstname, String lastname);
+    List<User> findDistinctPeopleByNameOrLastname(String firstname, String lastname);
     
 }

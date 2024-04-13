@@ -21,16 +21,18 @@ public abstract class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String name;
 
-    @Column
-    private String surname;
+    @Column(nullable = false)
+    private String lastname;
 
     @Column(unique = true)
     private String username;
-    @Column
+
+    @Column(nullable = false)
     private String password;
+
     @Column(unique = true)
     private String email;
 
@@ -61,12 +63,12 @@ public abstract class User implements Serializable {
         this.name = name;
     }
 
-    public String getSurname() {
-        return surname;
+    public String getLastname() {
+        return lastname;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
     }
 
     public String getUsername() {
