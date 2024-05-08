@@ -1,7 +1,11 @@
 package com.webshop.repository;
-import com.webshop.model.Product;
-import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ProductRepository extends JpaRepository<Product, Long> {
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
+
+import com.webshop.model.Product;
+
+@Repository
+public interface ProductRepository extends PagingAndSortingRepository<Product, Long> {
 
 }

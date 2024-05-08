@@ -137,7 +137,7 @@ public class Product implements Serializable {
         this.sellerReview = sellerReview;
     }
 
-    public Boolean getSold() {
+    public Boolean isSold() {
         return sold;
     }
 
