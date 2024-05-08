@@ -19,7 +19,7 @@ public class Buyer extends User {
     @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> Reviews;
 
-    @Column
+    @Column(nullable = false)
     private double averageRating;
 
     public List<Review> getReviews() {
