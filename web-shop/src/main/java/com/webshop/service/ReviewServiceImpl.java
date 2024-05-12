@@ -6,7 +6,9 @@ import com.webshop.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +20,10 @@ public class ReviewServiceImpl implements ReviewService {
     private BuyerRepository buyerRepository;
     @Autowired
     private SellerRepository sellerRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private ProductRepository productRepository;
 
     public ReviewServiceImpl(ReviewRepository reviewRepository, SellerRepository sellerRepository) {
         this.reviewRepository = reviewRepository;
@@ -25,45 +31,51 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public void reviewSeller(Long buyerId, Long sellerId, int score, String comment) {
+    public boolean reviewSeller(Long buyerId, Long sellerId, int score, String comment) {
         Optional<Buyer> buyer = buyerRepository.findById(buyerId);
         if(buyer.isPresent()) {
-            Buyer b = buyer.get();
-            for(Product product : buyer.get().getProducts()) {
-                if (product.getSeller().getId().equals(sellerId)) {
-
-                    Seller seller = sellerRepository.findById(sellerId).get();
+            List<Product> products = productRepository.findAllBySellerIdAndBuyerId(sellerId, buyerId);
+            for (Product product : products) {
+                System.out.println(product.getName() + " " + product.isSold());
+                if (product.isSold()) {
+                    Buyer b = product.getBuyer();
+                    Seller s = product.getSeller();
                     Review review = new Review();
                     review.setComment(comment);
-                    review.setReviewedUser(seller);
-                    review.setScore(score);
                     review.setReviewingUser(b);
+                    review.setScore(score);
+                    review.setReviewDate(LocalDateTime.now());
+                    review.setReviewedUser(s);
                     reviewRepository.save(review);
-                    return;
+                    return true;
                 }
             }
         }
+        return false;
     }
 
     @Override
-    public void reviewBuyer(Long buyerId, Long sellerId, int score, String comment) {
-        Optional<Seller> seller = sellerRepository.findById(buyerId);
+    public boolean reviewBuyer(Long buyerId, Long sellerId, int score, String comment) {
+       Optional<Seller> seller = sellerRepository.findById(sellerId);
         if(seller.isPresent()) {
-            Seller s = seller.get();
-            for(Product product : seller.get().getProducts()) {
-                if (product.getSeller().getId().equals(sellerId)) {
-
-                    Buyer buyer = buyerRepository.findById(sellerId).get();
+            List<Product> products = productRepository.findAllBySellerIdAndBuyerId(sellerId, buyerId);
+            for (Product product : products) {
+                System.out.println(product.getName() + " " + product.isSold());
+                if (product.isSold()) {
+                    Buyer b = product.getBuyer();
+                    Seller s = product.getSeller();
                     Review review = new Review();
                     review.setComment(comment);
                     review.setReviewingUser(s);
                     review.setScore(score);
-                    review.setReviewedUser(buyer);
+                    review.setReviewDate(LocalDateTime.now());
+                    review.setReviewedUser(b);
                     reviewRepository.save(review);
-                    return;
+                    return true;
                 }
             }
         }
+        return false;
     }
 
     @Override

@@ -6,8 +6,8 @@ import com.webshop.model.Review;
 import java.util.List;
 
 public interface ReviewService {
-    void reviewSeller(Long buyerId, Long sellerId, int score, String comment);
-    void reviewBuyer(Long buyerId, Long sellerId, int score, String comment);
+    boolean reviewSeller(Long buyerId, Long sellerId, int score, String comment);
+    boolean reviewBuyer(Long buyerId, Long sellerId, int score, String comment);
 
     List<ReviewDto> findByReviewedUserId(Long id);
 
