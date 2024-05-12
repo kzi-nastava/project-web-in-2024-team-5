@@ -6,6 +6,7 @@ import com.webshop.service.ReviewService;
 import com.webshop.service.ReviewServiceImpl;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,9 +21,18 @@ public class ReviewController {
     private ReviewRepository reviewRepository;
 
     @PostMapping("/buyer")
-    public ResponseEntity<String> addReview(@RequestParam Long buyerId, @RequestParam Long sellerId, @RequestParam int score, @RequestParam String comment) {
-        reviewServiceImpl.reviewBuyer(buyerId, sellerId, score, comment);
-        return ResponseEntity.ok("Uspesno dodat review");
+    public ResponseEntity<String> addReviewBuyer(@RequestParam Long buyerId, @RequestParam Long sellerId, @RequestParam int score, @RequestParam String comment) {
+        boolean success = reviewServiceImpl.reviewBuyer(buyerId, sellerId, score, comment);
+        if(success) return ResponseEntity.ok("Uspesno dodat review");
+        else
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Neuspesno dodat review");
+    }
+    @PostMapping("/seller")
+    public ResponseEntity<String> addReviewSeller(@RequestParam Long buyerId, @RequestParam Long sellerId, @RequestParam int score, @RequestParam String comment) {
+        boolean success = reviewServiceImpl.reviewSeller(buyerId, sellerId, score, comment);
+        if(success) return ResponseEntity.ok("Uspesno dodat review");
+        else
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Neuspesno dodat review");
     }
     @GetMapping("")
     List<ReviewDto> getAllReviews(Long id) {
