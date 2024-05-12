@@ -31,16 +31,14 @@ public class Review implements Serializable {
     private LocalDateTime reviewDate;
 
     @ManyToOne
-    @JoinColumn(name = "buyer_id")
-    private Buyer buyer;
+    @JoinColumn(name = "reviewer_id")
+    private User reviewingUser;
 
     @ManyToOne
-    @JoinColumn(name = "seller_id")
-    private Seller seller;
+    @JoinColumn(name = "reviewed_id")
+    private User reviewedUser;
 
-    @Enumerated(EnumType.STRING)
-    @Column
-    private Poster poster;
+
 
     public Long getId() {
         return id;
@@ -69,29 +67,17 @@ public class Review implements Serializable {
     public void setReviewDate(LocalDateTime reviewDate) {
         this.reviewDate = reviewDate;
     }
-
-    public Buyer getBuyer() {
-        return buyer;
+    public User getReviewingUser() {
+        return reviewingUser;
     }
-
-    public void setBuyer(Buyer buyer) {
-        this.buyer = buyer;
+    public void setReviewingUser(User reviewingUser) {
+        this.reviewingUser = reviewingUser;
     }
-
-    public Seller getSeller() {
-        return seller;
+    public User getReviewedUser() {
+        return reviewedUser;
     }
-
-    public void setSeller(Seller seller) {
-        this.seller = seller;
-    }
-
-    public Poster getPoster() {
-        return poster;
-    }
-
-    public void setPoster(Poster poster) {
-        this.poster = poster;
+    public void setReviewedUser(User reviewedUser) {
+        this.reviewedUser = reviewedUser;
     }
 
 }
