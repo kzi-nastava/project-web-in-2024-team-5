@@ -27,11 +27,11 @@ INSERT INTO USERS (user_role, average_rating, name, lastname, username, password
 VALUES ('seller',0.0, 'Matthew', 'Matthewson', 'matthewmatthewson', 'pword', 'matthewsonmatthew@example.com', '555423456', '1993-09-20', 'mat.jpg', 'I am a seller', FALSE);
 
 -- Inserting data into the Review table
-INSERT INTO REVIEWS (score, comment, review_date, buyer_id, seller_id, poster)
-VALUES (5, 'Great seller, highly recommended!', '2024-04-07', 2, 1, 'BUYER'),
-(4, 'Good service, thank you!', '2024-04-06', 1, 2, 'BUYER'),
-(3, 'Product was okay, could be better.', '2024-04-05', 1, 1, 'BUYER'),
-(5, 'Excellent seller, very satisfied!', '2024-04-04', 2, 2, 'BUYER');
+INSERT INTO REVIEWS (score, comment, review_date, reviewer_id, reviewed_id)
+VALUES (5, 'Great seller, highly recommended!', '2024-04-07', 2, 1),
+(4, 'Good service, thank you!', '2024-04-06', 1, 2),
+(3, 'Product was okay, could be better.', '2024-04-05', 1, 2),
+(5, 'Excellent seller, very satisfied!', '2024-04-04', 2, 1);
 
 INSERT INTO REPORTS(DATE_POSTED,ID,WHO_IS_REPORTED_ID,WHO_REPORTED_ID,REASON,STATUS) VALUES
 ('2024-03-03','1','1','2','Scammer, I sent money, but didnt receive item.','SUBMITTED'),
