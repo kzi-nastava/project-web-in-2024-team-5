@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.webshop.dto.BasicProductDto;
+import com.webshop.dto.ProductDto;
 import com.webshop.model.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -36,6 +37,10 @@ public class ProductService {
         }
 
         return basicProductDtos;
+    }
+
+    public ProductDto findById(Long id) {
+        return new ProductDto(productRepository.findById(id));
     }
 
 }

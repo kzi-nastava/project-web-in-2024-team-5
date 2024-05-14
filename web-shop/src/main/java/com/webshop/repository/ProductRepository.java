@@ -7,5 +7,6 @@ import com.webshop.model.Product;
 
 @Repository
 public interface ProductRepository extends PagingAndSortingRepository<Product, Long> {
+    Product findById(Long id);
 
 }

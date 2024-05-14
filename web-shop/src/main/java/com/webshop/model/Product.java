@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -51,10 +53,12 @@ public class Product implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "seller_id")
+    @JsonBackReference
     private Seller seller;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "buyer_id")
+    @JsonBackReference
     private Buyer buyer;
 
     @Column
