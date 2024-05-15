@@ -1,5 +1,6 @@
 package com.webshop.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,10 +8,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.webshop.dto.BasicProductDto;
 import com.webshop.dto.ProductDto;
+import com.webshop.model.Category;
+import com.webshop.model.TypeOfSale;
 import com.webshop.service.ProductService;
 
 @RestController()
@@ -35,9 +39,19 @@ public class ProductController {
      */
     @GetMapping("/{id}")
     ProductDto getProduct(@PathVariable Long id) {
-        return productService.findById(id);
+        return productService.getById(id);
     }
 
-    // TODO FILTRIRANJE PROIZVODA...
+    @GetMapping("/filter")
+    List<BasicProductDto> getFilteredProducts(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Double price,
+            @RequestParam(required = false) Category category,
+            @RequestParam(required = false) TypeOfSale typeOfSale) {
+
+        List<BasicProductDto> products = new ArrayList<BasicProductDto>();
+
+        return products;
+    }
 
 }

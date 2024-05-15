@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import com.webshop.model.Category;
 import com.webshop.model.Product;
 import com.webshop.model.TypeOfSale;
+import com.webshop.model.User;
 
 /**
  * Cela verzija proizvoda za detaljan prikaz
@@ -28,9 +29,9 @@ public class ProductDto {
 
     private LocalDateTime saleStartDate;
 
-    // private User seller;
-    //
-    // private User buyer;
+    private User seller;
+
+    private User buyer;
 
     private Boolean sold;
 
@@ -46,8 +47,8 @@ public class ProductDto {
         this.price = product.getPrice();
         this.typeOfSale = product.getTypeOfSale();
         this.saleStartDate = product.getSaleStartDate();
-        // this.seller = product.getSeller();
-        // this.buyer = product.getBuyer();
+        this.seller = product.getSeller();
+        this.buyer = product.getBuyer();
         this.sold = product.isSold();
     }
 
@@ -115,21 +116,21 @@ public class ProductDto {
         this.saleStartDate = saleStartDate;
     }
 
-    // public User getSeller() {
-    // return seller;
-    // }
-    //
-    // public void setSeller(User seller) {
-    // this.seller = seller;
-    // }
-    //
-    // public User getBuyer() {
-    // return buyer;
-    // }
-    //
-    // public void setBuyer(User buyer) {
-    // this.buyer = buyer;
-    // }
+     public User getSeller() {
+     return seller;
+     }
+
+     public void setSeller(User seller) {
+     this.seller = seller;
+     }
+
+     public User getBuyer() {
+     return buyer;
+     }
+
+     public void setBuyer(User buyer) {
+     this.buyer = buyer;
+     }
 
     public Boolean getSold() {
         return sold;

@@ -5,7 +5,10 @@ import java.util.List;
 
 import com.webshop.dto.BasicProductDto;
 import com.webshop.dto.ProductDto;
+import com.webshop.model.Category;
 import com.webshop.model.Product;
+import com.webshop.model.TypeOfSale;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.webshop.repository.ProductRepository;
@@ -39,8 +42,15 @@ public class ProductService {
         return basicProductDtos;
     }
 
-    public ProductDto findById(Long id) {
+    public ProductDto getById(Long id) {
         return new ProductDto(productRepository.findById(id));
+    }
+
+    public List<BasicProductDto> getFilteredProducts(String name, Double price, Category category,
+            TypeOfSale typeOfSale) {
+        List<BasicProductDto> products = new ArrayList<BasicProductDto>();
+
+        return products;
     }
 
 }
