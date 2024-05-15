@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @RestController()
 @RequestMapping("/api/v1/reviews")
@@ -34,8 +36,23 @@ public class ReviewController {
         else
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Neuspesno dodat review");
     }
-    @GetMapping("")
-    List<ReviewDto> getAllReviews(Long id) {
-        return reviewServiceImpl.findByReviewedUserId(id);
+    @GetMapping("/request")
+    public List<ReviewDto> getAllReviews(@RequestParam Long requestingUserId, @RequestParam Long reviewedUserId) {
+        return reviewServiceImpl.requestReviews(requestingUserId, reviewedUserId);
+    }
+    @GetMapping("/average")
+    public String getAverageScoreByReviewedUserId(@RequestParam Long reviewedUserId) {
+            double ocena = reviewServiceImpl.getAverageRating(reviewedUserId) > 0 ? reviewServiceImpl.getAverageRating(reviewedUserId) : 0;
+        return "Prosecna ocena je : " + ocena;
+    }
+    @PatchMapping("/{id}")
+    public ResponseEntity<Review> updateReview(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+        Review review = reviewServiceImpl.editReview(1L, id , updates);
+        return ResponseEntity.ok(review);
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteReview(@PathVariable Long id) {
+        reviewServiceImpl.deleteReview(id);
+        return ResponseEntity.noContent().build();
     }
 }

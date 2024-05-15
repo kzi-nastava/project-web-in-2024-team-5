@@ -3,13 +3,14 @@ package com.webshop.service;
 import com.webshop.dto.ReviewDto;
 import com.webshop.model.*;
 import com.webshop.repository.*;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -24,6 +25,8 @@ public class ReviewServiceImpl implements ReviewService {
     private UserRepository userRepository;
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
+    private AdminRepository adminRepository;
 
     public ReviewServiceImpl(ReviewRepository reviewRepository, SellerRepository sellerRepository) {
         this.reviewRepository = reviewRepository;
@@ -36,7 +39,6 @@ public class ReviewServiceImpl implements ReviewService {
         if(buyer.isPresent()) {
             List<Product> products = productRepository.findAllBySellerIdAndBuyerId(sellerId, buyerId);
             for (Product product : products) {
-                System.out.println(product.getName() + " " + product.isSold());
                 if (product.isSold()) {
                     Buyer b = product.getBuyer();
                     Seller s = product.getSeller();
@@ -60,7 +62,7 @@ public class ReviewServiceImpl implements ReviewService {
         if(seller.isPresent()) {
             List<Product> products = productRepository.findAllBySellerIdAndBuyerId(sellerId, buyerId);
             for (Product product : products) {
-                System.out.println(product.getName() + " " + product.isSold());
+
                 if (product.isSold()) {
                     Buyer b = product.getBuyer();
                     Seller s = product.getSeller();
@@ -79,9 +81,9 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<ReviewDto> findByReviewedUserId(Long id) {
+    public List<ReviewDto> findByReviewedUserId(Long reviewedUserId) {
         List<ReviewDto> reviewsdto = new ArrayList<>();
-        List<Review> reviews = (List<Review>) reviewRepository.findAllByReviewedUserId(id);
+        List<Review> reviews = (List<Review>) reviewRepository.findAllByReviewedUserId(reviewedUserId);
         for(Review review : reviews) {
             ReviewDto rev = new ReviewDto(review);
             reviewsdto.add(rev);
@@ -89,15 +91,52 @@ public class ReviewServiceImpl implements ReviewService {
 
         return reviewsdto;
     }
-
-
     @Override
-    public double getAverageRatingSeller(Long sellerId) {
-        return 0;
+    public List<ReviewDto> requestReviews(Long requestingUserId, Long reviewedUserId) {
+        List<ReviewDto> reviews = findByReviewedUserId(reviewedUserId);
+        if(adminRepository.findById(requestingUserId).isPresent()) {
+            return reviews;
+        }
+        else {
+            for (ReviewDto review : reviews) {
+                if (review.getReviewingUserId().equals(requestingUserId)) {
+                    return reviews;
+                }
+            }
+            return List.of();
+        }
     }
 
     @Override
-    public double getAverageRatingBuyer(Long buyerId) {
-        return 0;
+    public double getAverageRating(Long id) {
+        List<ReviewDto> reviews = findByReviewedUserId(id);
+        double sum = 0;
+        double reviewCount = 0;
+        for(ReviewDto review : reviews) {
+            sum += review.getScore();
+            reviewCount++;
+        }
+        return sum/reviewCount;
+    }
+
+    @Override
+    public Review editReview(Long userId, Long reviewId, Map<String, Object> update)  {
+        return reviewRepository.findById(reviewId).map(review -> {
+            if(update.containsKey("score")) {
+                review.setScore((Integer) update.get("score"));
+            }
+            if(update.containsKey("comment")) {
+                review.setComment((String) update.get("comment"));
+            }
+            if(update.containsKey("date")) {
+                review.setReviewDate((LocalDateTime) update.get("date"));
+            }
+            return reviewRepository.save(review);
+        }).orElseThrow(() -> new EntityNotFoundException("Review not found"));
+    }
+
+    @Override
+    public void deleteReview(Long id) {
+        reviewRepository.deleteById(id);
     }
 }
