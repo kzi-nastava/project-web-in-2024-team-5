@@ -1,5 +1,6 @@
 package com.webshop.controller;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +25,9 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    // @Autowired
+    // private CategoryService categoryService;
+
     /**
      * Vraca listu BasicProductDto objekata koja se prikazuje na pocetnoj stranici,
      * limitiranu paginacijom
@@ -44,12 +48,14 @@ public class ProductController {
 
     @GetMapping("/filter")
     List<BasicProductDto> getFilteredProducts(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) Double price,
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice,
             @RequestParam(required = false) Category category,
             @RequestParam(required = false) TypeOfSale typeOfSale) {
 
-        List<BasicProductDto> products = new ArrayList<BasicProductDto>();
+        // Category
+
+        List<BasicProductDto> products = productService.getFilteredProducts(minPrice, maxPrice, category, typeOfSale);
 
         return products;
     }
