@@ -2,10 +2,8 @@ package com.webshop.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -28,38 +26,38 @@ public class Product implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String name;
 
     @Column
     private String imagePath;
 
-    @Column(length = 1000)
+    @Column(length = 1000, nullable = false)
     private String description;
 
     @ManyToOne
     @JoinColumn(name = "category", referencedColumnName = "category_name")
     private Category category;
 
-    @Column
+    @Column(nullable = false)
     private BigDecimal price;
 
     @Enumerated(EnumType.STRING)
-    @Column
+    @Column(nullable = false)
     private TypeOfSale typeOfSale;
 
     @Column
-    private LocalDateTime saleStartDate;
+    private LocalDate saleStartDate;
 
-    @ManyToOne
-    @JoinColumn(name = "seller_id")
-    @JsonBackReference
-    private Seller seller;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "buyer_id")
-    @JsonBackReference
-    private Buyer buyer;
+    // @ManyToOne
+    // @JoinColumn(name = "seller_id")
+    // @JsonBackReference
+    // private Seller seller;
+    //
+    // @ManyToOne(cascade = CascadeType.ALL)
+    // @JoinColumn(name = "buyer_id")
+    // @JsonBackReference
+    // private Buyer buyer;
 
     @Column
     private Boolean buyerReview;
@@ -117,11 +115,11 @@ public class Product implements Serializable {
         this.typeOfSale = type;
     }
 
-    public LocalDateTime getSaleStartDate() {
+    public LocalDate getSaleStartDate() {
         return saleStartDate;
     }
 
-    public void setSaleStartDate(LocalDateTime saleStartDate) {
+    public void setSaleStartDate(LocalDate saleStartDate) {
         this.saleStartDate = saleStartDate;
     }
 
@@ -149,21 +147,21 @@ public class Product implements Serializable {
         this.sold = sold;
     }
 
-    public Seller getSeller() {
-        return seller;
-    }
-
-    public void setSeller(Seller seller) {
-        this.seller = seller;
-    }
-
-    public Buyer getBuyer() {
-        return buyer;
-    }
-
-    public void setBuyer(Buyer buyer) {
-        this.buyer = buyer;
-    }
+    // public Seller getSeller() {
+    // return seller;
+    // }
+    //
+    // public void setSeller(Seller seller) {
+    // this.seller = seller;
+    // }
+    //
+    // public Buyer getBuyer() {
+    // return buyer;
+    // }
+    //
+    // public void setBuyer(Buyer buyer) {
+    // this.buyer = buyer;
+    // }
 
     public void setId(Long id) {
         this.id = id;
