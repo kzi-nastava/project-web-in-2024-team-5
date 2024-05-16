@@ -1,13 +1,16 @@
 package com.webshop.service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.webshop.dto.BasicProductDto;
 import com.webshop.dto.ProductDto;
@@ -43,7 +46,11 @@ public class ProductService {
     }
 
     public ProductDto getById(Long id) {
-        return new ProductDto(productRepository.findById(id));
+        Product prod = productRepository.findById(id);
+        if (prod != null) {
+            return new ProductDto(prod);
+        }
+        return null;
     }
 
     public List<BasicProductDto> getFilteredProducts(
@@ -51,9 +58,13 @@ public class ProductService {
             BigDecimal maxPrice,
             Category category,
             TypeOfSale typeOfSale) {
-        // NOTE: OPTIMIZOVATI
-        List<Product> products = productRepository.findByCategoryAndTypeOfSale(category, typeOfSale);
+        // TODO OPTIMIZOVATI, PAGINACIJA
+        List<Product> products = initializeProducts(category, typeOfSale);
         List<BasicProductDto> productDtos = new ArrayList<>();
+
+        minPrice = (minPrice == null) ? BigDecimal.ZERO : minPrice;
+
+        maxPrice = (maxPrice == null) ? BigDecimal.valueOf(Double.MAX_VALUE) : maxPrice;
 
         for (Product prod : products) {
             BigDecimal cena = prod.getPrice();
@@ -63,6 +74,32 @@ public class ProductService {
         }
 
         return productDtos;
+    }
+
+    public Product createProduct(@RequestBody Product product) {
+        try {
+            product.setSaleStartDate(LocalDate.now());
+            product.setSold(false);
+            return productRepository.save(product);
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Error occurred while saving the product", e);
+        }
+    }
+
+    private List<Product> initializeProducts(Category category, TypeOfSale typeOfSale) {
+        List<Product> products;
+
+        if (category != null && typeOfSale != null) {
+            products = productRepository.findByCategoryAndTypeOfSale(category, typeOfSale);
+        } else if (category != null) {
+            products = productRepository.findByCategory(category);
+        } else if (typeOfSale != null) {
+            products = productRepository.findByTypeOfSale(typeOfSale);
+        } else {
+            products = productRepository.findAll();
+        }
+
+        return products;
     }
 
 }

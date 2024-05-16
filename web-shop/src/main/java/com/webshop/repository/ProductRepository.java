@@ -14,4 +14,13 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, L
     Product findById(Long id);
 
     List<Product> findByCategoryAndTypeOfSale(Category category, TypeOfSale typeOfSale);
+
+    List<Product> findAll();
+
+    List<Product> findByCategory(Category category);
+
+    List<Product> findByTypeOfSale(TypeOfSale typeOfSale);
+
+    Product save(Product product);
+
 }
