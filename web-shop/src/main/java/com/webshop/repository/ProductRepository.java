@@ -2,6 +2,9 @@ package com.webshop.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
@@ -22,5 +25,8 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, L
     List<Product> findByTypeOfSale(TypeOfSale typeOfSale);
 
     Product save(Product product);
+
+    @Query("SELECT p FROM Product p WHERE LOWER(p.name) LIKE %:search% OR LOWER(p.description) LIKE %:search%")
+    Page<Product> findBySearchTerm(String search, Pageable pageable);
 
 }

@@ -46,7 +46,6 @@ public class ProductController {
                     .buildAndExpand(productResponse.getId())
                     .toUri();
 
-            // return ResponseEntity.status(201).body("Jo napravio sam objekat");
             return ResponseEntity.created(location).build();
         } catch (DataAccessException e) {
             return ResponseEntity.badRequest().build();
@@ -100,6 +99,23 @@ public class ProductController {
         Category categoryObj = categoryService.findCategory(category);
 
         return productService.getFilteredProducts(minPrice, maxPrice, categoryObj, typeOfSale);
+    }
+
+    /**
+     * Pretraga proizvoda po imenu i deskripciji.
+     * Primer:
+     * localhost:8080/api/v1/products/search?search=set&size=5&page=0
+     * Funkcionalnost 1.2 pretraga proizvoda
+     * 
+     * @param search
+     * @param pageable
+     * @return
+     */
+    @GetMapping("/search")
+    List<BasicProductDto> searchProducts(@RequestParam String search, Pageable pageable) {
+        List<BasicProductDto> products = productService.searchProducts(search, pageable);
+
+        return products;
     }
 
 }

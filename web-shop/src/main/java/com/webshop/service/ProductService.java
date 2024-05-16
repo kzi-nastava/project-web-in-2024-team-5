@@ -86,6 +86,20 @@ public class ProductService {
         }
     }
 
+    public List<BasicProductDto> searchProducts(String search, Pageable pageable) {
+        search = search.trim().toLowerCase();
+
+        List<BasicProductDto> productDtos = new ArrayList<>();
+
+        List<Product> products = productRepository.findBySearchTerm(search, pageable).getContent();
+
+        for (Product prod : products) {
+            productDtos.add(new BasicProductDto(prod));
+        }
+
+        return productDtos;
+    }
+
     private List<Product> initializeProducts(Category category, TypeOfSale typeOfSale) {
         List<Product> products;
 
