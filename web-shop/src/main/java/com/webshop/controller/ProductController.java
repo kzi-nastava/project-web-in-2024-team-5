@@ -118,4 +118,6 @@ public class ProductController {
         return products;
     }
 
+    // TODO: 3.5. Ažuriranje informacija o proizvodu
+
 }
