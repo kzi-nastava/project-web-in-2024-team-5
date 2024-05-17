@@ -2,6 +2,8 @@ package com.webshop.model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
@@ -13,7 +15,8 @@ import jakarta.persistence.OneToMany;
 @DiscriminatorValue(value = "buyer")
 public class Buyer extends User {
 
-    @OneToMany(mappedBy = "buyer", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    // @JsonManagedReference
     private List<Product> Products;
 
     @OneToMany(mappedBy = "reviewedUser", cascade = CascadeType.ALL, orphanRemoval = true)

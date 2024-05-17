@@ -14,6 +14,13 @@ public class Category implements Serializable {
     @Column(unique = true, name = "category_name")
     private String categoryName;
 
+    public Category(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public Category() {
+    }
+
     public String getCategoryName() {
         return categoryName;
     }
