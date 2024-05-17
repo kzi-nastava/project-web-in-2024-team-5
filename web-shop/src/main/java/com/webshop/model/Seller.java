@@ -18,7 +18,7 @@ public class Seller extends User {
     // @JsonManagedReference
     private List<Product> Products;
 
-    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "reviewedUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> Reviews;
 
     @Column(nullable = false)

@@ -12,6 +12,8 @@ import com.webshop.model.Category;
 import com.webshop.model.Product;
 import com.webshop.model.TypeOfSale;
 
+import java.util.List;
+
 @Repository
 public interface ProductRepository extends PagingAndSortingRepository<Product, Long> {
     Product findById(Long id);
@@ -29,4 +31,5 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, L
     @Query("SELECT p FROM Product p WHERE LOWER(p.name) LIKE %:search% OR LOWER(p.description) LIKE %:search%")
     Page<Product> findBySearchTerm(String search, Pageable pageable);
 
+    List<Product> findAllBySellerIdAndBuyerId(Long sellerId, Long buyerId);
 }
