@@ -3,11 +3,13 @@ package com.webshop.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.webshop.dto.ExtendedUserDto;
 import com.webshop.dto.LoginDto;
 import com.webshop.dto.UserDto;
 import com.webshop.model.User;
@@ -24,11 +26,10 @@ import jakarta.servlet.http.HttpSession;
 public class UserController {
 
     @Autowired
-    private UserServiceImpl UserService;
+    private UserServiceImpl userService;
 
     /**
      * Funkcionalnost 1.5
-     *
      * Ocekuje ovakav body:
      * {
      * "username": "mojuser",
@@ -49,7 +50,7 @@ public class UserController {
         if (loginDto.getPassword().isEmpty() || loginDto.getUsername().isEmpty())
             return new ResponseEntity<>("Please provide both username and password\n", HttpStatus.BAD_REQUEST);
 
-        User loggedUser = UserService.authenticateUser(loginDto);
+        User loggedUser = userService.authenticateUser(loginDto);
         if (loggedUser != null) {
             UserSession userSession = new UserSession(loggedUser);
             session.setAttribute("User", userSession);
@@ -61,7 +62,6 @@ public class UserController {
 
     /**
      * Funkcionalnost 1.4
-     *
      * Ocekuje ovakav body:
      * {
      * "name":"aleksa",
@@ -84,7 +84,7 @@ public class UserController {
         }
 
         try {
-            UserSession userSession = new UserSession(UserService.save(user));
+            UserSession userSession = new UserSession(userService.save(user));
             session.setAttribute("User", userSession);
             return new ResponseEntity<>("User registered successfully\n", HttpStatus.OK);
         } catch (Exception e) {
@@ -104,11 +104,35 @@ public class UserController {
         return ResponseEntity.ok("Successfully logged out!\n");
     }
 
-    private boolean isInformationProvided(UserDto user) {
-        if (user.getUsername() == null || user.getEmail() == null || user.getPhoneNumber() == null
-                || user.getPassword() == null || user.getName() == null || user.getLastname() == null)
-            return false;
+    /**
+     * Azuriranje profila korisnika
+     * Funkcionalnosti 2.1 i 3.1
+     * 
+     * @param user
+     * @param session
+     * @return
+     */
+    @PatchMapping("/profiles/me")
+    public ResponseEntity<User> updateProfile(@RequestBody ExtendedUserDto user, HttpSession session) {
+        UserSession loggedUser = (UserSession) session.getAttribute("User");
 
-        return true;
+        if (loggedUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        user.setId(loggedUser.getId());
+
+        try {
+
+            User updatedUser = userService.updateProfile(user);
+            return ResponseEntity.ok(updatedUser);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
+    }
+
+    private boolean isInformationProvided(UserDto user) {
+        return user.getUsername() != null && user.getEmail() != null && user.getPhoneNumber() != null
+                && user.getPassword() != null && user.getName() != null && user.getLastname() != null;
     }
 }

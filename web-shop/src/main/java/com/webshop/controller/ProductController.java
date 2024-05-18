@@ -105,7 +105,7 @@ public class ProductController {
      * Pretraga proizvoda po imenu i deskripciji.
      * Primer:
      * localhost:8080/api/v1/products/search?search=set&size=5&page=0
-     * Funkcionalnost 1.2 pretraga proizvoda
+     * Funkcionalnost 1.3 pretraga proizvoda
      * 
      * @param search
      * @param pageable
