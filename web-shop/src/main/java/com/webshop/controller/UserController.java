@@ -29,7 +29,7 @@ public class UserController {
 
         User loggedUser = UserService.authenticateUser(loginDto);
         if (loggedUser != null) {
-            session.setAttribute("user", loggedUser);
+            session.setAttribute("User", loggedUser);
             return ResponseEntity.ok("Successfully logged in!");
         }
 
@@ -37,14 +37,30 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(HttpSession session) {
+    public ResponseEntity<String> registerUser(@RequestBody User user, HttpSession session) {
+        if (!isInformationProvided(user)) {
+            return new ResponseEntity<>("Please provide necessary information\n", HttpStatus.BAD_REQUEST);
+        }
 
         return new ResponseEntity<>("Invalid login data\n", HttpStatus.FORBIDDEN);
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpSession session) {
+    public ResponseEntity<String> Logout(HttpSession session) {
+        User loggedUser = (User) session.getAttribute("User");
 
-        return new ResponseEntity<>("Invalid login data\n", HttpStatus.FORBIDDEN);
+        if (loggedUser == null)
+            return new ResponseEntity<>("Forbidden", HttpStatus.FORBIDDEN);
+
+        session.invalidate();
+        return ResponseEntity.ok("Successfully logged out!\n");
+    }
+
+    private boolean isInformationProvided(User user) {
+        if (user.getUsername() == null || user.getEmail() == null || user.getPhoneNumber() == null
+                || user.getPassword() == null || user.getName() == null || user.getLastname() == null)
+            return false;
+
+        return true;
     }
 }
