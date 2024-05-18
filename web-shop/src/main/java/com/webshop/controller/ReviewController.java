@@ -5,6 +5,7 @@ import com.webshop.model.User;
 import com.webshop.repository.ReviewRepository;
 import com.webshop.service.ReviewService;
 import com.webshop.service.ReviewServiceImpl;
+import com.webshop.session.UserSession;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.apache.coyote.Response;
@@ -27,7 +28,8 @@ public class ReviewController {
 
     @PostMapping("/buyer")
     public ResponseEntity<String> addReviewBuyer(HttpSession session, @RequestParam Long buyerId, @RequestParam int score, @RequestParam String comment) {
-        User loggedUser = (User) session.getAttribute("User");
+        UserSession loggedUser = (UserSession) session.getAttribute("User");
+        UserSession userSession = (UserSession) session.getAttribute("user");
         long sellerId = loggedUser.getId();
         boolean success = reviewServiceImpl.reviewBuyer(buyerId, sellerId, score, comment);
         if(success) return ResponseEntity.ok("Uspesno dodat review");
@@ -36,7 +38,7 @@ public class ReviewController {
     }
     @PostMapping("/seller")
     public ResponseEntity<String> addReviewSeller(HttpSession session, @RequestParam Long sellerId, @RequestParam int score, @RequestParam String comment) {
-        User loggedUser = (User) session.getAttribute("User");
+        UserSession loggedUser = (UserSession) session.getAttribute("User");
         long buyerId = loggedUser.getId();
         boolean success = reviewServiceImpl.reviewSeller(buyerId, sellerId, score, comment);
         if(success) return ResponseEntity.ok("Uspesno dodat review");
@@ -45,7 +47,7 @@ public class ReviewController {
     }
     @GetMapping("/request")
     public List<ReviewDto> getAllReviews(HttpSession session, @RequestParam Long reviewedUserId) {
-        User loggedUser = (User) session.getAttribute("User");
+        UserSession loggedUser = (UserSession) session.getAttribute("User");
         long requestingUserId = loggedUser.getId();
         return reviewServiceImpl.requestReviews(requestingUserId, reviewedUserId);
     }
@@ -56,8 +58,8 @@ public class ReviewController {
     }
     @PatchMapping("/update/{id}")
     public ResponseEntity<ReviewDto> updateReview(HttpSession session, @PathVariable Long id, @RequestBody Map<String, Object> updates) {
-        User loggedUser = (User) session.getAttribute("User");
-        if(loggedUser.getUserRole().equals("admin")) {
+        UserSession loggedUser = (UserSession) session.getAttribute("User");
+        if(loggedUser.getRole().equals("admin")) {
             Review review = reviewServiceImpl.editReview(loggedUser.getId(), id, updates);
             ReviewDto revDto = new ReviewDto(review);
             return ResponseEntity.ok(revDto);
@@ -66,8 +68,8 @@ public class ReviewController {
     }
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteReview(HttpSession session,@PathVariable Long id) {
-        User loggedUser = (User) session.getAttribute("User");
-        if(loggedUser.getUserRole().equals("admin")) {
+        UserSession loggedUser = (UserSession) session.getAttribute("User");
+        if(loggedUser.getRole().equals("admin")) {
             reviewServiceImpl.deleteReview(id);
             return ResponseEntity.noContent().build();
         }
