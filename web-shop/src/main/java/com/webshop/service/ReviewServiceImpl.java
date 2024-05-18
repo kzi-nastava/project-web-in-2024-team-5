@@ -40,8 +40,8 @@ public class ReviewServiceImpl implements ReviewService {
             List<Product> products = productRepository.findAllBySellerIdAndBuyerId(sellerId, buyerId);
             for (Product product : products) {
                 if (product.isSold()) {
-                    Buyer b = new Buyer();
-                    Seller s = new Seller();
+                    Buyer b = buyer.get();
+                    Seller s = sellerRepository.findById(sellerId).get();
                     Review review = new Review();
                     review.setComment(comment);
                     review.setReviewingUser(b);
@@ -65,8 +65,8 @@ public class ReviewServiceImpl implements ReviewService {
             for (Product product : products) {
 
                 if (product.isSold()) {
-                    Buyer b = new Buyer();
-                    Seller s = new Seller();
+                    Buyer b = buyerRepository.findById(buyerId).get();
+                    Seller s = seller.get();
                     Review review = new Review();
                     review.setComment(comment);
                     review.setReviewingUser(s);
@@ -131,7 +131,8 @@ public class ReviewServiceImpl implements ReviewService {
                 review.setComment((String) update.get("comment"));
             }
             if(update.containsKey("date")) {
-                review.setReviewDate((LocalDateTime) update.get("date"));
+                LocalDateTime localDate = LocalDateTime.parse(update.get("date").toString());
+                review.setReviewDate(localDate);
             }
             return reviewRepository.save(review);
         }).orElseThrow(() -> new EntityNotFoundException("Review not found"));
@@ -144,32 +145,24 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void updateAverageRating(Long userId) {
-        /* KAD SE ODRADI AUTENTIKACIJA BICE
         Optional<User> user = userRepository.findById(userId);
         if(user.isPresent()) {
-            if(user.getRole() == BUYER) {
-                Buyer b
-            } else if (user.getRole() == SELLER) {
-
+            if(user.get().getUserRole().equals("seller")) {
+                Optional<Seller> seller = sellerRepository.findById(userId);
+                if(seller.isPresent()) {
+                    Seller s = seller.get();
+                    s.setAverageRating(getAverageRating(userId));
+                    sellerRepository.save(s);
+                }
             }
-
-
-        }
-         */
-        Optional<Buyer> optBuyer = buyerRepository.findById(userId);
-        if(optBuyer.isPresent()) {
-            Buyer buyer = optBuyer.get();
-            buyer.setAverageRating(getAverageRating(userId));
-            System.out.println(getAverageRating(userId));
-            buyerRepository.save(buyer);
-        }
-        Optional<Seller> optSeller = sellerRepository.findById(userId);
-        if(optSeller.isPresent()) {
-            Seller seller = optSeller.get();
-            seller.setAverageRating(getAverageRating(userId));
-            System.out.println(getAverageRating(userId));
-            sellerRepository.save(seller);
-
+            else {
+                Optional<Buyer> buyer = buyerRepository.findById(userId);
+                if(buyer.isPresent()) {
+                    Buyer b = buyer.get();
+                    b.setAverageRating(getAverageRating(userId));
+                    buyerRepository.save(b);
+                }
+            }
         }
     }
 }
