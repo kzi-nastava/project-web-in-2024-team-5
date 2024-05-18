@@ -40,7 +40,6 @@ public class ReviewServiceImpl implements ReviewService {
             List<Product> products = productRepository.findAllBySellerIdAndBuyerId(sellerId, buyerId);
             for (Product product : products) {
                 if (product.isSold()) {
-                    // TODO: FIX
                     Buyer b = new Buyer();
                     Seller s = new Seller();
                     Review review = new Review();
@@ -50,6 +49,7 @@ public class ReviewServiceImpl implements ReviewService {
                     review.setReviewDate(LocalDateTime.now());
                     review.setReviewedUser(s);
                     reviewRepository.save(review);
+                    updateAverageRating(sellerId);
                     return true;
                 }
             }
@@ -65,7 +65,6 @@ public class ReviewServiceImpl implements ReviewService {
             for (Product product : products) {
 
                 if (product.isSold()) {
-                    // TODO:
                     Buyer b = new Buyer();
                     Seller s = new Seller();
                     Review review = new Review();
@@ -75,6 +74,7 @@ public class ReviewServiceImpl implements ReviewService {
                     review.setReviewDate(LocalDateTime.now());
                     review.setReviewedUser(b);
                     reviewRepository.save(review);
+                    updateAverageRating(buyerId);
                     return true;
                 }
             }
@@ -140,5 +140,36 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void deleteReview(Long id) {
         reviewRepository.deleteById(id);
+    }
+
+    @Override
+    public void updateAverageRating(Long userId) {
+        /* KAD SE ODRADI AUTENTIKACIJA BICE
+        Optional<User> user = userRepository.findById(userId);
+        if(user.isPresent()) {
+            if(user.getRole() == BUYER) {
+                Buyer b
+            } else if (user.getRole() == SELLER) {
+
+            }
+
+
+        }
+         */
+        Optional<Buyer> optBuyer = buyerRepository.findById(userId);
+        if(optBuyer.isPresent()) {
+            Buyer buyer = optBuyer.get();
+            buyer.setAverageRating(getAverageRating(userId));
+            System.out.println(getAverageRating(userId));
+            buyerRepository.save(buyer);
+        }
+        Optional<Seller> optSeller = sellerRepository.findById(userId);
+        if(optSeller.isPresent()) {
+            Seller seller = optSeller.get();
+            seller.setAverageRating(getAverageRating(userId));
+            System.out.println(getAverageRating(userId));
+            sellerRepository.save(seller);
+
+        }
     }
 }
