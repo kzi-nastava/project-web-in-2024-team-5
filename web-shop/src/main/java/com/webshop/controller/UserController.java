@@ -5,10 +5,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.webshop.model.User;
 import com.webshop.dto.LoginDto;
+import com.webshop.dto.UserDto;
+import com.webshop.model.User;
 import com.webshop.service.UserServiceImpl;
 
 import jakarta.servlet.http.HttpSession;
@@ -16,12 +18,26 @@ import jakarta.servlet.http.HttpSession;
 /**
  * UserController
  */
-@RestController("/api/v1")
+@RestController
+@RequestMapping("/api/v1")
 public class UserController {
 
     @Autowired
     private UserServiceImpl UserService;
 
+    /**
+     * Funkcionalnost 1.5
+     *
+     * Ocekuje ovakav body:
+     * {
+     * "username": "mojuser",
+     * "password": "password"
+     * }
+     * 
+     * @param loginDto
+     * @param session
+     * @return
+     */
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody LoginDto loginDto, HttpSession session) {
         if (loginDto.getPassword().isEmpty() || loginDto.getUsername().isEmpty())
@@ -36,15 +52,34 @@ public class UserController {
         return new ResponseEntity<>("User does not exist!", HttpStatus.UNAUTHORIZED);
     }
 
+    /**
+     * Funkcionalnost 1.4
+     *
+     * Ocekuje ovakav body:
+     * {
+     * "name":"aleksa",
+     * "lastname":"mrda",
+     * "username":"mojuser",
+     * "password":"password",
+     * "email":"email@gmail.com",
+     * "phoneNumber":"0601234567",
+     * "role":"buyer"
+     * }
+     * 
+     * @param user
+     * @param session
+     * @return
+     */
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody User user, HttpSession session) {
+    public ResponseEntity<String> registerUser(@RequestBody UserDto user, HttpSession session) {
+        System.out.println(user);
         if (!isInformationProvided(user)) {
             return new ResponseEntity<>("Please provide necessary information\n", HttpStatus.BAD_REQUEST);
         }
 
         try {
-            user = UserService.save(user);
-            session.setAttribute("User", user);
+            User newUser = UserService.save(user);
+            session.setAttribute("User", newUser);
             return new ResponseEntity<>("User registered successfully\n", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Failed to register user\n", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -63,7 +98,7 @@ public class UserController {
         return ResponseEntity.ok("Successfully logged out!\n");
     }
 
-    private boolean isInformationProvided(User user) {
+    private boolean isInformationProvided(UserDto user) {
         if (user.getUsername() == null || user.getEmail() == null || user.getPhoneNumber() == null
                 || user.getPassword() == null || user.getName() == null || user.getLastname() == null)
             return false;

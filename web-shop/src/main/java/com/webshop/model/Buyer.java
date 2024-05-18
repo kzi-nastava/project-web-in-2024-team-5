@@ -2,6 +2,8 @@ package com.webshop.model;
 
 import java.util.List;
 
+import com.webshop.dto.UserDto;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
@@ -21,6 +23,18 @@ public class Buyer extends User {
 
     @Column(nullable = false)
     private double averageRating;
+
+    public Buyer() {
+    }
+
+    public Buyer(UserDto user) {
+        this.setUsername(user.getUsername());
+        this.setPassword(user.getPassword());
+        this.setName(user.getName());
+        this.setLastname(user.getLastname());
+        this.setPhoneNumber(user.getPhoneNumber());
+        this.setEmail(user.getEmail());
+    }
 
     public List<Review> getReviews() {
         return Reviews;

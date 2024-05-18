@@ -2,7 +2,7 @@ package com.webshop.model;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.webshop.dto.UserDto;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -15,7 +15,6 @@ import jakarta.persistence.OneToMany;
 public class Seller extends User {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    // @JsonManagedReference
     private List<Product> Products;
 
     @OneToMany(mappedBy = "reviewedUser", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -23,6 +22,18 @@ public class Seller extends User {
 
     @Column(nullable = false)
     private double averageRating;
+
+    public Seller() {
+    }
+
+    public Seller(UserDto user) {
+        this.setUsername(user.getUsername());
+        this.setPassword(user.getPassword());
+        this.setName(user.getName());
+        this.setLastname(user.getLastname());
+        this.setPhoneNumber(user.getPhoneNumber());
+        this.setEmail(user.getEmail());
+    }
 
     public List<Review> getReviews() {
         return Reviews;

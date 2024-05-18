@@ -1,6 +1,7 @@
 package com.webshop.service;
 
 import com.webshop.dto.LoginDto;
+import com.webshop.dto.UserDto;
 import com.webshop.model.User;
 
 /**
@@ -10,5 +11,5 @@ public interface UserService {
 
     User authenticateUser(LoginDto loginDto);
 
-    User save(User user);
+    User save(UserDto user);
 }
