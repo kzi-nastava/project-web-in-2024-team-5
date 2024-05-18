@@ -11,7 +11,7 @@ public class UserSession {
 
     private String role;
 
-    UserSession(User user) {
+    public UserSession(User user) {
         this.id = user.getId();
         this.role = user.getUserRole();
     }

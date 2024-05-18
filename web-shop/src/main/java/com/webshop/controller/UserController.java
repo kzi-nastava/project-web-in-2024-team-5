@@ -3,6 +3,7 @@ package com.webshop.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,7 @@ import com.webshop.dto.LoginDto;
 import com.webshop.dto.UserDto;
 import com.webshop.model.User;
 import com.webshop.service.UserServiceImpl;
+import com.webshop.session.UserSession;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -45,7 +47,8 @@ public class UserController {
 
         User loggedUser = UserService.authenticateUser(loginDto);
         if (loggedUser != null) {
-            session.setAttribute("User", loggedUser);
+            UserSession userSession = new UserSession(loggedUser);
+            session.setAttribute("User", userSession);
             return ResponseEntity.ok("Successfully logged in!");
         }
 
@@ -72,14 +75,13 @@ public class UserController {
      */
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody UserDto user, HttpSession session) {
-        System.out.println(user);
         if (!isInformationProvided(user)) {
             return new ResponseEntity<>("Please provide necessary information\n", HttpStatus.BAD_REQUEST);
         }
 
         try {
-            User newUser = UserService.save(user);
-            session.setAttribute("User", newUser);
+            UserSession userSession = new UserSession(UserService.save(user));
+            session.setAttribute("User", userSession);
             return new ResponseEntity<>("User registered successfully\n", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Failed to register user\n", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -89,7 +91,7 @@ public class UserController {
 
     @PostMapping("/logout")
     public ResponseEntity<String> Logout(HttpSession session) {
-        User loggedUser = (User) session.getAttribute("User");
+        UserSession loggedUser = (UserSession) session.getAttribute("User");
 
         if (loggedUser == null)
             return new ResponseEntity<>("Forbidden", HttpStatus.FORBIDDEN);
