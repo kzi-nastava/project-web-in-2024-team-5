@@ -3,7 +3,6 @@ package com.webshop.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,6 +41,11 @@ public class UserController {
      */
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody LoginDto loginDto, HttpSession session) {
+        UserSession checkLoggedUser = (UserSession) session.getAttribute("User");
+        if (checkLoggedUser != null) {
+            return new ResponseEntity<>("Already logged in", HttpStatus.UNAUTHORIZED);
+        }
+
         if (loginDto.getPassword().isEmpty() || loginDto.getUsername().isEmpty())
             return new ResponseEntity<>("Please provide both username and password\n", HttpStatus.BAD_REQUEST);
 
@@ -84,7 +88,7 @@ public class UserController {
             session.setAttribute("User", userSession);
             return new ResponseEntity<>("User registered successfully\n", HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>("Failed to register user\n", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Failed to register user\n", HttpStatus.NOT_ACCEPTABLE);
         }
 
     }

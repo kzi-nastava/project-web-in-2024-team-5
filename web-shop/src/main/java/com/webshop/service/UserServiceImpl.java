@@ -43,20 +43,27 @@ public class UserServiceImpl implements UserService {
     }
 
     public User save(UserDto user) {
+        if (userRepository.findByUsernameOrEmailOrPhoneNumber(user.getUsername(), user.getEmail(),
+                user.getPhoneNumber()) != null) {
+            throw new RuntimeException("User already exists");
+        }
         try {
+            User newUser;
             if (user.getRole().equals("buyer")) {
                 Buyer buyer = new Buyer(user);
                 buyer.setPassword(bEncoder.encode(buyer.getPassword()));
-                return buyerRepository.save(buyer);
+                newUser = buyerRepository.save(buyer);
 
             } else if (user.getRole().equals("seller")) {
                 Seller seller = new Seller(user);
                 seller.setPassword(bEncoder.encode(seller.getPassword()));
-                return sellerRepository.save(seller);
+                newUser = sellerRepository.save(seller);
 
             } else {
-                return null;
+                throw new IllegalArgumentException("Invalid user role: " + user.getRole());
             }
+
+            return newUser;
         } catch (DataAccessException e) {
             throw new RuntimeException("Failed to save user.", e);
         }
