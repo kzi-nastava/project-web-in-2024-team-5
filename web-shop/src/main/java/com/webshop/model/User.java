@@ -33,6 +33,9 @@ public abstract class User implements Serializable {
     @Column(nullable = false)
     private String password;
 
+    // @Column(name = "user_role")
+    // private String userRole;
+
     @Column(unique = true)
     private String email;
 
@@ -53,6 +56,14 @@ public abstract class User implements Serializable {
 
     public Long getId() {
         return id;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getName() {

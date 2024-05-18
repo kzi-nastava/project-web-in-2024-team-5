@@ -40,8 +40,9 @@ public class ReviewServiceImpl implements ReviewService {
             List<Product> products = productRepository.findAllBySellerIdAndBuyerId(sellerId, buyerId);
             for (Product product : products) {
                 if (product.isSold()) {
-                    Buyer b = product.getBuyer();
-                    Seller s = product.getSeller();
+                    // TODO: FIX
+                    Buyer b = new Buyer();
+                    Seller s = new Seller();
                     Review review = new Review();
                     review.setComment(comment);
                     review.setReviewingUser(b);
@@ -64,8 +65,9 @@ public class ReviewServiceImpl implements ReviewService {
             for (Product product : products) {
 
                 if (product.isSold()) {
-                    Buyer b = product.getBuyer();
-                    Seller s = product.getSeller();
+                    // TODO:
+                    Buyer b = new Buyer();
+                    Seller s = new Seller();
                     Review review = new Review();
                     review.setComment(comment);
                     review.setReviewingUser(s);

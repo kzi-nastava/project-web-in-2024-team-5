@@ -8,5 +8,5 @@ import com.webshop.model.User;
  */
 public interface UserService {
 
-    User userExists(LoginDto loginDto);
+    User authenticateUser(LoginDto loginDto);
 }
