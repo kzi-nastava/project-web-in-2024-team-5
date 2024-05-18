@@ -16,9 +16,11 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    // TODO: UPDATE METHODS
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests().anyRequest().permitAll().and().csrf().disable();
+        http.headers().frameOptions().sameOrigin();
         return http.build();
     }
 
