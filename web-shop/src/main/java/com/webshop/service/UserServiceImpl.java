@@ -1,6 +1,7 @@
 package com.webshop.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,15 @@ public class UserServiceImpl implements UserService {
         else
             return null;
 
+    }
+
+    public User save(User user) {
+        try {
+            user.setPassword(bEncoder.encode(user.getPassword()));
+            return userRepository.save(user);
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Failed to save user.", e);
+        }
     }
 
 }

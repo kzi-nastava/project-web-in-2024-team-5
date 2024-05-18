@@ -42,7 +42,14 @@ public class UserController {
             return new ResponseEntity<>("Please provide necessary information\n", HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>("Invalid login data\n", HttpStatus.FORBIDDEN);
+        try {
+            user = UserService.save(user);
+            session.setAttribute("User", user);
+            return new ResponseEntity<>("User registered successfully\n", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Failed to register user\n", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 
     @PostMapping("/logout")

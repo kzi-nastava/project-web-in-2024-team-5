@@ -9,4 +9,6 @@ import com.webshop.model.User;
 public interface UserService {
 
     User authenticateUser(LoginDto loginDto);
+
+    User save(User user);
 }
