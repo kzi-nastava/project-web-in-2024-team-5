@@ -1,8 +1,10 @@
 package com.webshop.repository;
+
 import com.webshop.model.Buyer;
-import jdk.jfr.Registered;
 import org.springframework.data.jpa.repository.JpaRepository;
-@Registered
+import org.springframework.stereotype.Repository;
+
+@Repository
 public interface BuyerRepository extends JpaRepository<Buyer, Long> {
 
 }
