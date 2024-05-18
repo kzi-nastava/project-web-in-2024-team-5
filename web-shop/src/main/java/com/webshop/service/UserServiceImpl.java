@@ -1,5 +1,7 @@
 package com.webshop.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -109,6 +111,15 @@ public class UserServiceImpl implements UserService {
         } catch (DataAccessException e) {
             throw new RuntimeException("Failed to update user.", e);
         }
+    }
+
+    @Override
+    public User findById(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent())
+            return user.get();
+        else
+            return null;
     }
 
 }

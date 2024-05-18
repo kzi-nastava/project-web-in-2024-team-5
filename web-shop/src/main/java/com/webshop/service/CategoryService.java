@@ -19,4 +19,13 @@ public class CategoryService {
         return categoryRepository.findByCategoryName(name);
     }
 
+    public Category save(String name) {
+        Category cat = new Category(name);
+        return categoryRepository.save(cat);
+    }
+
+    public Category save(Category cat) {
+        return categoryRepository.save(cat);
+    }
+
 }

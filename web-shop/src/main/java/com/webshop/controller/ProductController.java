@@ -1,7 +1,7 @@
 package com.webshop.controller;
 
 import java.math.BigDecimal;
-import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +16,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.webshop.dto.BasicProductDto;
 import com.webshop.dto.ProductDto;
 import com.webshop.model.Category;
 import com.webshop.model.Product;
+import com.webshop.model.Seller;
 import com.webshop.model.TypeOfSale;
 import com.webshop.service.CategoryService;
 import com.webshop.service.ProductService;
+import com.webshop.service.UserServiceImpl;
+import com.webshop.session.UserSession;
+
+import jakarta.servlet.http.HttpSession;
 
 @RestController()
 @RequestMapping("/api/v1/products")
@@ -36,17 +40,30 @@ public class ProductController {
     @Autowired
     private CategoryService categoryService;
 
-    @PostMapping("")
-    public ResponseEntity<Void> createProduct(@Validated @RequestBody Product product) {
-        try {
-            Product productResponse = productService.createProduct(product);
-            URI location = ServletUriComponentsBuilder
-                    .fromCurrentRequest()
-                    .path("/{id}")
-                    .buildAndExpand(productResponse.getId())
-                    .toUri();
+    @Autowired
+    private UserServiceImpl userService;
 
-            return ResponseEntity.created(location).build();
+    @PostMapping("")
+    public ResponseEntity<Product> createProduct(@Validated @RequestBody ProductDto product, HttpSession session) {
+        try {
+            UserSession loggedUser = (UserSession) session.getAttribute("User");
+
+            if (loggedUser == null || loggedUser.getRole().equals("buyer"))
+                return ResponseEntity.badRequest().build();
+
+            String cat = product.getCategory();
+            if (categoryService.findCategory(cat) == null)
+                categoryService.save(cat);
+
+            Seller seller = (Seller) userService.findById(loggedUser.getId());
+
+            Product product2 = new Product(product);
+            product2.setSellerId(seller.getId());
+            product2.setSold(false);
+            product2.setSaleStartDate(LocalDate.now());
+
+            return ResponseEntity.ok(productService.createProduct(product2));
+
         } catch (DataAccessException e) {
             return ResponseEntity.badRequest().build();
         }

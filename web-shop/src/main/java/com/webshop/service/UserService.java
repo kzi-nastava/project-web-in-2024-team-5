@@ -15,4 +15,6 @@ public interface UserService {
     User save(UserDto user);
 
     User updateProfile(ExtendedUserDto user);
+
+    User findById(Long id);
 }

@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.webshop.dto.ProductDto;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -63,6 +64,18 @@ public class Product implements Serializable {
 
     @Column
     private Boolean sold;
+
+    public Product() {
+    }
+
+    public Product(ProductDto productDto) {
+        this.name = productDto.getName();
+        this.imagePath = productDto.getImagePath();
+        this.description = productDto.getDescription();
+        this.price = productDto.getPrice();
+        this.typeOfSale = productDto.getTypeOfSale();
+        this.category = new Category(productDto.getCategory());
+    }
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Offer> offers;
@@ -143,22 +156,6 @@ public class Product implements Serializable {
         this.sold = sold;
     }
 
-    // public Seller getSeller() {
-    // return seller;
-    // }
-    //
-    // public void setSeller(Seller seller) {
-    // this.seller = seller;
-    // }
-    //
-    // public Buyer getBuyer() {
-    // return buyer;
-    // }
-    //
-    // public void setBuyer(Buyer buyer) {
-    // this.buyer = buyer;
-    // }
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -177,6 +174,22 @@ public class Product implements Serializable {
 
     public void setOffers(List<Offer> offers) {
         this.offers = offers;
+    }
+
+    public Long getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(Long sellerId) {
+        this.sellerId = sellerId;
+    }
+
+    public Long getBuyerId() {
+        return buyerId;
+    }
+
+    public void setBuyerId(Long buyerId) {
+        this.buyerId = buyerId;
     }
 
 }

@@ -76,10 +76,8 @@ public class ProductService {
         return productDtos;
     }
 
-    public Product createProduct(@RequestBody Product product) {
+    public Product createProduct(Product product) {
         try {
-            product.setSaleStartDate(LocalDate.now());
-            product.setSold(false);
             return productRepository.save(product);
         } catch (DataAccessException e) {
             throw new RuntimeException("Error occurred while saving the product", e);
