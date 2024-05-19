@@ -46,18 +46,14 @@ public class Product implements Serializable {
     @Column(nullable = false)
     private TypeOfSale typeOfSale;
 
+    @Column(name = "seller_id")
+    private Long sellerId;
+
+    @Column(name = "buyer_id")
+    private Long buyerId;
+
     @Column
     private LocalDate saleStartDate;
-
-    // @ManyToOne
-    // @JoinColumn(name = "seller_id")
-    // @JsonBackReference
-    // private Seller seller;
-    //
-    // @ManyToOne(cascade = CascadeType.ALL)
-    // @JoinColumn(name = "buyer_id")
-    // @JsonBackReference
-    // private Buyer buyer;
 
     @Column
     private Boolean buyerReview;

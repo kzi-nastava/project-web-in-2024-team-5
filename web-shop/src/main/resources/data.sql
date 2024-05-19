@@ -10,7 +10,7 @@ VALUES (
     '+1234567890',
     '1990-01-01',
     '/path/to/profile/picture.jpg',
-    'I am admin yo'
+    'I am admćščin yo'
 );
 
 -- Inserting data into the User table

@@ -12,8 +12,6 @@ import com.webshop.model.Category;
 import com.webshop.model.Product;
 import com.webshop.model.TypeOfSale;
 
-import java.util.List;
-
 @Repository
 public interface ProductRepository extends PagingAndSortingRepository<Product, Long> {
     Product findById(Long id);
