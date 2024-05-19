@@ -29,7 +29,6 @@ public class ReviewController {
     @PostMapping("/buyer")
     public ResponseEntity<String> addReviewBuyer(HttpSession session, @RequestParam Long buyerId, @RequestParam int score, @RequestParam String comment) {
         UserSession loggedUser = (UserSession) session.getAttribute("User");
-        UserSession userSession = (UserSession) session.getAttribute("user");
         long sellerId = loggedUser.getId();
         boolean success = reviewServiceImpl.reviewBuyer(buyerId, sellerId, score, comment);
         if(success) return ResponseEntity.ok("Uspesno dodat review");
@@ -56,7 +55,7 @@ public class ReviewController {
             double ocena = reviewServiceImpl.getAverageRating(reviewedUserId) > 0 ? reviewServiceImpl.getAverageRating(reviewedUserId) : 0;
         return "Prosecna ocena je : " + ocena;
     }
-    @PatchMapping("/update/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<ReviewDto> updateReview(HttpSession session, @PathVariable Long id, @RequestBody Map<String, Object> updates) {
         UserSession loggedUser = (UserSession) session.getAttribute("User");
         if(loggedUser.getRole().equals("admin")) {
@@ -66,7 +65,7 @@ public class ReviewController {
         }
         else return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
     }
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteReview(HttpSession session,@PathVariable Long id) {
         UserSession loggedUser = (UserSession) session.getAttribute("User");
         if(loggedUser.getRole().equals("admin")) {
