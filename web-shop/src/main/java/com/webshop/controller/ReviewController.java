@@ -1,9 +1,13 @@
 package com.webshop.controller;
 import com.webshop.dto.ReviewDto;
 import com.webshop.model.Review;
+import com.webshop.model.User;
 import com.webshop.repository.ReviewRepository;
 import com.webshop.service.ReviewService;
 import com.webshop.service.ReviewServiceImpl;
+import com.webshop.session.UserSession;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,21 +27,27 @@ public class ReviewController {
     private ReviewRepository reviewRepository;
 
     @PostMapping("/buyer")
-    public ResponseEntity<String> addReviewBuyer(@RequestParam Long buyerId, @RequestParam Long sellerId, @RequestParam int score, @RequestParam String comment) {
+    public ResponseEntity<String> addReviewBuyer(HttpSession session, @RequestParam Long buyerId, @RequestParam int score, @RequestParam String comment) {
+        UserSession loggedUser = (UserSession) session.getAttribute("User");
+        long sellerId = loggedUser.getId();
         boolean success = reviewServiceImpl.reviewBuyer(buyerId, sellerId, score, comment);
         if(success) return ResponseEntity.ok("Uspesno dodat review");
         else
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Neuspesno dodat review");
     }
     @PostMapping("/seller")
-    public ResponseEntity<String> addReviewSeller(@RequestParam Long buyerId, @RequestParam Long sellerId, @RequestParam int score, @RequestParam String comment) {
+    public ResponseEntity<String> addReviewSeller(HttpSession session, @RequestParam Long sellerId, @RequestParam int score, @RequestParam String comment) {
+        UserSession loggedUser = (UserSession) session.getAttribute("User");
+        long buyerId = loggedUser.getId();
         boolean success = reviewServiceImpl.reviewSeller(buyerId, sellerId, score, comment);
         if(success) return ResponseEntity.ok("Uspesno dodat review");
         else
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Neuspesno dodat review");
     }
     @GetMapping("/request")
-    public List<ReviewDto> getAllReviews(@RequestParam Long requestingUserId, @RequestParam Long reviewedUserId) {
+    public List<ReviewDto> getAllReviews(HttpSession session, @RequestParam Long reviewedUserId) {
+        UserSession loggedUser = (UserSession) session.getAttribute("User");
+        long requestingUserId = loggedUser.getId();
         return reviewServiceImpl.requestReviews(requestingUserId, reviewedUserId);
     }
     @GetMapping("/average")
@@ -46,13 +56,24 @@ public class ReviewController {
         return "Prosecna ocena je : " + ocena;
     }
     @PatchMapping("/{id}")
-    public ResponseEntity<Review> updateReview(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
-        Review review = reviewServiceImpl.editReview(1L, id , updates);
-        return ResponseEntity.ok(review);
+    public ResponseEntity<ReviewDto> updateReview(HttpSession session, @PathVariable Long id, @RequestBody Map<String, Object> updates) {
+        UserSession loggedUser = (UserSession) session.getAttribute("User");
+        if(loggedUser.getRole().equals("admin")) {
+            Review review = reviewServiceImpl.editReview(loggedUser.getId(), id, updates);
+            ReviewDto revDto = new ReviewDto(review);
+            return ResponseEntity.ok(revDto);
+        }
+        else return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteReview(@PathVariable Long id) {
-        reviewServiceImpl.deleteReview(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<String> deleteReview(HttpSession session,@PathVariable Long id) {
+        UserSession loggedUser = (UserSession) session.getAttribute("User");
+        if(loggedUser.getRole().equals("admin")) {
+            reviewServiceImpl.deleteReview(id);
+            return ResponseEntity.noContent().build();
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Ne mozes, nisi admin.");
+        }
     }
 }
