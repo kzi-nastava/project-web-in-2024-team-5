@@ -3,15 +3,13 @@ package com.webshop.service;
 import com.webshop.dto.ReviewDto;
 import com.webshop.model.*;
 import com.webshop.repository.*;
+import com.webshop.session.UserSession;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
@@ -33,8 +31,7 @@ public class ReviewServiceImpl implements ReviewService {
         this.sellerRepository = sellerRepository;
     }
 
-    @Override
-    public boolean reviewSeller(Long buyerId, Long sellerId, int score, String comment) {
+    private boolean reviewSeller(Long buyerId, Long sellerId, int score, String comment) {
         Optional<Buyer> buyer = buyerRepository.findById(buyerId);
         if(buyer.isPresent()) {
             List<Product> products = productRepository.findAllBySellerIdAndBuyerId(sellerId, buyerId);
@@ -57,8 +54,7 @@ public class ReviewServiceImpl implements ReviewService {
         return false;
     }
 
-    @Override
-    public boolean reviewBuyer(Long buyerId, Long sellerId, int score, String comment) {
+    private boolean reviewBuyer(Long buyerId, Long sellerId, int score, String comment) {
        Optional<Seller> seller = sellerRepository.findById(sellerId);
         if(seller.isPresent()) {
             List<Product> products = productRepository.findAllBySellerIdAndBuyerId(sellerId, buyerId);
@@ -80,6 +76,31 @@ public class ReviewServiceImpl implements ReviewService {
             }
         }
         return false;
+    }
+
+    @Override
+    public boolean reviewUser(Long requesterId, Long reviewedId, Map<String, String> reviewInfo) {
+        Optional<User> user = userRepository.findById(requesterId);
+        Optional<User> toBeReviewedUser = userRepository.findById(reviewedId);
+        if(user.isEmpty() || toBeReviewedUser.isEmpty()) {
+            return false;
+        }
+        if(user.get().getUserRole().equals("buyer") && toBeReviewedUser.get().getUserRole().equals("seller")) {
+
+            return reviewSeller(requesterId, reviewedId, Integer.parseInt(reviewInfo.get("score")), reviewInfo.get("comment"));
+        }
+        if(user.get().getUserRole().equals("seller") && toBeReviewedUser.get().getUserRole().equals("buyer")) {
+            return reviewBuyer(reviewedId, requesterId, Integer.parseInt(reviewInfo.get("score")), reviewInfo.get("comment"));
+        }
+        return false;
+    }
+
+    public boolean checkIfReviewed(Long requesterId, Long reviewedId) {
+        List<Review> reviews = reviewRepository.findAllByReviewingUserIdAndReviewedUserId(requesterId, reviewedId);
+        if(reviews.isEmpty()) {
+            return false;
+        }
+        return true;
     }
 
     @Override

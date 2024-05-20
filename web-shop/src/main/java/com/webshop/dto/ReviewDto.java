@@ -24,7 +24,7 @@ public class ReviewDto {
 
     }
 
-    public ReviewDto(Integer score, String comment, Long reviewedUser, Long reviewingUser) {
+    public ReviewDto(Long id, Integer score, String comment, Long reviewedUser, Long reviewingUser) {
         this.id = id;
         this.score = score;
         this.comment = comment;

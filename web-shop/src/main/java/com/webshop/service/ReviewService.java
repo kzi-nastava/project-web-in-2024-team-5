@@ -2,14 +2,14 @@ package com.webshop.service;
 
 import com.webshop.dto.ReviewDto;
 import com.webshop.model.Review;
+import com.webshop.session.UserSession;
 
 import java.util.List;
 import java.util.Map;
 
 public interface ReviewService {
-    boolean reviewSeller(Long buyerId, Long sellerId, int score, String comment);
 
-    boolean reviewBuyer(Long buyerId, Long sellerId, int score, String comment);
+    boolean reviewUser(Long requesterId, Long reviewedId,Map<String, String> reviewInfo);
 
     List<ReviewDto> findByReviewedUserId(Long id);
 

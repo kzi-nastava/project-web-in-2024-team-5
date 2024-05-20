@@ -25,24 +25,24 @@ public class ReviewController {
     private ReviewServiceImpl reviewServiceImpl;
     @Autowired
     private ReviewRepository reviewRepository;
+    @PostMapping("/{id}")
+    public ResponseEntity<String> createReview(HttpSession session, @PathVariable Long id, @RequestBody Map<String, String> reviewInfo) {
+        UserSession userSession = (UserSession) session.getAttribute("User");
+        if (userSession == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        Long userId = userSession.getId();
+        boolean reviewed = reviewServiceImpl.checkIfReviewed(userId, id);
+        if(reviewed) {
+            return new ResponseEntity<>("You already reviewed this user.", HttpStatus.BAD_REQUEST);
+        }
+        if(reviewInfo.containsKey("score") && reviewInfo.containsKey("comment")) {
+            boolean success = reviewServiceImpl.reviewUser(userId, id, reviewInfo);
+            return success ? new ResponseEntity<>("Review added successfully.", HttpStatus.CREATED) : new ResponseEntity<>("Something went wrong while trying to add review..", HttpStatus.INTERNAL_SERVER_ERROR);
 
-    @PostMapping("/buyer")
-    public ResponseEntity<String> addReviewBuyer(HttpSession session, @RequestParam Long buyerId, @RequestParam int score, @RequestParam String comment) {
-        UserSession loggedUser = (UserSession) session.getAttribute("User");
-        long sellerId = loggedUser.getId();
-        boolean success = reviewServiceImpl.reviewBuyer(buyerId, sellerId, score, comment);
-        if(success) return ResponseEntity.ok("Uspesno dodat review");
-        else
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Neuspesno dodat review");
-    }
-    @PostMapping("/seller")
-    public ResponseEntity<String> addReviewSeller(HttpSession session, @RequestParam Long sellerId, @RequestParam int score, @RequestParam String comment) {
-        UserSession loggedUser = (UserSession) session.getAttribute("User");
-        long buyerId = loggedUser.getId();
-        boolean success = reviewServiceImpl.reviewSeller(buyerId, sellerId, score, comment);
-        if(success) return ResponseEntity.ok("Uspesno dodat review");
-        else
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Neuspesno dodat review");
+        }
+        return new ResponseEntity<>("Please provide score and comment for review.", HttpStatus.BAD_REQUEST);
+
     }
     @GetMapping("/request")
     public List<ReviewDto> getAllReviews(HttpSession session, @RequestParam Long reviewedUserId) {
