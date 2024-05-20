@@ -25,7 +25,6 @@ public class BasicProductDto {
     }
 
     public BasicProductDto(ProductDto product) {
-        this.id = product.getId();
         this.name = product.getName();
         this.imagePath = product.getImagePath();
         this.price = product.getPrice();

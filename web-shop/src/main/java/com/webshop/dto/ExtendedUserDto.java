@@ -31,6 +31,9 @@ public class ExtendedUserDto {
 
     private String description;
 
+    public ExtendedUserDto() {
+    }
+
     public ExtendedUserDto(User user) {
         this.id = user.getId();
         this.name = user.getName();
@@ -42,6 +45,7 @@ public class ExtendedUserDto {
         this.dateOfBirth = user.getDateOfBirth();
         this.profilePicture = user.getProfilePicture();
         this.description = user.getDescription();
+        this.role = user.getUserRole();
     }
 
     public String getRole() {
