@@ -68,11 +68,10 @@ public class ReportServiceImpl implements ReportService {
             return false;
         }
         Report report = optReport.get();
-        report.setStatus(ReportStatus.ACCEPTED);
+        report.setStatus(ReportStatus.REJECTED);
         reportRepository.save(report);
         return true;
     }
-
     private boolean reportSeller(Long buyerId, Long sellerId, String reason) {
         Optional<Buyer> optBuyer = buyerRepository.findById(buyerId);
         if(optBuyer.isPresent()) {
