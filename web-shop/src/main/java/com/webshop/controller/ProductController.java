@@ -1,15 +1,16 @@
 package com.webshop.controller;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.webshop.dto.BasicProductDto;
 import com.webshop.dto.ProductDto;
+import com.webshop.dto.ProductResponse;
 import com.webshop.model.Category;
 import com.webshop.model.Product;
 import com.webshop.model.Seller;
@@ -43,8 +45,25 @@ public class ProductController {
     @Autowired
     private UserServiceImpl userService;
 
+    /**
+     * Funkcionalnost 3.3
+     * Kreira product. Ocekuje ovakav body:
+     * {
+     * "name":"przvd 1",
+     * "description":"opis",
+     * "imagePath":"/path/to/image.jpg",
+     * "price":100,
+     * "category":"Kitchen",
+     * "typeOfSale":"FIXED_PRICE"
+     * }
+     * 
+     * @param product
+     * @param session
+     * @return
+     */
     @PostMapping("")
-    public ResponseEntity<Product> createProduct(@Validated @RequestBody ProductDto product, HttpSession session) {
+    public ResponseEntity<ProductResponse> createProduct(@Validated @RequestBody ProductDto product,
+            HttpSession session) {
         try {
             UserSession loggedUser = (UserSession) session.getAttribute("User");
 
@@ -57,16 +76,53 @@ public class ProductController {
 
             Seller seller = (Seller) userService.findById(loggedUser.getId());
 
-            Product product2 = new Product(product);
-            product2.setSellerId(seller.getId());
-            product2.setSold(false);
-            product2.setSaleStartDate(LocalDate.now());
-
-            return ResponseEntity.ok(productService.createProduct(product2));
+            return ResponseEntity.ok(productService.createProduct(seller, product));
 
         } catch (DataAccessException e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    /**
+     * Funkcionalnost 3.5
+     * Azurira informacije o proizvodu
+     *
+     * @param productDto
+     * @param id
+     * @param session
+     * @return
+     */
+    @PatchMapping("/{id}")
+    public ResponseEntity<ProductDto> updateProduct(@RequestBody ProductDto productDto, @PathVariable Long id,
+            HttpSession session) {
+        UserSession loggedUser = (UserSession) session.getAttribute("User");
+
+        if (loggedUser == null || loggedUser.getRole().equals("buyer"))
+            return ResponseEntity.badRequest().build();
+
+        Seller seller = (Seller) userService.findById(loggedUser.getId());
+
+        Product product = productService.findById(id);
+        if (product == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        if ((product.getSellerId() != seller.getId())
+                || (product.getTypeOfSale() == TypeOfSale.AUCTION && !product.getOffers().isEmpty())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        String cat = productDto.getCategory();
+        if (productDto.getCategory() != null && categoryService.findCategory(cat) == null)
+            categoryService.save(cat);
+
+        try {
+            productDto = productService.updateProduct(product, productDto);
+            return ResponseEntity.ok(productDto);
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Error occurred while saving the product", e);
+        }
+
     }
 
     /**
@@ -77,7 +133,7 @@ public class ProductController {
      * Funkcionalnost 1.1 Pregled proizvoda
      */
     @GetMapping("")
-    List<BasicProductDto> getProductsPageable(Pageable pageable) {
+    public List<BasicProductDto> getProducts(Pageable pageable) {
         return productService.findAll(pageable);
     }
 
@@ -89,7 +145,7 @@ public class ProductController {
      * Funkcionalnost 1.1 Pregled proizvoda
      */
     @GetMapping("/{id}")
-    ResponseEntity<ProductDto> getProduct(@PathVariable Long id) {
+    public ResponseEntity<ProductDto> getProduct(@PathVariable Long id) {
         ProductDto productDto = productService.getById(id);
         return (productDto == null) ? ResponseEntity.notFound().build() : ResponseEntity.ok(productDto);
     }
@@ -107,7 +163,7 @@ public class ProductController {
      * @return List of productDtos
      */
     @GetMapping("/filter")
-    List<BasicProductDto> getFilteredProducts(
+    public List<BasicProductDto> getFilteredProducts(
             @RequestParam(required = false) BigDecimal minPrice,
             @RequestParam(required = false) BigDecimal maxPrice,
             @RequestParam(required = false) String category,
@@ -129,12 +185,34 @@ public class ProductController {
      * @return
      */
     @GetMapping("/search")
-    List<BasicProductDto> searchProducts(@RequestParam String search, Pageable pageable) {
+    public List<BasicProductDto> searchProducts(@RequestParam String search, Pageable pageable) {
         List<BasicProductDto> products = productService.searchProducts(search, pageable);
 
         return products;
     }
 
-    // TODO: 3.5. Ažuriranje informacija o proizvodu
+    /**
+     * Deo Funkcionalnost 3.2 i 2.2
+     * Vraca listu proizvoda koji pripadaju datom korisniku
+     * 
+     * @param session
+     * @param id
+     * @return
+     */
+    @GetMapping("/user/{id}")
+    public ResponseEntity<List<BasicProductDto>> findProductsByUser(HttpSession session, @PathVariable Long id) {
+        UserSession loggedUser = (UserSession) session.getAttribute("User");
+
+        if (loggedUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        List<BasicProductDto> productDtos = productService.findByUserId(id);
+
+        if (!productDtos.isEmpty())
+            return ResponseEntity.ok(productDtos);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
 
 }

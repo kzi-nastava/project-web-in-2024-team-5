@@ -5,9 +5,6 @@ import java.math.BigDecimal;
 import com.webshop.model.Product;
 import com.webshop.model.TypeOfSale;
 
-/**
- * Cela verzija proizvoda za detaljan prikaz
- */
 public class ProductDto {
 
     private String name;
@@ -22,6 +19,8 @@ public class ProductDto {
 
     private TypeOfSale typeOfSale;
 
+    private Long sellerId;
+
     public ProductDto() {
     }
 
@@ -32,6 +31,15 @@ public class ProductDto {
         this.category = product.getCategory().getCategoryName();
         this.price = product.getPrice();
         this.typeOfSale = product.getTypeOfSale();
+        this.sellerId = product.getSellerId();
+    }
+
+    public Long getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(Long sellerId) {
+        this.sellerId = sellerId;
     }
 
     public String getName() {

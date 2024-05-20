@@ -10,12 +10,13 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import com.webshop.dto.BasicProductDto;
 import com.webshop.dto.ProductDto;
-import com.webshop.model.Category;
+import com.webshop.dto.ProductResponse;
 import com.webshop.model.Product;
+import com.webshop.model.Category;
+import com.webshop.model.Seller;
 import com.webshop.model.TypeOfSale;
 import com.webshop.repository.ProductRepository;
 
@@ -76,9 +77,16 @@ public class ProductService {
         return productDtos;
     }
 
-    public Product createProduct(Product product) {
+    public ProductResponse createProduct(Seller seller, ProductDto product) {
         try {
-            return productRepository.save(product);
+            Product product2 = new Product(product);
+            product2.setSellerId(seller.getId());
+            product2.setSold(false);
+            product2.setSaleStartDate(LocalDate.now());
+
+            Product savedProduct = productRepository.save(product2);
+            ProductResponse pResponse = new ProductResponse(savedProduct, savedProduct.getId());
+            return pResponse;
         } catch (DataAccessException e) {
             throw new RuntimeException("Error occurred while saving the product", e);
         }
@@ -98,6 +106,22 @@ public class ProductService {
         return productDtos;
     }
 
+    public Product findById(Long id) {
+        return productRepository.findById(id);
+    }
+
+    public ProductDto updateProduct(Product product, ProductDto productDto) {
+        updateAndCheck(product, productDto);
+
+        try {
+            productRepository.save(product);
+            return new ProductDto(product);
+        } catch (DataAccessException e) {
+            throw new RuntimeException("Error occurred while saving the product", e);
+        }
+
+    }
+
     private List<Product> initializeProducts(Category category, TypeOfSale typeOfSale) {
         List<Product> products;
 
@@ -112,6 +136,34 @@ public class ProductService {
         }
 
         return products;
+    }
+
+    public List<BasicProductDto> findByUserId(Long id) {
+        List<Product> pList = productRepository.findAllByBuyerIdOrSellerId(id, id);
+        List<BasicProductDto> bDtos = new ArrayList<>();
+
+        for (Product prod : pList) {
+            bDtos.add(new BasicProductDto(prod));
+        }
+
+        return bDtos;
+    }
+
+    private void updateAndCheck(Product product, ProductDto productDto) {
+        if (productDto.getName() != null)
+            product.setName(productDto.getName());
+
+        if (productDto.getDescription() != null)
+            product.setDescription(productDto.getDescription());
+
+        if (productDto.getPrice() != null)
+            product.setPrice(productDto.getPrice());
+
+        if (productDto.getCategory() != null)
+            product.setCategory(product.getCategory());
+
+        if (productDto.getImagePath() != null)
+            product.setImagePath(productDto.getImagePath());
     }
 
 }

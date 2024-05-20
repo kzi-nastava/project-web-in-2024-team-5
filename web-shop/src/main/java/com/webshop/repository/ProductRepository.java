@@ -26,8 +26,10 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, L
 
     List<Product> findByTypeOfSale(TypeOfSale typeOfSale);
 
-    @Query("SELECT p FROM Product p WHERE LOWER(p.name) LIKE %:search% OR LOWER(p.description) LIKE %:search%")
+    @Query("SELECT p FROM Product p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(p.description) LIKE LOWER(CONCAT('%', :search, '%'))")
     Page<Product> findBySearchTerm(String search, Pageable pageable);
 
     List<Product> findAllBySellerIdAndBuyerId(Long sellerId, Long buyerId);
+
+    List<Product> findAllByBuyerIdOrSellerId(Long buyerId, Long sellerId);
 }
