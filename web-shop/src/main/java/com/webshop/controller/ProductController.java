@@ -25,7 +25,7 @@ import com.webshop.model.Category;
 import com.webshop.model.Product;
 import com.webshop.model.Seller;
 import com.webshop.model.TypeOfSale;
-import com.webshop.service.CategoryService;
+import com.webshop.service.CategoryServiceImpl;
 import com.webshop.service.ProductService;
 import com.webshop.service.UserServiceImpl;
 import com.webshop.session.UserSession;
@@ -40,14 +40,14 @@ public class ProductController {
     private ProductService productService;
 
     @Autowired
-    private CategoryService categoryService;
+    private CategoryServiceImpl categoryService;
 
     @Autowired
     private UserServiceImpl userService;
 
     /**
      * Funkcionalnost 3.3
-     * Kreira product. Ocekuje ovakav body:
+     * Kreira product. Ocekuje ovakav body(sva polja su obavezna):
      * {
      * "name":"przvd 1",
      * "description":"opis",
@@ -71,7 +71,7 @@ public class ProductController {
                 return ResponseEntity.badRequest().build();
 
             String cat = product.getCategory();
-            if (categoryService.findCategory(cat) == null)
+            if (cat != null && categoryService.findCategory(cat) == null)
                 categoryService.save(cat);
 
             Seller seller = (Seller) userService.findById(loggedUser.getId());
@@ -113,7 +113,7 @@ public class ProductController {
         }
 
         String cat = productDto.getCategory();
-        if (productDto.getCategory() != null && categoryService.findCategory(cat) == null)
+        if (cat != null && categoryService.findCategory(cat) == null)
             categoryService.save(cat);
 
         try {
