@@ -88,6 +88,10 @@ public class UserController {
      */
     @PostMapping("/register")
     public ResponseEntity<ExtendedUserDto> registerUser(@Validated @RequestBody UserDto user, HttpSession session) {
+        UserSession checkLoggedUser = (UserSession) session.getAttribute("User");
+        if (checkLoggedUser != null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         try {
             User nUser = userService.save(user);
             UserSession userSession = new UserSession(nUser);
