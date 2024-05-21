@@ -1,31 +1,22 @@
 package com.webshop.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.webshop.model.Category;
-import com.webshop.repository.CategoryRepository;
 
 /**
  * CategoryService
  */
 @Service
-public class CategoryService {
+public interface CategoryService {
 
-    @Autowired
-    private CategoryRepository categoryRepository;
+    Category findCategory(String name);
 
-    public Category findCategory(String name) {
-        return categoryRepository.findByCategoryName(name);
-    }
+    Category save(String name);
 
-    public Category save(String name) {
-        Category cat = new Category(name);
-        return categoryRepository.save(cat);
-    }
+    Category save(Category cat);
 
-    public Category save(Category cat) {
-        return categoryRepository.save(cat);
-    }
-
+    List<Category> findAll();
 }
