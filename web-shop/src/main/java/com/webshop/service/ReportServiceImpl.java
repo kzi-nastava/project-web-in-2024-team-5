@@ -3,6 +3,7 @@ package com.webshop.service;
 import com.webshop.model.*;
 import com.webshop.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,6 +23,8 @@ public class ReportServiceImpl implements ReportService {
     private ReportRepository reportRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private EmailService emailService;
 
     @Override
     public boolean reportUser(Long whoReportedId, Long whoIsReportedId, String reason) {
@@ -42,12 +45,12 @@ public class ReportServiceImpl implements ReportService {
         return false;
     }
     @Override
-    public boolean resolveReport(Long reportId, String resolution) {
-        if(resolution.equalsIgnoreCase("accepted")) {
+    public boolean resolveReport(Long reportId, Map<String, String> resolution) {
+        if(resolution.get("resolution").equals("accepted")) {
            return acceptReport(reportId);
         }
-        if(resolution.equalsIgnoreCase("rejected")) {
-            return rejectReport(reportId);
+        if(resolution.get("resolution").equals("rejected") && !resolution.get("reason").isEmpty()) {
+            return rejectReport(reportId, resolution.get("reason"));
         }
         return false;
     }
@@ -57,18 +60,26 @@ public class ReportServiceImpl implements ReportService {
             return false;
         }
         Report report = optReport.get();
+        if(report.getStatus() != ReportStatus.SUBMITTED) {
+            return false;
+        }
         report.setStatus(ReportStatus.ACCEPTED);
+        report.getWhoIsReported().setBlocked(Boolean.TRUE);
+        emailService.sendEmail(report.getWhoReported().getEmail(), "Report accepted", "Your report has been reviewed, and we decided to accept your report.");
         reportRepository.save(report);
         return true;
     }
-
-    private boolean rejectReport(Long reportId) {
+    private boolean rejectReport(Long reportId, String reason) {
         Optional<Report> optReport = reportRepository.findById(reportId);
         if(optReport.isEmpty()) {
             return false;
         }
         Report report = optReport.get();
+        if(report.getStatus() != ReportStatus.SUBMITTED) {
+            return false;
+        }
         report.setStatus(ReportStatus.REJECTED);
+        emailService.sendEmail(report.getWhoReported().getEmail(), "Report rejected", "Your report has been reviewed, and we decided to reject your offer for this reason: " + reason);
         reportRepository.save(report);
         return true;
     }
