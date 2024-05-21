@@ -50,7 +50,7 @@ public class ReportController {
         if(!resolution.containsKey("resolution")) {
             return new ResponseEntity<>("You must provide a resolution for report", HttpStatus.BAD_REQUEST);
         }
-        boolean success = reportServiceImpl.resolveReport(id, resolution.get("resolution"));
+        boolean success = reportServiceImpl.resolveReport(id, resolution);
         if(success) {
             return new ResponseEntity<>("Report successfully resolved", HttpStatus.OK);
         }
