@@ -33,10 +33,10 @@ VALUES (5, 'Great seller, highly recommended!', '2024-04-07', 2, 1),
 (3, 'Product was okay, could be better.', '2024-04-05', 1, 2),
 (5, 'Excellent seller, very satisfied!', '2024-04-04', 2, 1);
 
-INSERT INTO REPORTS(DATE_POSTED,ID,WHO_IS_REPORTED_ID,WHO_REPORTED_ID,REASON,STATUS) VALUES
-('2024-03-03','1','1','2','Scammer, I sent money, but didnt receive item.','SUBMITTED'),
-('2024-04-03','2','2','3','He said that I will receive 5 books but I only received ONE...','ACCEPTED'),
-('2024-05-03','3','3','4','She sold me a TV that, TV got to my house but I dont like it and i want my money back.','REJECTED');
+INSERT INTO REPORTS(DATE_POSTED,WHO_IS_REPORTED_ID,WHO_REPORTED_ID,REASON,STATUS) VALUES
+('2024-03-03','1','2','Scammer, I sent money, but didnt receive item.','SUBMITTED'),
+('2024-04-03','2','3','He said that I will receive 5 books but I only received ONE...','ACCEPTED'),
+('2024-05-03','3',  '4','She sold me a TV that, TV got to my house but I dont like it and i want my money back.','REJECTED');
 
 INSERT INTO CATEGORIES (category_name)
 VALUES ('patike'),
@@ -77,7 +77,7 @@ INSERT INTO PRODUCTS(BUYER_REVIEW,PRICE,SELLER_REVIEW, SOLD, SELLER_ID, BUYER_ID
 (TRUE, 39.99,   TRUE, FALSE, 2, 7,  '2024-04-30',  'A set of 6 cotton kitchen towels in vibrant colors.',     'Home & Kitchen', '/images/kitchen_towels.jpg', 'Cotton Kitchen Towel Set', 'FIXED_PRICE'),
 (TRUE, 79.99,   TRUE, FALSE, 2, 7,  '2024-05-07',  'A classic leather armchair with tufted upholstery.',      'Furniture', '/images/armchair.jpg', 'Tufted Leather Armchair', 'FIXED_PRICE'),
 (TRUE, 34.99,   TRUE, FALSE, 3, 7,  '2024-05-01',  'A set of 12 fine-tip drawing pens.',                      'Stationery', '/images/drawing_pens.jpg', 'Fine-Tip Drawing Pen', 'FIXED_PRICE'),
-(TRUE, 149.99,  TRUE, FALSE, 6, 7,  '2024-04-28',  'A portable Bluetooth speaker with built-in microphone.',  'Electronics', '/images/speaker.jpg', 'Bluetooth Speaker', 'AUCTION');
+(TRUE, 149.99,  TRUE, TRUE, 8, 7,  '2024-04-28',  'A portable Bluetooth speaker with built-in microphone.',  'Electronics', '/images/speaker.jpg', 'Bluetooth Speaker', 'AUCTION');
 
 INSERT INTO OFFERS(OFFER_AMOUNT_MONEY,BUYER_ID,ID) VALUES ('10000','1','1'),('20000','3','2'),('30000','2','3');
 INSERT INTO PRODUCTS_OFFERS(OFFERS_ID, PRODUCT_ID) VALUES ('1','3'),('2','2'),('3','1');
