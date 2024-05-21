@@ -28,8 +28,8 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public boolean reportUser(Long whoReportedId, Long whoIsReportedId, String reason) {
-        Optional<User> optWhoReported = userRepository.findById(whoReportedId);
-        Optional<User> optWhoIsReported = userRepository.findById(whoIsReportedId);
+        Optional<User> optWhoReported = Optional.ofNullable(userRepository.findById(whoReportedId));
+        Optional<User> optWhoIsReported = Optional.ofNullable(userRepository.findById(whoIsReportedId));
         if(optWhoIsReported.isEmpty() ||optWhoReported.isEmpty()) {
             return false;
         }

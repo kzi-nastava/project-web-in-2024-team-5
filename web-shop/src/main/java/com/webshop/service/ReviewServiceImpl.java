@@ -80,8 +80,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public boolean reviewUser(Long requesterId, Long reviewedId, Map<String, String> reviewInfo) {
-        Optional<User> user = userRepository.findById(requesterId);
-        Optional<User> toBeReviewedUser = userRepository.findById(reviewedId);
+        Optional<User> user = Optional.ofNullable(userRepository.findById(requesterId));
+        Optional<User> toBeReviewedUser = Optional.ofNullable(userRepository.findById(reviewedId));
         if(user.isEmpty() || toBeReviewedUser.isEmpty()) {
             return false;
         }
@@ -166,7 +166,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void updateAverageRating(Long userId) {
-        Optional<User> user = userRepository.findById(userId);
+        Optional<User> user = Optional.ofNullable(userRepository.findById(userId));
         if(user.isPresent()) {
             if(user.get().getUserRole().equals("seller")) {
                 Optional<Seller> seller = sellerRepository.findById(userId);
