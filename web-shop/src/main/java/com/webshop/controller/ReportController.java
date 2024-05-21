@@ -29,7 +29,7 @@ public class ReportController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
         Long userId = userSession.getId();
-        if(!reason.containsKey("reason")) {
+        if(!reason.containsKey("reason") || reason.get("reason").isEmpty()      ) {
             return new ResponseEntity<>("You must provide a reason for report", HttpStatus.BAD_REQUEST);
         }
         boolean success = reportServiceImpl.reportUser(userId, id, String.valueOf(reason.get("reason")));
@@ -44,11 +44,14 @@ public class ReportController {
         if(userSession == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        if(!userSession.getRole().equals("admin")) {
+        if(userSession.getRole().equals("admin")) {
             return new ResponseEntity<>("You're not an admin.", HttpStatus.UNAUTHORIZED);
         }
-        if(!resolution.containsKey("resolution")) {
+        if(!resolution.containsKey("resolution") || resolution.get("resolution").isEmpty()) {
             return new ResponseEntity<>("You must provide a resolution for report", HttpStatus.BAD_REQUEST);
+        }
+        if(resolution.get("resolution").equals("rejected") && !resolution.containsKey("reason") || resolution.get("reason").isEmpty()) {
+            return new ResponseEntity<>("You must provide a reason for rejecting report", HttpStatus.BAD_REQUEST);
         }
         boolean success = reportServiceImpl.resolveReport(id, resolution);
         if(success) {
