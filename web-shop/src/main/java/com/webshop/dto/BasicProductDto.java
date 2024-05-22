@@ -18,8 +18,6 @@ public class BasicProductDto {
 
     private BigDecimal price;
 
-    private boolean sold;
-
     private TypeOfSale typeOfSale;
 
     public BasicProductDto() {
@@ -30,7 +28,6 @@ public class BasicProductDto {
         this.name = product.getName();
         this.imagePath = product.getImagePath();
         this.price = product.getPrice();
-        this.sold = product.isSold();
         this.typeOfSale = product.getTypeOfSale();
     }
 
@@ -38,14 +35,6 @@ public class BasicProductDto {
         this.name = product.getName();
         this.imagePath = product.getImagePath();
         this.price = product.getPrice();
-    }
-
-    public boolean isSold() {
-        return sold;
-    }
-
-    public void setSold(boolean sold) {
-        this.sold = sold;
     }
 
     public BigDecimal getPrice() {

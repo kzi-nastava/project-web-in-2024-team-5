@@ -217,7 +217,7 @@ public class ProductController {
     }
 
     @PostMapping("/{id}/purchase")
-    public ResponseEntity buyProduct(HttpSession session, @PathVariable Long id) {
+    public ResponseEntity<?> buyProduct(HttpSession session, @PathVariable Long id) {
         UserSession loggedUser = (UserSession) session.getAttribute("User");
 
         if (loggedUser == null || !loggedUser.getRole().equals("buyer")) {
@@ -229,6 +229,7 @@ public class ProductController {
         if (product.getTypeOfSale() == TypeOfSale.FIXED_PRICE && !product.isSold()) {
             productService.buyProduct(product, loggedUser.getId());
             return ResponseEntity.ok(product);
+
         } else if (product.getTypeOfSale() == TypeOfSale.AUCTION && !product.isSold()) {
             URI location = URI.create("/api/v1/offers");
             return ResponseEntity.status(HttpStatus.FOUND)
@@ -237,6 +238,19 @@ public class ProductController {
         }
 
         return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/{id}/end-auction")
+    public ResponseEntity<Product> endAuction(HttpSession session, @PathVariable Long id) {
+        UserSession loggedUser = (UserSession) session.getAttribute("User");
+
+        if (loggedUser == null || !loggedUser.getRole().equals("buyer")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Product product = productService.endAuction(id);
+
+        return ResponseEntity.ok(product);
     }
 
 }
