@@ -14,8 +14,8 @@ import org.springframework.stereotype.Service;
 import com.webshop.dto.BasicProductDto;
 import com.webshop.dto.ProductDto;
 import com.webshop.dto.ProductResponse;
-import com.webshop.model.Product;
 import com.webshop.model.Category;
+import com.webshop.model.Product;
 import com.webshop.model.Seller;
 import com.webshop.model.TypeOfSale;
 import com.webshop.repository.ProductRepository;
@@ -34,7 +34,7 @@ public class ProductService {
      * (objekti koji se prikazuju na glavnoj stranici)
      */
     public List<BasicProductDto> findAll(Pageable pageable) {
-        Page<Product> products = productRepository.findAll(pageable);
+        Page<Product> products = productRepository.findAllBySold(pageable, false);
         List<Product> productList = products.getContent();
         List<BasicProductDto> basicProductDtos = new ArrayList<>();
 
@@ -122,6 +122,27 @@ public class ProductService {
 
     }
 
+    public List<BasicProductDto> findByUserId(Long id) {
+        List<Product> pList = productRepository.findAllByBuyerIdOrSellerId(id, id);
+        List<BasicProductDto> bDtos = new ArrayList<>();
+
+        for (Product prod : pList) {
+            bDtos.add(new BasicProductDto(prod));
+        }
+
+        return bDtos;
+    }
+
+    public Product buyProduct(Product product, Long buyerId) {
+        product.setBuyerId(buyerId);
+        product.setSold(true);
+        // Buyer buyer = buyerRepository.findById(buyerId).get();
+
+        productRepository.save(product);
+
+        return product;
+    }
+
     private List<Product> initializeProducts(Category category, TypeOfSale typeOfSale) {
         List<Product> products;
 
@@ -136,17 +157,6 @@ public class ProductService {
         }
 
         return products;
-    }
-
-    public List<BasicProductDto> findByUserId(Long id) {
-        List<Product> pList = productRepository.findAllByBuyerIdOrSellerId(id, id);
-        List<BasicProductDto> bDtos = new ArrayList<>();
-
-        for (Product prod : pList) {
-            bDtos.add(new BasicProductDto(prod));
-        }
-
-        return bDtos;
     }
 
     private void updateAndCheck(Product product, ProductDto productDto) {

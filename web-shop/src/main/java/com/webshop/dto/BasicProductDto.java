@@ -3,6 +3,7 @@ package com.webshop.dto;
 import java.math.BigDecimal;
 
 import com.webshop.model.Product;
+import com.webshop.model.TypeOfSale;
 
 /**
  * Smanjena verzija proizvoda, za prikaz na glavnoj stranici
@@ -10,9 +11,16 @@ import com.webshop.model.Product;
 public class BasicProductDto {
 
     private Long id;
+
     private String name;
+
     private String imagePath;
+
     private BigDecimal price;
+
+    private boolean sold;
+
+    private TypeOfSale typeOfSale;
 
     public BasicProductDto() {
     }
@@ -22,12 +30,22 @@ public class BasicProductDto {
         this.name = product.getName();
         this.imagePath = product.getImagePath();
         this.price = product.getPrice();
+        this.sold = product.isSold();
+        this.typeOfSale = product.getTypeOfSale();
     }
 
     public BasicProductDto(ProductDto product) {
         this.name = product.getName();
         this.imagePath = product.getImagePath();
         this.price = product.getPrice();
+    }
+
+    public boolean isSold() {
+        return sold;
+    }
+
+    public void setSold(boolean sold) {
+        this.sold = sold;
     }
 
     public BigDecimal getPrice() {
