@@ -79,5 +79,5 @@ INSERT INTO PRODUCTS(BUYER_REVIEW,PRICE,SELLER_REVIEW, SOLD, SELLER_ID, BUYER_ID
 (TRUE, 34.99,   TRUE, FALSE, 3, 7,  '2024-05-01',  'A set of 12 fine-tip drawing pens.',                      'Stationery', '/images/drawing_pens.jpg', 'Fine-Tip Drawing Pen', 'FIXED_PRICE'),
 (TRUE, 149.99,  TRUE, TRUE, 8, 7,  '2024-04-28',  'A portable Bluetooth speaker with built-in microphone.',  'Electronics', '/images/speaker.jpg', 'Bluetooth Speaker', 'AUCTION');
 
-INSERT INTO OFFERS(OFFER_AMOUNT_MONEY,BUYER_ID,ID) VALUES ('10000','1','1'),('20000','3','2'),('30000','2','3');
+INSERT INTO OFFERS(OFFER_AMOUNT_MONEY,BUYER_ID) VALUES ('10000','1'),('20000','3'),('30000','2');
 INSERT INTO PRODUCTS_OFFERS(OFFERS_ID, PRODUCT_ID) VALUES ('1','3'),('2','2'),('3','1');
