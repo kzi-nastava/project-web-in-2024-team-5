@@ -120,8 +120,7 @@ public class ReviewServiceImpl implements ReviewService {
         return true;
     }
 
-    @Override
-    public List<ReviewDto> findByReviewedUserId(Long reviewedUserId) {
+    private List<ReviewDto> findByReviewedUserId(Long reviewedUserId) {
         List<ReviewDto> reviewsdto = new ArrayList<>();
         List<Review> reviews = (List<Review>) reviewRepository.findAllByReviewedUserId(reviewedUserId);
         for (Review review : reviews) {
@@ -131,22 +130,36 @@ public class ReviewServiceImpl implements ReviewService {
 
         return reviewsdto;
     }
+    public List<ReviewDto> findByReviewingUserId(Long reviewingUserId) {
+        List<ReviewDto> reviewsdto = new ArrayList<>();
+        List<Review> reviews = (List<Review>) reviewRepository.findAllByReviewingUserId(reviewingUserId);
+        for (Review review : reviews) {
+            ReviewDto rev = new ReviewDto(review);
+            reviewsdto.add(rev);
+        }
 
+        return reviewsdto;
+    }
     @Override
-    public List<ReviewDto> requestReviews(Long requestingUserId, Long reviewedUserId) {
+    public List<ReviewDto> requestReceivedReviews(Long requestingUserId, Long reviewedUserId) {
         List<ReviewDto> reviews = findByReviewedUserId(reviewedUserId);
-        if (adminRepository.findById(requestingUserId).isPresent()) {
-            return reviews;
-        } else {
-            for (ReviewDto review : reviews) {
-                if (review.getReviewingUserId().equals(requestingUserId)) {
-                    return reviews;
-                }
-            }
+        return reviews;
+    }
+    public List<ReviewDto> requestGivenReviews(Long requestingUserId, Long userId) {
+        List<Review> reviews = reviewRepository.findAllByReviewingUserIdAndReviewedUserId(requestingUserId, userId);
+        if(reviews.isEmpty()) {
             return List.of();
         }
+        return findByReviewingUserId(userId);
     }
-
+    @Override
+    public List<ReviewDto> getWhoReviewedMe(Long requestingUserId) {
+        return findByReviewedUserId(requestingUserId);
+    }
+    @Override
+    public List<ReviewDto> getReviewedByMe(Long requestingUserId) {
+        return findByReviewingUserId(requestingUserId);
+    }
     @Override
     public double getAverageRating(Long id) {
         List<ReviewDto> reviews = findByReviewedUserId(id);

@@ -10,9 +10,10 @@ public interface ReviewService {
 
     boolean reviewUser(Long requesterId, Long reviewedId, Map<String, String> reviewInfo);
 
-    List<ReviewDto> findByReviewedUserId(Long id);
 
-    List<ReviewDto> requestReviews(Long requestingUserId, Long reviewedUserId);
+    List<ReviewDto> requestReceivedReviews(Long requestingUserId, Long reviewedUserId);
+
+    List<ReviewDto> getReviewedByMe(Long requestingUserId);
 
     double getAverageRating(Long sellerId);
 
@@ -21,4 +22,6 @@ public interface ReviewService {
     void deleteReview(Long id);
 
     void updateAverageRating(Long reviewId);
+
+    List<ReviewDto> getWhoReviewedMe(Long requestingUserId);
 }
