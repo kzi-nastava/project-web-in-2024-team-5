@@ -260,7 +260,7 @@ public class ProductController {
     public ResponseEntity<Product> endAuction(HttpSession session, @PathVariable Long id) {
         UserSession loggedUser = (UserSession) session.getAttribute("User");
 
-        if (loggedUser == null || !loggedUser.getRole().equals("buyer")) {
+        if (loggedUser == null || !loggedUser.getRole().equals("seller")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 

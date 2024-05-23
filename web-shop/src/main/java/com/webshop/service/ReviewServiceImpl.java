@@ -1,14 +1,28 @@
 package com.webshop.service;
 
-import com.webshop.dto.ReviewDto;
-import com.webshop.model.*;
-import com.webshop.repository.*;
-import jakarta.persistence.EntityNotFoundException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.*;
+import com.webshop.dto.ReviewDto;
+import com.webshop.model.Buyer;
+import com.webshop.model.Product;
+import com.webshop.model.Review;
+import com.webshop.model.Seller;
+import com.webshop.model.User;
+import com.webshop.repository.AdminRepository;
+import com.webshop.repository.BuyerRepository;
+import com.webshop.repository.ProductRepository;
+import com.webshop.repository.ReviewRepository;
+import com.webshop.repository.SellerRepository;
+import com.webshop.repository.UserRepository;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class ReviewServiceImpl implements ReviewService {
@@ -33,7 +47,7 @@ public class ReviewServiceImpl implements ReviewService {
     private boolean reviewSeller(Long buyerId, Long sellerId, int score, String comment) {
         Optional<Buyer> buyer = buyerRepository.findById(buyerId);
         Optional<Seller> seller = sellerRepository.findById(sellerId);
-        if(buyer.isPresent()) {
+        if (buyer.isPresent()) {
             List<Product> products = productRepository.findAllBySellerAndBuyer(seller.get(), buyer.get());
             for (Product product : products) {
                 if (product.isSold()) {
@@ -55,9 +69,9 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     private boolean reviewBuyer(Long buyerId, Long sellerId, int score, String comment) {
-       Optional<Seller> seller = sellerRepository.findById(sellerId);
-       Optional<Buyer> buyer = buyerRepository.findById(buyerId);
-        if(seller.isPresent()) {
+        Optional<Seller> seller = sellerRepository.findById(sellerId);
+        Optional<Buyer> buyer = buyerRepository.findById(buyerId);
+        if (seller.isPresent()) {
             List<Product> products = productRepository.findAllBySellerAndBuyer(seller.get(), buyer.get());
             for (Product product : products) {
 
@@ -83,22 +97,24 @@ public class ReviewServiceImpl implements ReviewService {
     public boolean reviewUser(Long requesterId, Long reviewedId, Map<String, String> reviewInfo) {
         Optional<User> user = Optional.ofNullable(userRepository.findById(requesterId));
         Optional<User> toBeReviewedUser = Optional.ofNullable(userRepository.findById(reviewedId));
-        if(user.isEmpty() || toBeReviewedUser.isEmpty()) {
+        if (user.isEmpty() || toBeReviewedUser.isEmpty()) {
             return false;
         }
-        if(user.get().getUserRole().equals("buyer") && toBeReviewedUser.get().getUserRole().equals("seller")) {
+        if (user.get().getUserRole().equals("buyer") && toBeReviewedUser.get().getUserRole().equals("seller")) {
 
-            return reviewSeller(requesterId, reviewedId, Integer.parseInt(reviewInfo.get("score")), reviewInfo.get("comment"));
+            return reviewSeller(requesterId, reviewedId, Integer.parseInt(reviewInfo.get("score")),
+                    reviewInfo.get("comment"));
         }
-        if(user.get().getUserRole().equals("seller") && toBeReviewedUser.get().getUserRole().equals("buyer")) {
-            return reviewBuyer(reviewedId, requesterId, Integer.parseInt(reviewInfo.get("score")), reviewInfo.get("comment"));
+        if (user.get().getUserRole().equals("seller") && toBeReviewedUser.get().getUserRole().equals("buyer")) {
+            return reviewBuyer(reviewedId, requesterId, Integer.parseInt(reviewInfo.get("score")),
+                    reviewInfo.get("comment"));
         }
         return false;
     }
 
     public boolean checkIfReviewed(Long requesterId, Long reviewedId) {
         List<Review> reviews = reviewRepository.findAllByReviewingUserIdAndReviewedUserId(requesterId, reviewedId);
-        if(reviews.isEmpty()) {
+        if (reviews.isEmpty()) {
             return false;
         }
         return true;
@@ -108,20 +124,20 @@ public class ReviewServiceImpl implements ReviewService {
     public List<ReviewDto> findByReviewedUserId(Long reviewedUserId) {
         List<ReviewDto> reviewsdto = new ArrayList<>();
         List<Review> reviews = (List<Review>) reviewRepository.findAllByReviewedUserId(reviewedUserId);
-        for(Review review : reviews) {
+        for (Review review : reviews) {
             ReviewDto rev = new ReviewDto(review);
             reviewsdto.add(rev);
         }
 
         return reviewsdto;
     }
+
     @Override
     public List<ReviewDto> requestReviews(Long requestingUserId, Long reviewedUserId) {
         List<ReviewDto> reviews = findByReviewedUserId(reviewedUserId);
-        if(adminRepository.findById(requestingUserId).isPresent()) {
+        if (adminRepository.findById(requestingUserId).isPresent()) {
             return reviews;
-        }
-        else {
+        } else {
             for (ReviewDto review : reviews) {
                 if (review.getReviewingUserId().equals(requestingUserId)) {
                     return reviews;
@@ -136,23 +152,23 @@ public class ReviewServiceImpl implements ReviewService {
         List<ReviewDto> reviews = findByReviewedUserId(id);
         double sum = 0;
         double reviewCount = 0;
-        for(ReviewDto review : reviews) {
+        for (ReviewDto review : reviews) {
             sum += review.getScore();
             reviewCount++;
         }
-        return sum/reviewCount;
+        return sum / reviewCount;
     }
 
     @Override
-    public Review editReview(Long userId, Long reviewId, Map<String, Object> update)  {
+    public Review editReview(Long userId, Long reviewId, Map<String, Object> update) {
         return reviewRepository.findById(reviewId).map(review -> {
-            if(update.containsKey("score")) {
+            if (update.containsKey("score")) {
                 review.setScore((Integer) update.get("score"));
             }
-            if(update.containsKey("comment")) {
+            if (update.containsKey("comment")) {
                 review.setComment((String) update.get("comment"));
             }
-            if(update.containsKey("date")) {
+            if (update.containsKey("date")) {
                 LocalDateTime localDate = LocalDateTime.parse(update.get("date").toString());
                 review.setReviewDate(localDate);
             }
@@ -168,18 +184,17 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public void updateAverageRating(Long userId) {
         Optional<User> user = Optional.ofNullable(userRepository.findById(userId));
-        if(user.isPresent()) {
-            if(user.get().getUserRole().equals("seller")) {
+        if (user.isPresent()) {
+            if (user.get().getUserRole().equals("seller")) {
                 Optional<Seller> seller = sellerRepository.findById(userId);
-                if(seller.isPresent()) {
+                if (seller.isPresent()) {
                     Seller s = seller.get();
                     s.setAverageRating(getAverageRating(userId));
                     sellerRepository.save(s);
                 }
-            }
-            else {
+            } else {
                 Optional<Buyer> buyer = buyerRepository.findById(userId);
-                if(buyer.isPresent()) {
+                if (buyer.isPresent()) {
                     Buyer b = buyer.get();
                     b.setAverageRating(getAverageRating(userId));
                     buyerRepository.save(b);

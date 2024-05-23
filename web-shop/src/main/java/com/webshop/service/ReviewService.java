@@ -1,15 +1,14 @@
 package com.webshop.service;
 
-import com.webshop.dto.ReviewDto;
-import com.webshop.model.Review;
-import com.webshop.session.UserSession;
-
 import java.util.List;
 import java.util.Map;
 
+import com.webshop.dto.ReviewDto;
+import com.webshop.model.Review;
+
 public interface ReviewService {
 
-    boolean reviewUser(Long requesterId, Long reviewedId,Map<String, String> reviewInfo);
+    boolean reviewUser(Long requesterId, Long reviewedId, Map<String, String> reviewInfo);
 
     List<ReviewDto> findByReviewedUserId(Long id);
 

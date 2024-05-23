@@ -5,8 +5,6 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,8 +36,6 @@ public class Review implements Serializable {
     @JoinColumn(name = "reviewed_id")
     private User reviewedUser;
 
-
-
     public Long getId() {
         return id;
     }
@@ -67,15 +63,19 @@ public class Review implements Serializable {
     public void setReviewDate(LocalDateTime reviewDate) {
         this.reviewDate = reviewDate;
     }
+
     public User getReviewingUser() {
         return reviewingUser;
     }
+
     public void setReviewingUser(User reviewingUser) {
         this.reviewingUser = reviewingUser;
     }
+
     public User getReviewedUser() {
         return reviewedUser;
     }
+
     public void setReviewedUser(User reviewedUser) {
         this.reviewedUser = reviewedUser;
     }
