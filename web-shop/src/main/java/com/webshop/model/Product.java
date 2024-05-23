@@ -47,11 +47,13 @@ public class Product implements Serializable {
     @Column(nullable = false)
     private TypeOfSale typeOfSale;
 
-    @Column(name = "seller_id")
-    private Long sellerId;
+    @ManyToOne
+    @JoinColumn()
+    private Buyer buyer;
 
-    @Column(name = "buyer_id")
-    private Long buyerId;
+    @ManyToOne
+    @JoinColumn
+    private Seller seller;
 
     @Column
     private LocalDate saleStartDate;
@@ -177,19 +179,39 @@ public class Product implements Serializable {
     }
 
     public Long getSellerId() {
-        return sellerId;
+        return seller.getId();
     }
 
-    public void setSellerId(Long sellerId) {
-        this.sellerId = sellerId;
+    public void setSellerId(Seller seller) {
+        this.seller = seller;
     }
 
     public Long getBuyerId() {
-        return buyerId;
+        return buyer.getId();
     }
 
-    public void setBuyerId(Long buyerId) {
-        this.buyerId = buyerId;
+    public void setBuyerId(Buyer buyer) {
+        this.buyer = buyer;
+    }
+
+    public Buyer getBuyer() {
+        return buyer;
+    }
+
+    public void setBuyer(Buyer buyer) {
+        this.buyer = buyer;
+    }
+
+    public Seller getSeller() {
+        return seller;
+    }
+
+    public void setSeller(Seller seller) {
+        this.seller = seller;
+    }
+
+    public Boolean getSold() {
+        return sold;
     }
 
 }

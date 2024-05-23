@@ -1,6 +1,7 @@
 package com.webshop.service;
 
 import com.webshop.dto.OfferDto;
+import com.webshop.model.Buyer;
 import com.webshop.model.Offer;
 import com.webshop.model.Product;
 import com.webshop.model.TypeOfSale;
@@ -37,8 +38,9 @@ public class OfferServiceImpl implements OfferService {
         if(offerDto.getPrice().compareTo(product.getPrice()) < 0) {
             return false;
         }
+        Buyer buyer = buyerRepository.findById(buyerId).get();
         product.setPrice(offerDto.getPrice());
-        product.setBuyerId(buyerId);
+        product.setBuyerId(buyer);
         Offer offer = new Offer();
 
         offer.setOfferAmountMoney(offerDto.getPrice());

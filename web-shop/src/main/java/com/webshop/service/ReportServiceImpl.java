@@ -3,7 +3,6 @@ package com.webshop.service;
 import com.webshop.model.*;
 import com.webshop.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -85,8 +84,9 @@ public class ReportServiceImpl implements ReportService {
     }
     private boolean reportSeller(Long buyerId, Long sellerId, String reason) {
         Optional<Buyer> optBuyer = buyerRepository.findById(buyerId);
+        Seller seller = sellerRepository.findById(sellerId).get();
         if(optBuyer.isPresent()) {
-            List<Product> products = productRepository.findAllBySellerIdAndBuyerId(sellerId, buyerId);
+            List<Product> products = productRepository.findAllBySellerAndBuyer(seller, optBuyer.get());
             for(Product product : products) {
                 if(product.isSold()) {
                     Buyer buyer = optBuyer.get();
@@ -106,8 +106,9 @@ public class ReportServiceImpl implements ReportService {
     }
     private boolean reportBuyer(Long buyerId, Long sellerId, String reason) {
         Optional<Seller> optSeller = sellerRepository.findById(sellerId);
+        Buyer buyer = buyerRepository.findById(buyerId).get();
         if(optSeller.isPresent()) {
-            List<Product> products = productRepository.findAllBySellerIdAndBuyerId(sellerId, buyerId);
+            List<Product> products = productRepository.findAllBySellerAndBuyer(optSeller.get(), buyer);
             for(Product product : products) {
                 if(product.isSold()) {
                     Seller seller = optSeller.get();

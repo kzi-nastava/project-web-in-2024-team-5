@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -20,8 +21,8 @@ import com.webshop.model.Product;
 import com.webshop.model.Seller;
 import com.webshop.model.TypeOfSale;
 import com.webshop.repository.BuyerRepository;
-import com.webshop.repository.OfferRepository;
 import com.webshop.repository.ProductRepository;
+import com.webshop.repository.SellerRepository;
 
 /**
  * ProductService
@@ -39,7 +40,7 @@ public class ProductService {
     private EmailService emailService;
 
     @Autowired
-    private OfferRepository offerRepository;
+    private SellerRepository sellerRepository;
 
     /**
      * nadje sve proizvode i konvertuje ih u basicProductDto
@@ -92,13 +93,15 @@ public class ProductService {
     public ProductResponse createProduct(Seller seller, ProductDto product) {
         try {
             Product product2 = new Product(product);
-            product2.setSellerId(seller.getId());
+            product2.setSellerId(seller);
             product2.setSold(false);
             product2.setSaleStartDate(LocalDate.now());
 
-            Product savedProduct = productRepository.save(product2);
-            ProductResponse pResponse = new ProductResponse(savedProduct, savedProduct.getId());
-            return pResponse;
+            // seller.getProducts().add(product2);
+            // seller = sellerRepository.save(seller);
+
+            product2 = productRepository.save(product2);
+            return new ProductResponse(product2, product2.getId());
         } catch (DataAccessException e) {
             throw new RuntimeException("Error occurred while saving the product", e);
         }
@@ -135,25 +138,45 @@ public class ProductService {
     }
 
     public List<BasicProductDto> findByUserId(Long id) {
-        List<Product> pList = productRepository.findAllByBuyerIdOrSellerId(id, id);
+        List<Product> products;
         List<BasicProductDto> bDtos = new ArrayList<>();
+        Optional<Seller> seller = sellerRepository.findById(id);
+        if (seller.isPresent()) {
+            products = seller.get().getProducts();
+            for (Product prod : products) {
+                if (!prod.isSold())
+                    bDtos.add(new BasicProductDto(prod));
+            }
+        } else {
+            Buyer buyer = buyerRepository.findById(id).get();
+            products = buyer.getProducts();
+            for (Product prod : products) {
+                bDtos.add(new BasicProductDto(prod));
+            }
 
-        for (Product prod : pList) {
-            bDtos.add(new BasicProductDto(prod));
         }
 
         return bDtos;
     }
 
     public Product buyProduct(Product product, Long buyerId) {
-        product.setBuyerId(buyerId);
-        product.setSold(true);
-
         Buyer buyer = buyerRepository.findById(buyerId).get();
 
-        emailService.sendEmail(buyer.getEmail(), "Your auction", "You won the auction!");
+        product.setBuyerId(buyer);
+        product.setSold(true);
 
-        return productRepository.save(product);
+        buyer.getProducts().add(product);
+        buyer = buyerRepository.save(buyer);
+
+        Seller seller = product.getSeller();
+        seller.getProducts().remove(product);
+        sellerRepository.save(seller);
+
+        emailService.sendEmail(buyer.getEmail(), "Your new product", "You won the auction!");
+
+        emailService.sendEmail(seller.getEmail(), "Your product", "You sold your product");
+
+        return product;
     }
 
     public Product endAuction(Long id) {

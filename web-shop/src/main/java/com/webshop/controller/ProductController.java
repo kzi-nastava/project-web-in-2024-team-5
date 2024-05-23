@@ -216,6 +216,22 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @GetMapping("/user/me")
+    public ResponseEntity<List<BasicProductDto>> findProductsByMe(HttpSession session) {
+        UserSession loggedUser = (UserSession) session.getAttribute("User");
+
+        if (loggedUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        List<BasicProductDto> productDtos = productService.findByUserId(loggedUser.getId());
+
+        if (!productDtos.isEmpty())
+            return ResponseEntity.ok(productDtos);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
     @PostMapping("/{id}/purchase")
     public ResponseEntity<?> buyProduct(HttpSession session, @PathVariable Long id) {
         UserSession loggedUser = (UserSession) session.getAttribute("User");
@@ -228,7 +244,7 @@ public class ProductController {
 
         if (product.getTypeOfSale() == TypeOfSale.FIXED_PRICE && !product.isSold()) {
             productService.buyProduct(product, loggedUser.getId());
-            return ResponseEntity.ok(product);
+            return ResponseEntity.ok(new ProductDto(product));
 
         } else if (product.getTypeOfSale() == TypeOfSale.AUCTION && !product.isSold()) {
             URI location = URI.create("/api/v1/offers");

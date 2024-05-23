@@ -3,7 +3,6 @@ package com.webshop.service;
 import com.webshop.dto.ReviewDto;
 import com.webshop.model.*;
 import com.webshop.repository.*;
-import com.webshop.session.UserSession;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,8 +32,9 @@ public class ReviewServiceImpl implements ReviewService {
 
     private boolean reviewSeller(Long buyerId, Long sellerId, int score, String comment) {
         Optional<Buyer> buyer = buyerRepository.findById(buyerId);
+        Optional<Seller> seller = sellerRepository.findById(sellerId);
         if(buyer.isPresent()) {
-            List<Product> products = productRepository.findAllBySellerIdAndBuyerId(sellerId, buyerId);
+            List<Product> products = productRepository.findAllBySellerAndBuyer(seller.get(), buyer.get());
             for (Product product : products) {
                 if (product.isSold()) {
                     Buyer b = buyer.get();
@@ -56,8 +56,9 @@ public class ReviewServiceImpl implements ReviewService {
 
     private boolean reviewBuyer(Long buyerId, Long sellerId, int score, String comment) {
        Optional<Seller> seller = sellerRepository.findById(sellerId);
+       Optional<Buyer> buyer = buyerRepository.findById(buyerId);
         if(seller.isPresent()) {
-            List<Product> products = productRepository.findAllBySellerIdAndBuyerId(sellerId, buyerId);
+            List<Product> products = productRepository.findAllBySellerAndBuyer(seller.get(), buyer.get());
             for (Product product : products) {
 
                 if (product.isSold()) {
