@@ -14,10 +14,13 @@ import org.springframework.stereotype.Service;
 import com.webshop.dto.BasicProductDto;
 import com.webshop.dto.ProductDto;
 import com.webshop.dto.ProductResponse;
-import com.webshop.model.Product;
+import com.webshop.model.Buyer;
 import com.webshop.model.Category;
+import com.webshop.model.Product;
 import com.webshop.model.Seller;
 import com.webshop.model.TypeOfSale;
+import com.webshop.repository.BuyerRepository;
+import com.webshop.repository.OfferRepository;
 import com.webshop.repository.ProductRepository;
 
 /**
@@ -29,12 +32,21 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired
+    private BuyerRepository buyerRepository;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private OfferRepository offerRepository;
+
     /**
      * nadje sve proizvode i konvertuje ih u basicProductDto
      * (objekti koji se prikazuju na glavnoj stranici)
      */
     public List<BasicProductDto> findAll(Pageable pageable) {
-        Page<Product> products = productRepository.findAll(pageable);
+        Page<Product> products = productRepository.findAllBySold(pageable, false);
         List<Product> productList = products.getContent();
         List<BasicProductDto> basicProductDtos = new ArrayList<>();
 
@@ -122,6 +134,42 @@ public class ProductService {
 
     }
 
+    public List<BasicProductDto> findByUserId(Long id) {
+        List<Product> pList = productRepository.findAllByBuyerIdOrSellerId(id, id);
+        List<BasicProductDto> bDtos = new ArrayList<>();
+
+        for (Product prod : pList) {
+            bDtos.add(new BasicProductDto(prod));
+        }
+
+        return bDtos;
+    }
+
+    public Product buyProduct(Product product, Long buyerId) {
+        product.setBuyerId(buyerId);
+        product.setSold(true);
+
+        Buyer buyer = buyerRepository.findById(buyerId).get();
+
+        emailService.sendEmail(buyer.getEmail(), "Your auction", "You won the auction!");
+
+        return productRepository.save(product);
+    }
+
+    public Product endAuction(Long id) {
+        Product product = productRepository.findById(id);
+
+        product.setSold(true);
+
+        Buyer buyer = buyerRepository.findById(product.getBuyerId()).get();
+
+        productRepository.save(product);
+
+        emailService.sendEmail(buyer.getEmail(), "Your auction", "You won the auction!");
+
+        return product;
+    }
+
     private List<Product> initializeProducts(Category category, TypeOfSale typeOfSale) {
         List<Product> products;
 
@@ -136,17 +184,6 @@ public class ProductService {
         }
 
         return products;
-    }
-
-    public List<BasicProductDto> findByUserId(Long id) {
-        List<Product> pList = productRepository.findAllByBuyerIdOrSellerId(id, id);
-        List<BasicProductDto> bDtos = new ArrayList<>();
-
-        for (Product prod : pList) {
-            bDtos.add(new BasicProductDto(prod));
-        }
-
-        return bDtos;
     }
 
     private void updateAndCheck(Product product, ProductDto productDto) {

@@ -1,6 +1,7 @@
 package com.webshop.controller;
 
 import java.math.BigDecimal;
+import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -213,6 +214,43 @@ public class ProductController {
             return ResponseEntity.ok(productDtos);
 
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PostMapping("/{id}/purchase")
+    public ResponseEntity<?> buyProduct(HttpSession session, @PathVariable Long id) {
+        UserSession loggedUser = (UserSession) session.getAttribute("User");
+
+        if (loggedUser == null || !loggedUser.getRole().equals("buyer")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Product product = productService.findById(id);
+
+        if (product.getTypeOfSale() == TypeOfSale.FIXED_PRICE && !product.isSold()) {
+            productService.buyProduct(product, loggedUser.getId());
+            return ResponseEntity.ok(product);
+
+        } else if (product.getTypeOfSale() == TypeOfSale.AUCTION && !product.isSold()) {
+            URI location = URI.create("/api/v1/offers");
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .header("Location", location.toString())
+                    .body("Redirect to POST /api/v1/offers");
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/{id}/end-auction")
+    public ResponseEntity<Product> endAuction(HttpSession session, @PathVariable Long id) {
+        UserSession loggedUser = (UserSession) session.getAttribute("User");
+
+        if (loggedUser == null || !loggedUser.getRole().equals("buyer")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Product product = productService.endAuction(id);
+
+        return ResponseEntity.ok(product);
     }
 
 }
