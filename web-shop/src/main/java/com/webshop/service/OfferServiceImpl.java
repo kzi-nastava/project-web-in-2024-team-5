@@ -28,15 +28,18 @@ public class OfferServiceImpl implements OfferService {
     @Override
     public boolean createOffer(Long buyerId, OfferDto offerDto) {
         Product product = productRepository.findById(offerDto.getProductId());
-        if (product.getTypeOfSale().equals(TypeOfSale.FIXED_PRICE)) {
+        if (product == null)
             return false;
-        }
-        if (product.isSold()) {
+
+        if (product.getTypeOfSale().equals(TypeOfSale.FIXED_PRICE))
             return false;
-        }
-        if (offerDto.getPrice().compareTo(product.getPrice()) < 0) {
+
+        if (product.isSold())
             return false;
-        }
+
+        if (offerDto.getPrice().compareTo(product.getPrice()) < 0)
+            return false;
+
         Buyer buyer = buyerRepository.findById(buyerId).get();
         product.setPrice(offerDto.getPrice());
         product.setBuyerId(buyer);

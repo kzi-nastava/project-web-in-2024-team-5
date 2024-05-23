@@ -257,7 +257,7 @@ public class ProductController {
     }
 
     @PostMapping("/{id}/end-auction")
-    public ResponseEntity<Product> endAuction(HttpSession session, @PathVariable Long id) {
+    public ResponseEntity<ProductDto> endAuction(HttpSession session, @PathVariable Long id) {
         UserSession loggedUser = (UserSession) session.getAttribute("User");
 
         if (loggedUser == null || !loggedUser.getRole().equals("seller")) {
@@ -266,7 +266,7 @@ public class ProductController {
 
         Product product = productService.endAuction(id);
 
-        return ResponseEntity.ok(product);
+        return ResponseEntity.ok(new ProductDto(product));
     }
 
 }
