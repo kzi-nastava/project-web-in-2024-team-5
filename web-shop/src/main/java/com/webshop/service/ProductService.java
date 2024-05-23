@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.webshop.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
@@ -15,11 +16,6 @@ import org.springframework.stereotype.Service;
 import com.webshop.dto.BasicProductDto;
 import com.webshop.dto.ProductDto;
 import com.webshop.dto.ProductResponse;
-import com.webshop.model.Buyer;
-import com.webshop.model.Category;
-import com.webshop.model.Product;
-import com.webshop.model.Seller;
-import com.webshop.model.TypeOfSale;
 import com.webshop.repository.BuyerRepository;
 import com.webshop.repository.ProductRepository;
 import com.webshop.repository.SellerRepository;
@@ -185,10 +181,18 @@ public class ProductService {
         product.setSold(true);
 
         Buyer buyer = buyerRepository.findById(product.getBuyerId()).get();
-
+        Seller seller = sellerRepository.findById(product.getSellerId()).get();
+        seller.getProducts().remove(product);
+        List<Offer> offers = product.getOffers();
+        for(Offer offer : offers) {
+            if(!offer.getBuyer().equals(buyer)) {
+                emailService.sendEmail(buyer.getEmail(), "Your auction", "You haven't won the auction!");
+            }
+        }
         productRepository.save(product);
-
         emailService.sendEmail(buyer.getEmail(), "Your auction", "You won the auction!");
+        emailService.sendEmail(seller.getEmail(), "Your auction", "Your auction is finished, you have sold your item to" +
+                seller.getName() + " " + seller.getLastname() + "!");
 
         return product;
     }
