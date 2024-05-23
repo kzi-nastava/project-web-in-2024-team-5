@@ -6,15 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.webshop.dto.ReviewDto;
 import com.webshop.model.Review;
@@ -29,6 +21,13 @@ public class ReviewController {
     @Autowired
     private ReviewServiceImpl reviewServiceImpl;
 
+    /**
+     * Postavljanje recenzija useru sa idom /{id}.
+     * @param session
+     * @param id
+     * @param reviewInfo
+     * @return
+     */
     @PostMapping("/{id}")
     public ResponseEntity<String> createReview(HttpSession session, @PathVariable Long id,
             @RequestBody Map<String, String> reviewInfo) {
@@ -52,13 +51,73 @@ public class ReviewController {
 
     }
 
-    @GetMapping("/request")
-    public List<ReviewDto> getAllReviews(HttpSession session, @RequestParam Long reviewedUserId) {
+    /**
+     * Funkcionalnosti 2.2 i 3.2, ako je userId prodavac, dobicemo sve recenzije koje je on dobio od kupaca i obrnuto.
+     * @param session
+     * @param userId
+     * @return
+     */
+    @GetMapping("/request/user/{userId}/received")
+    public ResponseEntity<List<ReviewDto>> getAllReviews(HttpSession session, @PathVariable Long userId) {
         UserSession loggedUser = (UserSession) session.getAttribute("User");
         long requestingUserId = loggedUser.getId();
-        return reviewServiceImpl.requestReviews(requestingUserId, reviewedUserId);
+        return ResponseEntity.ok(reviewServiceImpl.requestReceivedReviews(requestingUserId, userId));
     }
 
+    /**
+     * Funkcionalnosti 2.5 i 3.7 prvi deo, SAMO ako sam dao review useru,
+     * dobicu sve recenzije koje je on dao drugima!
+     * @param session
+     * @param userId
+     * @return
+     */
+    @GetMapping("/request/user/{userId}/posted")
+    public ResponseEntity<List<ReviewDto>> getAllPostedReviews(HttpSession session, @PathVariable Long userId) {
+        UserSession loggedUser = (UserSession) session.getAttribute("User");
+        if(loggedUser == null) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        if(loggedUser.getRole().equals("admin")) {
+            return ResponseEntity.ok(reviewServiceImpl.findByReviewingUserId(userId));
+        }
+        return ResponseEntity.ok(reviewServiceImpl.requestGivenReviews(loggedUser.getId(), userId));
+    }
+
+    /**
+     * Omogoucava da vidis recenzije koje si ti kao korisnik dobio.
+     * @param session
+     * @return
+     */
+    @GetMapping("/request/received")
+    public ResponseEntity<List<ReviewDto>> getReceivedReviews(HttpSession session) {
+        UserSession loggedUser = (UserSession) session.getAttribute("User");
+        if(loggedUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity.ok(reviewServiceImpl.getWhoReviewedMe(loggedUser.getId()));
+    }
+
+    /**
+     * Funkcionalonost 2.5 i 3.7 pod b), vraca ti recenzije koje si ti dao drugima.
+     * @param session
+     * @return
+     */
+    @GetMapping("/request/posted")
+    public ResponseEntity<List<ReviewDto>> getPostedReviews(HttpSession session) {
+        UserSession loggedUser = (UserSession) session.getAttribute("User");
+        if(loggedUser == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return ResponseEntity.ok(reviewServiceImpl.getReviewedByMe(loggedUser.getId()));
+    }
+
+    /**
+     * Dobijanje prosecne ocene od korisnika.
+     * @param reviewedUserId
+     * @return
+     */
     @GetMapping("/average")
     public String getAverageScoreByReviewedUserId(@RequestParam Long reviewedUserId) {
         double ocena = reviewServiceImpl.getAverageRating(reviewedUserId) > 0
@@ -67,6 +126,13 @@ public class ReviewController {
         return "Prosecna ocena je : " + ocena;
     }
 
+    /** Updatovanje reviewa sa idom odredjenim.
+     *
+     * @param session
+     * @param id
+     * @param updates
+     * @return
+     */
     @PatchMapping("/{id}")
     public ResponseEntity<ReviewDto> updateReview(HttpSession session, @PathVariable Long id,
             @RequestBody Map<String, Object> updates) {
@@ -79,6 +145,12 @@ public class ReviewController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
     }
 
+    /**
+     * Brisanje reviewa sa idom /{id}
+     * @param session
+     * @param id
+     * @return
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteReview(HttpSession session, @PathVariable Long id) {
         UserSession loggedUser = (UserSession) session.getAttribute("User");
