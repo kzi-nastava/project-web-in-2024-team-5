@@ -10,16 +10,16 @@ public class ReportDto {
     private Long id;
     private String reason;
     private ReportStatus status;
-    private User whoReported;
-    private User whoIsReported;
+    private Long whoReported;
+    private Long whoIsReported;
     private LocalDateTime reportDate;
 
     public ReportDto(Report report) {
         this.id = report.getId();
         this.reason = report.getReason();
         this.status = report.getStatus();
-        this.whoReported = report.getWhoReported();
-        this.whoIsReported = report.getWhoIsReported();
+        this.whoReported = report.getWhoReported().getId();
+        this.whoIsReported = report.getWhoIsReported().getId();
         this.reportDate = report.getDatePosted();
     }
 
@@ -27,20 +27,20 @@ public class ReportDto {
         return id;
     }
 
-    public User getWhoReported() {
+    public Long getWhoReported() {
         return whoReported;
     }
 
     public void setWhoReported(User whoReported) {
-        this.whoReported = whoReported;
+        this.whoReported = whoReported.getId();
     }
 
-    public User getWhoIsReported() {
+    public Long getWhoIsReported() {
         return whoIsReported;
     }
 
     public void setWhoIsReported(User whoIsReported) {
-        this.whoIsReported = whoIsReported;
+        this.whoIsReported = whoIsReported.getId();
     }
 
     public String getReason() {
