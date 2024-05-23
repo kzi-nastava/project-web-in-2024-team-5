@@ -1,16 +1,21 @@
 package com.webshop.controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.webshop.dto.ReportDto;
+import com.webshop.model.Report;
 import com.webshop.service.ReportServiceImpl;
 import com.webshop.session.UserSession;
 
@@ -63,6 +68,22 @@ public class ReportController {
             return new ResponseEntity<>("Report successfully resolved", HttpStatus.OK);
         }
         return new ResponseEntity<>("Something went wrong with resolving report.", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getReports(HttpSession session) {
+        UserSession uSession = (UserSession) session.getAttribute("User");
+        if (uSession == null || !uSession.getRole().equals("admin")) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        List<Report> reports = reportServiceImpl.findAll();
+        List<ReportDto> rDtos = new ArrayList<>();
+        for (Report report : reports) {
+            rDtos.add(new ReportDto(report));
+        }
+
+        return ResponseEntity.ok(rDtos);
     }
 
 }

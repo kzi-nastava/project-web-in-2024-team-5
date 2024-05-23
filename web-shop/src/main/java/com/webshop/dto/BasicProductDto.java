@@ -37,6 +37,14 @@ public class BasicProductDto {
         this.price = product.getPrice();
     }
 
+    public TypeOfSale getTypeOfSale() {
+        return typeOfSale;
+    }
+
+    public void setTypeOfSale(TypeOfSale typeOfSale) {
+        this.typeOfSale = typeOfSale;
+    }
+
     public BigDecimal getPrice() {
         return price;
     }
