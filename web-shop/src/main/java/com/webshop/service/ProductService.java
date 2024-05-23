@@ -55,10 +55,10 @@ public class ProductService {
         return basicProductDtos;
     }
 
-    public ProductDto getById(Long id) {
+    public Product getById(Long id) {
         Product prod = productRepository.findById(id);
         if (prod != null) {
-            return new ProductDto(prod);
+            return prod;
         }
         return null;
     }
@@ -144,12 +144,35 @@ public class ProductService {
                     bDtos.add(new BasicProductDto(prod));
             }
         } else {
-            Buyer buyer = buyerRepository.findById(id).get();
-            products = buyer.getProducts();
+            Optional<Buyer> buyer = buyerRepository.findById(id);
+            if (buyer.isPresent()) {
+                products = buyer.get().getProducts();
+                for (Product prod : products) {
+                    bDtos.add(new BasicProductDto(prod));
+                }
+            }
+        }
+
+        return bDtos;
+    }
+
+    public List<BasicProductDto> findByMe(Long id) {
+        List<Product> products;
+        List<BasicProductDto> bDtos = new ArrayList<>();
+        Optional<Seller> seller = sellerRepository.findById(id);
+        if (seller.isPresent()) {
+            products = seller.get().getProducts();
             for (Product prod : products) {
                 bDtos.add(new BasicProductDto(prod));
             }
-
+        } else {
+            Optional<Buyer> buyer = buyerRepository.findById(id);
+            if (buyer.isPresent()) {
+                products = buyer.get().getProducts();
+                for (Product prod : products) {
+                    bDtos.add(new BasicProductDto(prod));
+                }
+            }
         }
 
         return bDtos;
@@ -177,6 +200,8 @@ public class ProductService {
 
     public Product endAuction(Long id) {
         Product product = productRepository.findById(id);
+        if (product.isSold())
+            return null;
 
         product.setSold(true);
 
@@ -184,15 +209,16 @@ public class ProductService {
         Seller seller = sellerRepository.findById(product.getSellerId()).get();
         seller.getProducts().remove(product);
         List<Offer> offers = product.getOffers();
-        for(Offer offer : offers) {
-            if(!offer.getBuyer().equals(buyer)) {
+        for (Offer offer : offers) {
+            if (!offer.getBuyer().equals(buyer)) {
                 emailService.sendEmail(buyer.getEmail(), "Your auction", "You haven't won the auction!");
             }
         }
         productRepository.save(product);
         emailService.sendEmail(buyer.getEmail(), "Your auction", "You won the auction!");
-        emailService.sendEmail(seller.getEmail(), "Your auction", "Your auction is finished, you have sold your item to" +
-                seller.getName() + " " + seller.getLastname() + "!");
+        emailService.sendEmail(seller.getEmail(), "Your auction",
+                "Your auction is finished, you have sold your item to" +
+                        seller.getName() + " " + seller.getLastname() + "!");
 
         return product;
     }

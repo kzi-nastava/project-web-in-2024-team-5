@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.webshop.dto.BasicProductDto;
 import com.webshop.dto.ProductDto;
 import com.webshop.dto.ProductResponse;
+import com.webshop.dto.SoldProductDto;
 import com.webshop.model.Category;
 import com.webshop.model.Product;
 import com.webshop.model.Seller;
@@ -146,9 +147,16 @@ public class ProductController {
      * Funkcionalnost 1.1 Pregled proizvoda
      */
     @GetMapping("/{id}")
-    public ResponseEntity<ProductDto> getProduct(@PathVariable Long id) {
-        ProductDto productDto = productService.getById(id);
-        return (productDto == null) ? ResponseEntity.notFound().build() : ResponseEntity.ok(productDto);
+    public ResponseEntity<?> getProduct(@PathVariable Long id) {
+        Product product = productService.getById(id);
+        if (product == null) {
+            return ResponseEntity.notFound().build();
+        }
+        if (product.isSold()) {
+            SoldProductDto sProductDto = new SoldProductDto(product);
+            return ResponseEntity.ok(sProductDto);
+        } else
+            return ResponseEntity.ok(new ProductDto(product));
     }
 
     /**
@@ -224,7 +232,7 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        List<BasicProductDto> productDtos = productService.findByUserId(loggedUser.getId());
+        List<BasicProductDto> productDtos = productService.findByMe(loggedUser.getId());
 
         if (!productDtos.isEmpty())
             return ResponseEntity.ok(productDtos);
@@ -241,6 +249,8 @@ public class ProductController {
         }
 
         Product product = productService.findById(id);
+        if (product == null)
+            return ResponseEntity.notFound().build();
 
         if (product.getTypeOfSale() == TypeOfSale.FIXED_PRICE && !product.isSold()) {
             productService.buyProduct(product, loggedUser.getId());
@@ -257,7 +267,7 @@ public class ProductController {
     }
 
     @PostMapping("/{id}/end-auction")
-    public ResponseEntity<ProductDto> endAuction(HttpSession session, @PathVariable Long id) {
+    public ResponseEntity<?> endAuction(HttpSession session, @PathVariable Long id) {
         UserSession loggedUser = (UserSession) session.getAttribute("User");
 
         if (loggedUser == null || !loggedUser.getRole().equals("seller")) {
@@ -265,6 +275,9 @@ public class ProductController {
         }
 
         Product product = productService.endAuction(id);
+        if (product == null)
+            return new ResponseEntity<>("You already sold this product, can't end auction multiple times",
+                    HttpStatus.BAD_REQUEST);
 
         return ResponseEntity.ok(new ProductDto(product));
     }

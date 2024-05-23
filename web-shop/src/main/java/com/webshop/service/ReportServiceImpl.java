@@ -65,6 +65,11 @@ public class ReportServiceImpl implements ReportService {
         return false;
     }
 
+    @Override
+    public List<Report> findAll() {
+        return reportRepository.findAll();
+    }
+
     private boolean acceptReport(Long reportId) {
         Optional<Report> optReport = reportRepository.findById(reportId);
         if (optReport.isEmpty()) {

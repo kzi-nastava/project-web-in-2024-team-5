@@ -44,55 +44,6 @@ public class ReviewServiceImpl implements ReviewService {
         this.sellerRepository = sellerRepository;
     }
 
-    private boolean reviewSeller(Long buyerId, Long sellerId, int score, String comment) {
-        Optional<Buyer> buyer = buyerRepository.findById(buyerId);
-        Optional<Seller> seller = sellerRepository.findById(sellerId);
-        if (buyer.isPresent()) {
-            List<Product> products = productRepository.findAllBySellerAndBuyer(seller.get(), buyer.get());
-            for (Product product : products) {
-                if (product.isSold()) {
-                    Buyer b = buyer.get();
-                    Seller s = sellerRepository.findById(sellerId).get();
-                    Review review = new Review();
-                    review.setComment(comment);
-                    review.setReviewingUser(b);
-                    review.setScore(score);
-                    review.setReviewDate(LocalDateTime.now());
-                    review.setReviewedUser(s);
-                    reviewRepository.save(review);
-                    updateAverageRating(sellerId);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean reviewBuyer(Long buyerId, Long sellerId, int score, String comment) {
-        Optional<Seller> seller = sellerRepository.findById(sellerId);
-        Optional<Buyer> buyer = buyerRepository.findById(buyerId);
-        if (seller.isPresent()) {
-            List<Product> products = productRepository.findAllBySellerAndBuyer(seller.get(), buyer.get());
-            for (Product product : products) {
-
-                if (product.isSold()) {
-                    Buyer b = buyerRepository.findById(buyerId).get();
-                    Seller s = seller.get();
-                    Review review = new Review();
-                    review.setComment(comment);
-                    review.setReviewingUser(s);
-                    review.setScore(score);
-                    review.setReviewDate(LocalDateTime.now());
-                    review.setReviewedUser(b);
-                    reviewRepository.save(review);
-                    updateAverageRating(buyerId);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     @Override
     public boolean reviewUser(Long requesterId, Long reviewedId, Map<String, String> reviewInfo) {
         Optional<User> user = Optional.ofNullable(userRepository.findById(requesterId));
@@ -214,5 +165,54 @@ public class ReviewServiceImpl implements ReviewService {
                 }
             }
         }
+    }
+
+    private boolean reviewSeller(Long buyerId, Long sellerId, int score, String comment) {
+        Optional<Buyer> buyer = buyerRepository.findById(buyerId);
+        Optional<Seller> seller = sellerRepository.findById(sellerId);
+        if (buyer.isPresent()) {
+            List<Product> products = productRepository.findAllBySellerAndBuyer(seller.get(), buyer.get());
+            for (Product product : products) {
+                if (product.isSold()) {
+                    Buyer b = buyer.get();
+                    Seller s = sellerRepository.findById(sellerId).get();
+                    Review review = new Review();
+                    review.setComment(comment);
+                    review.setReviewingUser(b);
+                    review.setScore(score);
+                    review.setReviewDate(LocalDateTime.now());
+                    review.setReviewedUser(s);
+                    reviewRepository.save(review);
+                    updateAverageRating(sellerId);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean reviewBuyer(Long buyerId, Long sellerId, int score, String comment) {
+        Optional<Seller> seller = sellerRepository.findById(sellerId);
+        Optional<Buyer> buyer = buyerRepository.findById(buyerId);
+        if (seller.isPresent()) {
+            List<Product> products = productRepository.findAllBySellerAndBuyer(seller.get(), buyer.get());
+            for (Product product : products) {
+
+                if (product.isSold()) {
+                    Buyer b = buyerRepository.findById(buyerId).get();
+                    Seller s = seller.get();
+                    Review review = new Review();
+                    review.setComment(comment);
+                    review.setReviewingUser(s);
+                    review.setScore(score);
+                    review.setReviewDate(LocalDateTime.now());
+                    review.setReviewedUser(b);
+                    reviewRepository.save(review);
+                    updateAverageRating(buyerId);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
