@@ -48,7 +48,7 @@ public class ReportController {
         if (userSession == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        if (userSession.getRole().equals("admin")) {
+        if (!userSession.getRole().equals("admin")) {
             return new ResponseEntity<>("You're not an admin.", HttpStatus.UNAUTHORIZED);
         }
         if (!resolution.containsKey("resolution") || resolution.get("resolution").isEmpty()) {
