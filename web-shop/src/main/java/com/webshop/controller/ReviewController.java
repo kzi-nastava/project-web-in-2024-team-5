@@ -6,7 +6,15 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.webshop.dto.ReviewDto;
 import com.webshop.model.Review;
@@ -23,6 +31,7 @@ public class ReviewController {
 
     /**
      * Postavljanje recenzija useru sa idom /{id}.
+     * 
      * @param session
      * @param id
      * @param reviewInfo
@@ -52,7 +61,9 @@ public class ReviewController {
     }
 
     /**
-     * Funkcionalnosti 2.2 i 3.2, ako je userId prodavac, dobicemo sve recenzije koje je on dobio od kupaca i obrnuto.
+     * Funkcionalnosti 2.2 i 3.2, ako je userId prodavac, dobicemo sve recenzije
+     * koje je on dobio od kupaca i obrnuto.
+     * 
      * @param session
      * @param userId
      * @return
@@ -67,6 +78,7 @@ public class ReviewController {
     /**
      * Funkcionalnosti 2.5 i 3.7 prvi deo, SAMO ako sam dao review useru,
      * dobicu sve recenzije koje je on dao drugima!
+     * 
      * @param session
      * @param userId
      * @return
@@ -74,10 +86,10 @@ public class ReviewController {
     @GetMapping("/request/user/{userId}/posted")
     public ResponseEntity<List<ReviewDto>> getAllPostedReviews(HttpSession session, @PathVariable Long userId) {
         UserSession loggedUser = (UserSession) session.getAttribute("User");
-        if(loggedUser == null) {
+        if (loggedUser == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        if(loggedUser.getRole().equals("admin")) {
+        if (loggedUser.getRole().equals("admin")) {
             return ResponseEntity.ok(reviewServiceImpl.findByReviewingUserId(userId));
         }
         return ResponseEntity.ok(reviewServiceImpl.requestGivenReviews(loggedUser.getId(), userId));
@@ -85,13 +97,14 @@ public class ReviewController {
 
     /**
      * Omogoucava da vidis recenzije koje si ti kao korisnik dobio.
+     * 
      * @param session
      * @return
      */
     @GetMapping("/request/received")
     public ResponseEntity<List<ReviewDto>> getReceivedReviews(HttpSession session) {
         UserSession loggedUser = (UserSession) session.getAttribute("User");
-        if(loggedUser == null) {
+        if (loggedUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
@@ -100,13 +113,14 @@ public class ReviewController {
 
     /**
      * Funkcionalonost 2.5 i 3.7 pod b), vraca ti recenzije koje si ti dao drugima.
+     * 
      * @param session
      * @return
      */
     @GetMapping("/request/posted")
     public ResponseEntity<List<ReviewDto>> getPostedReviews(HttpSession session) {
         UserSession loggedUser = (UserSession) session.getAttribute("User");
-        if(loggedUser == null) {
+        if (loggedUser == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
@@ -115,6 +129,7 @@ public class ReviewController {
 
     /**
      * Dobijanje prosecne ocene od korisnika.
+     * 
      * @param reviewedUserId
      * @return
      */
@@ -126,7 +141,8 @@ public class ReviewController {
         return "Prosecna ocena je : " + ocena;
     }
 
-    /** Updatovanje reviewa sa idom odredjenim.
+    /**
+     * Updatovanje reviewa sa idom odredjenim.
      *
      * @param session
      * @param id
@@ -147,6 +163,7 @@ public class ReviewController {
 
     /**
      * Brisanje reviewa sa idom /{id}
+     * 
      * @param session
      * @param id
      * @return

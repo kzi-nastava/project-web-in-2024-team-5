@@ -7,6 +7,8 @@ import java.math.BigDecimal;
  */
 public class PurchaseRequest {
 
+    private BigDecimal offerAmountMoney;
+
     public BigDecimal getOfferAmountMoney() {
         return offerAmountMoney;
     }
@@ -14,7 +16,5 @@ public class PurchaseRequest {
     public void setOfferAmountMoney(BigDecimal offerAmountMoney) {
         this.offerAmountMoney = offerAmountMoney;
     }
-
-    private BigDecimal offerAmountMoney;
 
 }

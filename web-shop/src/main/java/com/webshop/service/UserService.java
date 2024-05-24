@@ -1,7 +1,8 @@
 package com.webshop.service;
 
-import org.springframework.data.domain.Pageable;
 import java.util.List;
+
+import org.springframework.data.domain.Pageable;
 
 import com.webshop.dto.ExtendedUserDto;
 import com.webshop.dto.LoginDto;

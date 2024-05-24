@@ -59,8 +59,8 @@ public class ReportController {
         if (!resolution.containsKey("resolution") || resolution.get("resolution").isEmpty()) {
             return new ResponseEntity<>("You must provide a resolution for report", HttpStatus.BAD_REQUEST);
         }
-        if (resolution.get("resolution").equals("rejected") && !resolution.containsKey("reason")
-                || resolution.get("reason").isEmpty()) {
+        if (resolution.get("resolution").equals("rejected") && (!resolution.containsKey("reason")
+                || resolution.get("reason").isEmpty())) {
             return new ResponseEntity<>("You must provide a reason for rejecting report", HttpStatus.BAD_REQUEST);
         }
         boolean success = reportServiceImpl.resolveReport(id, resolution);

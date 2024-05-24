@@ -1,11 +1,8 @@
 package com.webshop.dto;
 
-import com.webshop.model.Buyer;
-import com.webshop.model.Review;
-import com.webshop.model.Seller;
-import com.webshop.model.User;
-
 import java.time.LocalDateTime;
+
+import com.webshop.model.Review;
 
 public class ReviewDto {
     private Long id;
@@ -42,6 +39,7 @@ public class ReviewDto {
         this.reviewingUserId = review.getReviewingUser().getId();
 
     }
+
     public Long getId() {
         return id;
     }
@@ -85,7 +83,5 @@ public class ReviewDto {
     public void setReviewingUserId(Long user) {
         this.reviewingUserId = user;
     }
-
-
 
 }

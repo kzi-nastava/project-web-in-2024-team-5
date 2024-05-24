@@ -15,7 +15,6 @@ import com.webshop.model.Product;
 import com.webshop.model.Review;
 import com.webshop.model.Seller;
 import com.webshop.model.User;
-import com.webshop.repository.AdminRepository;
 import com.webshop.repository.BuyerRepository;
 import com.webshop.repository.ProductRepository;
 import com.webshop.repository.ReviewRepository;
@@ -36,8 +35,6 @@ public class ReviewServiceImpl implements ReviewService {
     private UserRepository userRepository;
     @Autowired
     private ProductRepository productRepository;
-    @Autowired
-    private AdminRepository adminRepository;
 
     public ReviewServiceImpl(ReviewRepository reviewRepository, SellerRepository sellerRepository) {
         this.reviewRepository = reviewRepository;
@@ -71,16 +68,6 @@ public class ReviewServiceImpl implements ReviewService {
         return true;
     }
 
-    private List<ReviewDto> findByReviewedUserId(Long reviewedUserId) {
-        List<ReviewDto> reviewsdto = new ArrayList<>();
-        List<Review> reviews = (List<Review>) reviewRepository.findAllByReviewedUserId(reviewedUserId);
-        for (Review review : reviews) {
-            ReviewDto rev = new ReviewDto(review);
-            reviewsdto.add(rev);
-        }
-
-        return reviewsdto;
-    }
     public List<ReviewDto> findByReviewingUserId(Long reviewingUserId) {
         List<ReviewDto> reviewsdto = new ArrayList<>();
         List<Review> reviews = (List<Review>) reviewRepository.findAllByReviewingUserId(reviewingUserId);
@@ -91,26 +78,31 @@ public class ReviewServiceImpl implements ReviewService {
 
         return reviewsdto;
     }
+
     @Override
     public List<ReviewDto> requestReceivedReviews(Long requestingUserId, Long reviewedUserId) {
         List<ReviewDto> reviews = findByReviewedUserId(reviewedUserId);
         return reviews;
     }
+
     public List<ReviewDto> requestGivenReviews(Long requestingUserId, Long userId) {
         List<Review> reviews = reviewRepository.findAllByReviewingUserIdAndReviewedUserId(requestingUserId, userId);
-        if(reviews.isEmpty()) {
+        if (reviews.isEmpty()) {
             return List.of();
         }
         return findByReviewingUserId(userId);
     }
+
     @Override
     public List<ReviewDto> getWhoReviewedMe(Long requestingUserId) {
         return findByReviewedUserId(requestingUserId);
     }
+
     @Override
     public List<ReviewDto> getReviewedByMe(Long requestingUserId) {
         return findByReviewingUserId(requestingUserId);
     }
+
     @Override
     public double getAverageRating(Long id) {
         List<ReviewDto> reviews = findByReviewedUserId(id);
@@ -165,6 +157,17 @@ public class ReviewServiceImpl implements ReviewService {
                 }
             }
         }
+    }
+
+    private List<ReviewDto> findByReviewedUserId(Long reviewedUserId) {
+        List<ReviewDto> reviewsdto = new ArrayList<>();
+        List<Review> reviews = (List<Review>) reviewRepository.findAllByReviewedUserId(reviewedUserId);
+        for (Review review : reviews) {
+            ReviewDto rev = new ReviewDto(review);
+            reviewsdto.add(rev);
+        }
+
+        return reviewsdto;
     }
 
     private boolean reviewSeller(Long buyerId, Long sellerId, int score, String comment) {
