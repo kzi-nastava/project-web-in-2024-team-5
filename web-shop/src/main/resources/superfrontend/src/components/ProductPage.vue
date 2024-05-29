@@ -15,6 +15,5 @@ export default {
       <h2>Price: {{ $route.query.price }}</h2>
       <img :src = "getImageUrl($route.query.img)">
 
-      <!-- Fetch product details using the received props -->
     </div>
   </template>
