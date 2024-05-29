@@ -3,11 +3,13 @@
       <h1>Products we're sure you'll like!</h1>
       <div class="grid grid-cols-3" id="products">
         <!-- Render products here -->
-        <div @click = "logItem(product.name)" v-for="product in products" :key="product.id" class="item flex flex-col cursor-pointer">
+        <div v-for="product in products" :key="product.id" class="item flex flex-col ">
+          <router-link :to="{ name: 'product', params: { id: product.id }, query: { img: product.imagePath, name: product.name, price: product.price }}">
           <h2 class = "flex justify-center" itemprop="name">{{ product.name }}</h2>
           <br>
           <h3 class = "flex justify-center" itemprop = "price"> ${{  product.price }}</h3>
           <img :src="getImageUrl(product.imagePath)" alt="Product Image" class = "object-contain object-center w-1/2">
+        </router-link>
         </div>
       </div>
     </div>
@@ -18,53 +20,66 @@
   </template>
   
   <script>
-  import axios from 'axios';
+import { getImageUrl } from './utils'
+import ProductPage from './ProductPage.vue'
+import axios from 'axios';
+import { RouterLink } from 'vue-router';
   
   export default {
     data() {
-      return {
-        products: [],
-        currentPage: 0,
-        totalPages: 3 // Initialize products as an empty array
-
-      };
+        return {
+            products: [],
+            currentPage: 0,
+            totalPages: 3,
+            getImageUrl
+// Initialize products as an empty array
+        };
+    },
+    components: {
+      ProductPage
     },
     created() {
-      this.retrieveProducts();
+        this.retrieveProducts();
     },
     methods: {
-      async retrieveProducts() {
-        try {
-          const response = await axios.get(`http://localhost:8080/api/v1/products?page=${this.currentPage}&size=6`);
-          this.products = response.data;
-          console.log(response.data); // Ensure the data is logged correctly
-        } catch (error) {
-          console.error(error);
+        async retrieveSingleProduct(productId) {
+            try {
+                const response = await axios.get(`http://localhost:8080/api/v1/products/${productId}`);
+                console.log(response.data);
+                this.$router.push(`/${productId}`);
+            }
+            catch (error) {
+                console.error(error);
+            }
+        },
+        async retrieveProducts() {
+            try {
+                const response = await axios.get(`http://localhost:8080/api/v1/products?page=${this.currentPage}&size=6`);
+                this.products = response.data;
+                console.log(response.data); // Ensure the data is logged correctly
+            }
+            catch (error) {
+                console.error(error);
+            }
+        },
+        nextPage() {
+            if (this.currentPage < this.totalPages) {
+                this.currentPage++;
+                this.retrieveProducts();
+            }
+        },
+        prevPage() {
+            if (this.currentPage > 0) {
+                this.currentPage--;
+                this.retrieveProducts();
+            }
+        },
+        logItem(products) {
+            console.log(products);
         }
-      },
-      getImageUrl(imagePath) {
-        if(imagePath != ((`/assets/nike.jpg`) || (`/assets/monitor.jpg`)) ) {
-            return `/assets/p1.jpg`;
-        }
-        return `/assets/${imagePath}`;
-      },
-      nextPage() {
-        if(this.currentPage < this.totalPages) {
-            this.currentPage++;
-            this.retrieveProducts();
-        }
-      },
-      prevPage() {
-        if(this.currentPage > 0) {
-        this.currentPage--;
-        this.retrieveProducts();
-        }
-      },
-      logItem(products) {
-        console.log(products)
-      }
     },
-  };
+    components: { RouterLink }
+};
   </script>
   
   <style scoped>
