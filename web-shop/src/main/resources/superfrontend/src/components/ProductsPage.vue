@@ -32,7 +32,6 @@ import { RouterLink } from 'vue-router';
             currentPage: 0,
             totalPages: 3,
             getImageUrl
-// Initialize products as an empty array
         };
     },
     components: {

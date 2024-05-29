@@ -38,7 +38,6 @@ export default {
                 } if (response.status === 401) {
                     alert("User doesn't exist!")
                 }
-                console.log(response.data);
             }
             catch (error) {
                 if(response.status === 401) {
