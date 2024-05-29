@@ -12,9 +12,7 @@ const router = createRouter({
     {
       path: '/about',
       name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
+      
       component: () => import('../views/About.vue')
     },
     {
@@ -38,6 +36,12 @@ const router = createRouter({
       component: () => import('../components/ProductsPage.vue')
     },
     {
+      path: '/products/:id',
+      name: 'product',
+      component: () => import('../components/ProductPage.vue'),
+      props: true
+    },
+    {
       path: '/:catchAll(.*)', redirect: '/register'
     }
   ]
@@ -48,7 +52,7 @@ router.beforeEach((to, from, next) => {
   const loggedIn = localStorage.getItem('user');
 
   if (authRequired && !loggedIn) {
-    return alert ("You must first register or login!");  // Redirect to login if not authenticated
+    return alert ("You must first register or login!"); 
   }
 
   next();
