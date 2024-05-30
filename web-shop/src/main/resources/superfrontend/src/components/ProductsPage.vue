@@ -1,5 +1,5 @@
 <template>
-    <div class="productpage">
+    <div class="productpage w-3/4   mr-auto pt-20">
       <h1>Products we're sure you'll like!</h1>
       <div class="grid grid-cols-3" id="products">
         <!-- Render products here -->
@@ -13,9 +13,9 @@
         </div>
       </div>
     </div>
-    <div class = "flex flex-row justify-around  paging-buttons">
-        <button  @click = "prevPage" :disabled="currentPage === 0" class = "rounded bg-blue-300 ">Previous Page</button>
-        <button class = "rounded bg-blue-300" @click = "nextPage" :disabled="currentPage === totalPages">Next Page</button>
+    <div class = "flex flex-row justify-start gap-96 paging-buttons">
+        <button  @click = "prevPage" :disabled="currentPage === 0" class = "rounded bg-slate-200 ">Previous Page</button>
+        <button class = "rounded bg-slate-200" @click = "nextPage" :disabled="currentPage === totalPages">Next Page</button>
     </div>
   </template>
   
@@ -91,7 +91,7 @@ import { RouterLink } from 'vue-router';
   }
   @keyframes myanim {
     from {background-color: white;}
-    to {background-color: lightblue;}
+    to {background-color: rgb(206, 220, 225);}
   }
   .prod {
     display: grid;
