@@ -2,6 +2,8 @@ package com.webshop.model;
 
 import java.util.List;
 
+import com.webshop.dto.UserDto;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
@@ -16,11 +18,23 @@ public class Buyer extends User {
     @OneToMany(mappedBy = "buyer", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> Products;
 
-    @OneToMany(mappedBy = "buyer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "reviewedUser", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> Reviews;
 
-    @Column
+    @Column()
     private double averageRating;
+
+    public Buyer() {
+    }
+
+    public Buyer(UserDto user) {
+        this.setUsername(user.getUsername());
+        this.setPassword(user.getPassword());
+        this.setName(user.getName());
+        this.setLastname(user.getLastname());
+        this.setPhoneNumber(user.getPhoneNumber());
+        this.setEmail(user.getEmail());
+    }
 
     public List<Review> getReviews() {
         return Reviews;

@@ -2,9 +2,10 @@ package com.webshop.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
+import com.webshop.dto.ProductDto;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,36 +27,36 @@ public class Product implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String name;
 
     @Column
     private String imagePath;
 
-    @Column(length = 1000)
+    @Column(length = 1000, nullable = false)
     private String description;
 
     @ManyToOne
     @JoinColumn(name = "category", referencedColumnName = "category_name")
     private Category category;
 
-    @Column
+    @Column(nullable = false)
     private BigDecimal price;
 
     @Enumerated(EnumType.STRING)
-    @Column
+    @Column(nullable = false)
     private TypeOfSale typeOfSale;
 
-    @Column
-    private LocalDateTime saleStartDate;
+    @ManyToOne
+    @JoinColumn()
+    private Buyer buyer;
 
     @ManyToOne
-    @JoinColumn(name = "seller_id")
+    @JoinColumn
     private Seller seller;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "buyer_id")
-    private Buyer buyer;
+    @Column
+    private LocalDate saleStartDate;
 
     @Column
     private Boolean buyerReview;
@@ -65,6 +66,18 @@ public class Product implements Serializable {
 
     @Column
     private Boolean sold;
+
+    public Product() {
+    }
+
+    public Product(ProductDto productDto) {
+        this.name = productDto.getName();
+        this.imagePath = productDto.getImagePath();
+        this.description = productDto.getDescription();
+        this.price = productDto.getPrice();
+        this.typeOfSale = productDto.getTypeOfSale();
+        this.category = new Category(productDto.getCategory());
+    }
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Offer> offers;
@@ -113,11 +126,11 @@ public class Product implements Serializable {
         this.typeOfSale = type;
     }
 
-    public LocalDateTime getSaleStartDate() {
+    public LocalDate getSaleStartDate() {
         return saleStartDate;
     }
 
-    public void setSaleStartDate(LocalDateTime saleStartDate) {
+    public void setSaleStartDate(LocalDate saleStartDate) {
         this.saleStartDate = saleStartDate;
     }
 
@@ -137,28 +150,12 @@ public class Product implements Serializable {
         this.sellerReview = sellerReview;
     }
 
-    public Boolean getSold() {
+    public Boolean isSold() {
         return sold;
     }
 
     public void setSold(Boolean sold) {
         this.sold = sold;
-    }
-
-    public Seller getSeller() {
-        return seller;
-    }
-
-    public void setSeller(Seller seller) {
-        this.seller = seller;
-    }
-
-    public Buyer getBuyer() {
-        return buyer;
-    }
-
-    public void setBuyer(Buyer buyer) {
-        this.buyer = buyer;
     }
 
     public void setId(Long id) {
@@ -179,6 +176,42 @@ public class Product implements Serializable {
 
     public void setOffers(List<Offer> offers) {
         this.offers = offers;
+    }
+
+    public Long getSellerId() {
+        return seller.getId();
+    }
+
+    public void setSellerId(Seller seller) {
+        this.seller = seller;
+    }
+
+    public Long getBuyerId() {
+        return buyer.getId();
+    }
+
+    public void setBuyerId(Buyer buyer) {
+        this.buyer = buyer;
+    }
+
+    public Buyer getBuyer() {
+        return buyer;
+    }
+
+    public void setBuyer(Buyer buyer) {
+        this.buyer = buyer;
+    }
+
+    public Seller getSeller() {
+        return seller;
+    }
+
+    public void setSeller(Seller seller) {
+        this.seller = seller;
+    }
+
+    public Boolean getSold() {
+        return sold;
     }
 
 }

@@ -5,8 +5,6 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -31,16 +29,12 @@ public class Review implements Serializable {
     private LocalDateTime reviewDate;
 
     @ManyToOne
-    @JoinColumn(name = "buyer_id")
-    private Buyer buyer;
+    @JoinColumn(name = "reviewer_id")
+    private User reviewingUser;
 
     @ManyToOne
-    @JoinColumn(name = "seller_id")
-    private Seller seller;
-
-    @Enumerated(EnumType.STRING)
-    @Column
-    private Poster poster;
+    @JoinColumn(name = "reviewed_id")
+    private User reviewedUser;
 
     public Long getId() {
         return id;
@@ -70,28 +64,20 @@ public class Review implements Serializable {
         this.reviewDate = reviewDate;
     }
 
-    public Buyer getBuyer() {
-        return buyer;
+    public User getReviewingUser() {
+        return reviewingUser;
     }
 
-    public void setBuyer(Buyer buyer) {
-        this.buyer = buyer;
+    public void setReviewingUser(User reviewingUser) {
+        this.reviewingUser = reviewingUser;
     }
 
-    public Seller getSeller() {
-        return seller;
+    public User getReviewedUser() {
+        return reviewedUser;
     }
 
-    public void setSeller(Seller seller) {
-        this.seller = seller;
-    }
-
-    public Poster getPoster() {
-        return poster;
-    }
-
-    public void setPoster(Poster poster) {
-        this.poster = poster;
+    public void setReviewedUser(User reviewedUser) {
+        this.reviewedUser = reviewedUser;
     }
 
 }

@@ -1,7 +1,11 @@
 package com.webshop.repository;
-import com.webshop.model.Offer;
-import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface OfferRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.webshop.model.Offer;
+
+@Repository
+public interface OfferRepository extends JpaRepository<Offer, Long> {
 
 }

@@ -6,17 +6,19 @@ import java.time.LocalDateTime;
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
 import jakarta.persistence.DiscriminatorType;
+import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.Transient;
 
 @Entity(name = "users")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "user_role", discriminatorType = DiscriminatorType.STRING)
-public abstract class User implements Serializable {
+public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,16 +29,16 @@ public abstract class User implements Serializable {
     @Column(nullable = false)
     private String lastname;
 
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String username;
 
     @Column(nullable = false)
     private String password;
 
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column
+    @Column(nullable = false, unique = true)
     private String phoneNumber;
 
     @Column
@@ -53,6 +55,14 @@ public abstract class User implements Serializable {
 
     public Long getId() {
         return id;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getName() {
@@ -129,6 +139,15 @@ public abstract class User implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @Transient
+    public String getUserRole() {
+        DiscriminatorValue discriminatorValue = getClass().getAnnotation(DiscriminatorValue.class);
+        if (discriminatorValue == null)
+            return null;
+        else
+            return discriminatorValue.value();
     }
 
 }
