@@ -1,57 +1,24 @@
 <template>
-  <header>
-      <div class = "wrapper">
-    <nav class = "flex flex-row justify-around">
-      <RouterLink to = "/">Home</RouterLink>
-      <RouterLink to = "/products">Products</RouterLink>
-      <RouterLink to = "/about">About us</RouterLink>
-      <RouterLink to = "/logout">Logout</RouterLink>
-      <RouterLink to = "/login">Login</RouterLink>
-      <RouterLink to = "/register">Register</RouterLink>
-    </nav>
-  </div>
-  </header>
-  <RouterView />
+    <header>
+        <div class ="flex flex-col justify-items-center">
+            <div class = " bg-slate-300  flex justify-center gap-10 p-3" >
+                <RouterLink to = "/">SuperWebShop</RouterLink>
+                <div>
+                    <input class = "rounded-full flex justify-center w-80" type= "text">
+                </div>
+                    <RouterLink to = "/logout">Logout</RouterLink>
+                    <RouterLink to = "/login">Login</RouterLink>
+                    <RouterLink to = "/register">Register</RouterLink>
+            </div>
+            <div class ="bg-slate-200 flex flex-row justify-evenly gap-48">
+                <RouterLink to = "/products">Products</RouterLink>
+                <RouterLink to = "/about">About us</RouterLink>
+            </div>
+        </div>
+    </header>
 </template>
-<style scoped>
-nav {
-  display: flex;
-
-  background-color: lightblue;
-  width: 100%;
-  font-size: 20px;
-  text-align: left;
-}
-nav {
-    border: 1px solid black;
-} 
-nav a {
-  text-decoration: none;
-  margin-right: 3rem;
-  color: black;
-}
-nav a:hover{
-  color: gray;
-}
-h1{
-    display: flex;
-    justify-content: center;
-}
-form {
-    display: flex;
-    flex-direction: column;
-    width: 20%;
-    margin: 0px auto;
-}
-button {
-    display: flex;
-    margin: 0px auto;
-}
-</style>
-
-
-
 
 <script>
 
 </script>
+
