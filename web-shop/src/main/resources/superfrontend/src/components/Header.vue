@@ -1,24 +1,82 @@
 <template>
     <header>
-        <div class ="flex flex-col justify-items-center">
-            <div class = " bg-slate-300  flex justify-center gap-10 p-3" >
-                <RouterLink to = "/">SuperWebShop</RouterLink>
-                <div>
-                    <input class = "rounded-full flex justify-center w-80" type= "text">
+        <main>
+            <section>
+                <div class = "row1 bg-[#004E9D] flex flex-row justify-center">
+                        <div class = "container  text-white font-['Open_Sans'] w-[1200px] flex flex-row justify-between gap-5  p-[40px]">
+                            <RouterLink to = "/">
+                                <div class = "text-2xl" >
+                                SuperWebShop
+                                </div>
+                            </RouterLink>
+                            <div>
+                                <input class = "pl-5 rounded-full w-[600px] h-[35px] text-black text-base" type= "text" placeholder="Search">
+                            </div>
+                                <RouterLink v-if = "isLogged" to = "/logout">Logout</RouterLink>
+                                <div class = "flex flex-row justify-center items-center gap-10">
+                                <RouterLink to = "/login">
+                                    <button class = "drop-shadow-xl rounded-xl w-[76px] h-[27px] bg-white text-s text-black">Login</button>
+                                </RouterLink>
+                                <RouterLink to = "/register">
+                                    <button class = "drop-shadow-xl rounded-xl w-[105px] h-[41px] bg-[#B84E15]">Register</button>
+                                </RouterLink>
+                                </div>
+                        </div>  
                 </div>
-                    <RouterLink to = "/logout">Logout</RouterLink>
-                    <RouterLink to = "/login">Login</RouterLink>
-                    <RouterLink to = "/register">Register</RouterLink>
-            </div>
-            <div class ="bg-slate-200 flex flex-row justify-evenly gap-48">
-                <RouterLink to = "/products">Products</RouterLink>
-                <RouterLink to = "/about">About us</RouterLink>
-            </div>
-        </div>
+                <div class = "row2 flex flex-row pt-2 justify-center m-auto">
+
+                    <div class = "container  text-black font-['Open_Sans'] w-[1200px] flex flex-row justify-between">
+                        <RouterLink to = "/products">
+                            <button class = " drop-shadow-lg rounded-xl w-[152px] h-[35px] bg-[#D9D9D9] text-lg text-bla k">Proizvodi</button>
+                        </RouterLink>
+                        <RouterLink to = "/about"><button class = " drop-shadow-lg rounded-xl w-[152px] h-[35px] bg-[#B84E15] text-lg text-white">Postavi oglas</button></RouterLink>
+                    </div>
+                </div>
+            </section>
+        </main>
     </header>
+    
 </template>
 
 <script>
+    import axios from 'axios';
+    import EventBus from './event'
+    export default {
+        data() {
+            return {
+                isLogged: false,
+            }
+        },
+        mounted() {
+            this.loggedUser();
+            EventBus.$on('userLoggedOut',' handleLogout');
+        },
+        methods :  {
+        handleLogout() {
+            this.isLogged = false;
+        },
+        async loggedUser () {
+        try {
+            const response = await axios.get("http://localhost:8080/api/v1/users/me",{
+                    withCredentials: true,
+                    headers: {
+                        "Content-Type": 'application/json'
+                    }
+                });
+            if(response.status === 200 ) {
+                this.isLogged = true;
 
+            }
+        }
+        catch(error) {
+            console.log(error);
+            if(error.response && error.response.status === 401) {
+                alert("You're not logged in!");
+                this.isLogged = false;
+            }
+        }
+        },
+    }
+    };
 </script>
 
