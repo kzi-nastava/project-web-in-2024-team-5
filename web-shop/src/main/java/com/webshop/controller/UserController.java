@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,7 @@ import jakarta.servlet.http.HttpSession;
  * UserController
  */
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/api/v1")
 public class UserController {
 
