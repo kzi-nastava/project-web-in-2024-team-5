@@ -17,7 +17,9 @@
               />
             </div>
             <RouterLink v-if="isLogged" to="/logout">Logout</RouterLink>
-            <div class="flex flex-row justify-center items-center gap-10">
+            <div
+              class="flex flex-row justify-center align-middle items-center gap-10"
+            >
               <RouterLink to="/login">
                 <button
                   class="drop-shadow-xl rounded-xl w-[76px] h-[27px] bg-white text-s text-black"

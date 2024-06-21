@@ -1,18 +1,17 @@
 <template>
-    <Header/>
-    <RouterView/>
+  <Header />
+  <RouterView />
+  <HomePage />
 </template>
 
 <script>
-import HomePage from '@/components/HomePage.vue';
-import Header from '@/components/Header.vue'
+import HomePage from "@/components/HomePage.vue";
+import Header from "@/components/Header.vue";
 
-    export default {
-    components: {Header, HomePage}
-    
-}
+export default {
+  components: { Header, HomePage },
+};
 </script>
 
-<style>
+<style></style>
 
-</style>
