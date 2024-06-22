@@ -1,6 +1,6 @@
 <template>
   <Header />
-  <ProductsPage />
+  <ProductPage />
   <Footer />
 </template>
 
@@ -8,13 +8,12 @@
 import HomePage from "@/components/HomePage.vue";
 import Sidebar from "@/components/Sidebar.vue";
 import Header from "@/components/Header.vue";
-import ProductsPage from "@/components/ProductsPage.vue";
+import ProductPage from "@/components/ProductPage.vue";
 import Footer from "@/components/FooterComp.vue";
 
 export default {
-  components: { Header, ProductsPage, Footer },
+  components: { Header, ProductPage, Footer },
 };
 </script>
 
 <style></style>
-
