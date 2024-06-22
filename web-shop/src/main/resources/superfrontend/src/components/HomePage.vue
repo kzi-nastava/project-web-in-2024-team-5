@@ -33,57 +33,62 @@
       </div>
     </div>
   </section>
-  <div
-    class="container w-[1200px] flex flex-col ml-auto mr-auto pt-4 bg-[#FBFBF9]"
-  >
-    <div class="font-[Open_Sans] text-[#011839]">
-      <h2 class="font-bold text-4xl">Izdvojeni proizvodi</h2>
-      <br />
-      <p class="text-xl">Ove nedelje izdvajamo ove proizvode</p>
-    </div>
-    <div class="container">
-      <div class="grid grid-cols-4" id="products">
-        <div
-          v-for="product in products"
-          :key="product.id"
-          class="item flex flex-col"
-        >
-          <router-link
-            :to="{
-              name: 'product',
-              params: { id: product.id },
-              query: {
-                img: product.imagePath,
-                name: product.name,
-                price: product.price,
-              },
-            }"
+  <section>
+    <div
+      class="container w-[1200px] flex flex-col ml-auto mr-auto pt-[80px] pb-[80px] bg-[#FBFBF9]"
+    >
+      <div class="font-[Open_Sans] text-[#011839]">
+        <h2 class="font-bold text-4xl">Izdvojeni proizvodi</h2>
+        <br />
+        <p class="text-xl">Ove nedelje izdvajamo ove proizvode</p>
+        <br />
+      </div>
+      <div class="container">
+        <div class="grid grid-cols-4" id="products">
+          <div
+            v-for="product in products"
+            :key="product.id"
+            class="item flex flex-col"
           >
-            <div
-              class="flex flex-col justify-center items-center bg-white h-[295px] w-[265px] rounded-2xl drop-shadow-lg font-[Open_Sans]"
+            <router-link
+              :to="{
+                name: 'product',
+                params: { id: product.id },
+                query: {
+                  img: product.imagePath,
+                  name: product.name,
+                  price: product.price,
+                },
+              }"
             >
-              <img
-                :src="getImageUrl(product.imagePath)"
-                alt="Product Image"
-                class="bg-transparent pb-2 self-center w-1/2"
-              />
-
-              <h2 class="font-semibold text-lg" itemprop="name">
-                {{ product.name }}
-              </h2>
-              <br />
-              <h3
-                class="absolute bottom-4 left-[10%] text-orange-800"
-                itemprop="price"
+              <div
+                class="flex flex-col justify-center items-center bg-white h-[295px] w-[265px] rounded-2xl drop-shadow-lg font-[Open_Sans]"
               >
-                ${{ product.price }}
-              </h3>
-            </div>
-          </router-link>
+                <img
+                  :src="getImageUrl(product.imagePath)"
+                  alt="Product Image"
+                  class="bg-transparent pb-2 self-center w-1/2"
+                />
+
+                <h2 class="font-semibold text-lg" itemprop="name">
+                  {{ product.name }}
+                </h2>
+                <br />
+                <h3
+                  class="absolute bottom-4 left-[10%] text-orange-800"
+                  itemprop="price"
+                >
+                  ${{ product.price }}
+                </h3>
+              </div>
+            </router-link>
+          </div>
+          <RouterLink to="/products">Pogledajte sve proizvode </RouterLink>
         </div>
       </div>
     </div>
-  </div>
+  </section>
+  <section class="bg-[#B84E15] h-[400px]"></section>
 </template>
 <style scoped></style>
 
