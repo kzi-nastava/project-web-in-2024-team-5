@@ -1,7 +1,7 @@
 <template>
   <header>
     <main>
-      <section>
+      <section class="bg-[#FBFBF9]">
         <div class="row1 bg-[#004E9D] flex flex-row justify-center">
           <div
             class="container text-white font-['Open_Sans'] w-[1200px] flex flex-row justify-between gap-5 p-[40px]"
@@ -20,14 +20,14 @@
             <div
               class="flex flex-row justify-center align-middle items-center gap-10"
             >
-              <RouterLink to="/login">
+              <RouterLink v-if="!isLogged" to="/login">
                 <button
                   class="drop-shadow-xl rounded-xl w-[76px] h-[27px] bg-white text-s text-black"
                 >
                   Login
                 </button>
               </RouterLink>
-              <RouterLink to="/register">
+              <RouterLink v-if="!isLogged" to="/register">
                 <button
                   class="drop-shadow-xl rounded-xl w-[105px] h-[41px] bg-[#B84E15]"
                 >
