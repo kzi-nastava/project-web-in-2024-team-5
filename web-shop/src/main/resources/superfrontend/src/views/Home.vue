@@ -2,16 +2,16 @@
   <Header />
   <RouterView />
   <HomePage />
-  <Footer />
+  <FooterComp />
 </template>
 
 <script>
 import HomePage from "@/components/HomePage.vue";
-import Footer from "@/components/FooterComp.vue";
+import FooterComp from "@/components/FooterComp.vue";
 import Header from "@/components/Header.vue";
 
 export default {
-  components: { Header, HomePage, Footer },
+  components: { Header, HomePage, FooterComp },
 };
 </script>
 

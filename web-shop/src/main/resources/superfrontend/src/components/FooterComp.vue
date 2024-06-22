@@ -41,6 +41,7 @@
           </div>
           <div class="flex flex-col gap-5">
             <h4 class="font-bold">Topic</h4>
+            <router-link to="/home">Home</router-link>
             <a href="">Page</a>
             <a href="">Page</a>
             <a href="">Page</a>
