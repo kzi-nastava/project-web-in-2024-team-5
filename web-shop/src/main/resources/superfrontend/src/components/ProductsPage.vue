@@ -17,6 +17,7 @@
                 img: product.imagePath,
                 name: product.name,
                 price: product.price,
+                sale: product.typeOfSale,
               },
             }"
           >
@@ -93,8 +94,9 @@ export default {
         const response = await axios.get(
           `http://localhost:8080/api/v1/products?page=${this.currentPage}&size=6`,
         );
+
         this.products = response.data;
-        console.log(response.data); // Ensure the data is logged correctly
+        console.log(this.products);
       } catch (error) {
         console.error(error);
       }
@@ -144,4 +146,3 @@ export default {
   grid-template-columns: repeat(3, 1fr);
 }
 </style>
-
