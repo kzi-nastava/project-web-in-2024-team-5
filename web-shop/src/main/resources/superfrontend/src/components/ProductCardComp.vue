@@ -6,7 +6,11 @@
         params: { id: product.id },
       }"
     >
-      <img :src="productImage" alt="Product Image" class="mb-4" />
+      <img
+        :src="getImageUrl(product.imagePath)"
+        alt="Product Image"
+        class="object-contain object-center w-1/2"
+      />
       <h3 class="text-lg font-bold mb-2">{{ product.name }}</h3>
       <p class="text-gray-700 mb-4">{{ product.price }} rsd</p>
       <p class="text-blue-500">more...</p>
@@ -15,7 +19,13 @@
 </template>
 
 <script>
+import { getImageUrl } from "./utils";
 export default {
+  data() {
+    return {
+      getImageUrl,
+    };
+  },
   name: "ProductCardComp",
   props: {
     product: {
