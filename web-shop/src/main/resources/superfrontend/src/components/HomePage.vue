@@ -100,7 +100,7 @@
           <p>Pogledajte neke od proizvoda iz izdvojenih kategorija.</p>
         </div>
       </div>
-      <div class="flex flex-col gap-2 pl-64">
+      <div class="flex flex-col gap-8 pl-64">
         <div
           class="flex flex-row justify-start gap-2 p-3 bg-white w-[276px] items-center h-[60px] rounded-xl drop-shadow-lg text-xl"
         >
