@@ -9,16 +9,12 @@
 
 <script>
 export default {
-  name: 'ProductCardComp',
+  name: "ProductCardComp",
   props: {
     product: {
       type: Object,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 };
 </script>
-
-<style scoped>
-/* Add any specific styles for your product card here */
-</style>
