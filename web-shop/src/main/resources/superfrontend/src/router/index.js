@@ -47,6 +47,11 @@ const router = createRouter({
       component: () => import("../views/MyProfile.vue"),
     },
     {
+      path: "/postavi",
+      name: "postavi",
+      component: () => import("../views/PostProduct.vue"),
+    },
+    {
       path: "/:catchAll(.*)",
       redirect: "/register",
     },
