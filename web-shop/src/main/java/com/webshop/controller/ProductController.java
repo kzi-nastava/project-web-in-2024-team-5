@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -170,11 +171,12 @@ public class ProductController {
             @RequestParam(required = false) BigDecimal minPrice,
             @RequestParam(required = false) BigDecimal maxPrice,
             @RequestParam(required = false) String category,
-            @RequestParam(required = false) TypeOfSale typeOfSale) {
+            @RequestParam(required = false) TypeOfSale typeOfSale,
+            Pageable pageable) {
 
         Category categoryObj = categoryService.findCategory(category);
 
-        return productService.getFilteredProducts(minPrice, maxPrice, categoryObj, typeOfSale);
+        return productService.getFilteredProducts(minPrice, maxPrice, categoryObj, typeOfSale, pageable);
     }
 
     /**

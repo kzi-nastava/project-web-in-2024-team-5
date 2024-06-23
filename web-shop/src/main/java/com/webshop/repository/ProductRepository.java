@@ -18,15 +18,15 @@ import com.webshop.model.TypeOfSale;
 public interface ProductRepository extends PagingAndSortingRepository<Product, Long> {
     Product findById(Long id);
 
-    List<Product> findByCategoryAndTypeOfSale(Category category, TypeOfSale typeOfSale);
+    Page<Product> findByCategoryAndTypeOfSale(Category category, TypeOfSale typeOfSale, Pageable pageable);
 
     List<Product> findAll();
 
     Product save(Product product);
 
-    List<Product> findByCategory(Category category);
+    Page<Product> findByCategory(Category category, Pageable pageable);
 
-    List<Product> findByTypeOfSale(TypeOfSale typeOfSale);
+    Page<Product> findByTypeOfSale(TypeOfSale typeOfSale, Pageable pageable);
 
     @Query("SELECT p FROM Product p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(p.description) LIKE LOWER(CONCAT('%', :search, '%')) AND p.sold = false")
     Page<Product> findBySearchTerm(String search, Pageable pageable);

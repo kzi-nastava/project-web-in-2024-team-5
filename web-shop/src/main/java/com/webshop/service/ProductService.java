@@ -72,9 +72,10 @@ public class ProductService {
             BigDecimal minPrice,
             BigDecimal maxPrice,
             Category category,
-            TypeOfSale typeOfSale) {
-        // TODO OPTIMIZOVATI, PAGINACIJA
-        List<Product> products = initializeProducts(category, typeOfSale);
+            TypeOfSale typeOfSale,
+            Pageable pageable) {
+        // TODO OPTIMIZOVATI
+        List<Product> products = initializeProducts(category, typeOfSale, pageable);
         List<BasicProductDto> productDtos = new ArrayList<>();
 
         minPrice = (minPrice == null) ? BigDecimal.ZERO : minPrice;
@@ -228,17 +229,17 @@ public class ProductService {
         return product;
     }
 
-    private List<Product> initializeProducts(Category category, TypeOfSale typeOfSale) {
+    private List<Product> initializeProducts(Category category, TypeOfSale typeOfSale, Pageable pageable) {
         List<Product> products;
 
         if (category != null && typeOfSale != null) {
-            products = productRepository.findByCategoryAndTypeOfSale(category, typeOfSale);
+            products = productRepository.findByCategoryAndTypeOfSale(category, typeOfSale, pageable).getContent();
         } else if (category != null) {
-            products = productRepository.findByCategory(category);
+            products = productRepository.findByCategory(category, pageable).getContent();
         } else if (typeOfSale != null) {
-            products = productRepository.findByTypeOfSale(typeOfSale);
+            products = productRepository.findByTypeOfSale(typeOfSale, pageable).getContent();
         } else {
-            products = productRepository.findAll();
+            products = productRepository.findAll(pageable).getContent();
         }
 
         return products;
