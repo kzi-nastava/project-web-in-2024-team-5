@@ -16,7 +16,7 @@
                 placeholder="Search"
               />
             </div>
-            <RouterLink v-if="isLogged" to="/logout">Logout</RouterLink>
+            <ProfileIcon :user="user" v-if="isLogged" />
             <div
               class="flex flex-row justify-center align-middle items-center gap-10"
             >
@@ -64,9 +64,14 @@
 
 <script>
 import axios from "axios";
+import ProfileIcon from "@/components/ProfileIcon.vue";
 export default {
+  components: {
+    ProfileIcon,
+  },
   data() {
     return {
+      user: {},
       isLogged: false,
     };
   },
@@ -89,6 +94,8 @@ export default {
           },
         );
         if (response.status === 200) {
+          console.log(response);
+          this.user = response.data;
           this.isLogged = true;
         }
       } catch (error) {
