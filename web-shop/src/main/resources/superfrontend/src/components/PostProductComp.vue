@@ -12,8 +12,8 @@
     <input v-model = "product.description" maxlength = "100" form = "text" placeholder="Unesi opis proizvoda"></input>
     <label for = "name">Tip prodaje</label>
     <select v-model = "product.typeOfSale">
-                            <option>Fiksna cena</option>
-                            <option>Aukcija</option>
+                            <option value = "FIXED_PRICE">Fiksna cena</option>
+                            <option value = "AUCTION">Aukcija</option>
                         </select>
     <label for = "name">Kategorija</label>
     <input v-model = "product.category" form = "text" placeholder="Unesi kategoriju proizvoda"></input>
@@ -24,9 +24,6 @@
                     <input class ="justify-self-end drop-shadow-lg bg-[#004E9D] text-white h-full rounded-2xl " type = "submit" value = "Postavi proizvod!"></input> 
 
             </form>
-
-                
-
             </div>
     </div>
     </div>
