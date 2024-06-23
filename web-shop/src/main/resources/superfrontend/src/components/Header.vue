@@ -50,7 +50,7 @@
                 Proizvodi
               </button>
             </RouterLink>
-            <RouterLink to="/about"
+            <RouterLink to="/postavi"
               ><button
                 class="drop-shadow-lg rounded-xl w-[152px] h-[35px] bg-[#B84E15] text-lg text-white"
               >
