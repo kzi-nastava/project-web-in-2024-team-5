@@ -42,6 +42,11 @@ const router = createRouter({
       props: true,
     },
     {
+      path: "/me",
+      name: "me",
+      component: () => import("../views/MyProfile.vue"),
+    },
+    {
       path: "/:catchAll(.*)",
       redirect: "/register",
     },
