@@ -19,22 +19,19 @@ export default {
     ProductGridComp,
     ProductsFilterSidebarComp,
   },
-  data() {
-    return {
-      filters: {
-        selectedCategory: "",
-        minPrice: null,
-        maxPrice: null,
-        typeOfSale: "",
-      },
-    };
+  props: {
+    filters: {
+      type: Object,
+    },
   },
   methods: {
     filterProducts(minPrice, maxPrice, selectedCategory, typeOfSale) {
-      this.filters.selectedCategory = selectedCategory;
-      this.filters.minPrice = minPrice;
-      this.filters.maxPrice = maxPrice;
-      this.filters.typeOfSale = typeOfSale;
+      this.$emit("update-filters", {
+        minPrice,
+        maxPrice,
+        category: selectedCategory,
+        typeOfSale,
+      });
     },
   },
 };

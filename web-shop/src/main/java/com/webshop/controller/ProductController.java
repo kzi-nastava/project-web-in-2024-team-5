@@ -172,11 +172,12 @@ public class ProductController {
             @RequestParam(required = false) BigDecimal maxPrice,
             @RequestParam(required = false) String category,
             @RequestParam(required = false) TypeOfSale typeOfSale,
+            @RequestParam(required = false) String search,
             Pageable pageable) {
 
         Category categoryObj = categoryService.findCategory(category);
 
-        return productService.getFilteredProducts(minPrice, maxPrice, categoryObj, typeOfSale, pageable);
+        return productService.getFilteredProducts(minPrice, maxPrice, categoryObj, typeOfSale, search, pageable);
     }
 
     /**

@@ -9,13 +9,15 @@
             <RouterLink to="/">
               <div class="text-2xl">SuperWebShop</div>
             </RouterLink>
-            <div>
+            <form @submit.prevent="submitSearch">
               <input
-                class="pl-5 rounded-full w-[600px] h-[35px] text-black text-base"
                 type="text"
+                v-model="searchTerm"
                 placeholder="Search"
+                class="pl-5 rounded-full w-[600px] h-[35px] text-black text-base mr-2"
               />
-            </div>
+              <button type="submit">Search</button>
+            </form>
             <ProfileIcon :user="user" v-if="isLogged" />
             <div
               class="flex flex-row justify-center align-middle items-center gap-10"
@@ -73,12 +75,19 @@ export default {
     return {
       user: {},
       isLogged: false,
+      searchTerm: "",
     };
   },
   mounted() {
     this.loggedUser();
   },
   methods: {
+    submitSearch() {
+      this.$router.push({
+        path: "/products",
+        query: { search: this.searchTerm },
+      });
+    },
     handleLogout() {
       this.isLogged = false;
     },

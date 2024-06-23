@@ -33,6 +33,7 @@ export default {
   props: {
     filters: {
       type: Object,
+      required: true,
     },
   },
   data() {
@@ -69,6 +70,7 @@ export default {
               maxPrice: filters.maxPrice,
               typeOfSale: filters.typeOfSale,
               category: filters.selectedCategory,
+              search: filters.searchTerm,
             },
           },
         );

@@ -73,6 +73,7 @@ public class ProductService {
             BigDecimal maxPrice,
             Category category,
             TypeOfSale typeOfSale,
+            String search,
             Pageable pageable) {
         // TODO OPTIMIZOVATI
         List<Product> products = initializeProducts(category, typeOfSale, pageable);
@@ -82,9 +83,15 @@ public class ProductService {
 
         maxPrice = (maxPrice == null) ? BigDecimal.valueOf(Double.MAX_VALUE) : maxPrice;
 
+        if (search != null)
+            search = search.trim().toLowerCase();
+        else
+            search = "";
         for (Product prod : products) {
             BigDecimal cena = prod.getPrice();
-            if (cena.compareTo(minPrice) != -1 && cena.compareTo(maxPrice) != 1) {
+            if (cena.compareTo(minPrice) != -1 && cena.compareTo(maxPrice) != 1
+                    && (prod.getDescription().toLowerCase().contains(search) ||
+                            prod.getName().toLowerCase().contains(search))) {
                 productDtos.add(new BasicProductDto(prod));
             }
         }
@@ -233,13 +240,13 @@ public class ProductService {
         List<Product> products;
 
         if (category != null && typeOfSale != null) {
-            products = productRepository.findByCategoryAndTypeOfSale(category, typeOfSale, pageable).getContent();
+            products = productRepository.findByCategoryAndTypeOfSaleAndSold(category, typeOfSale, false, pageable).getContent();
         } else if (category != null) {
-            products = productRepository.findByCategory(category, pageable).getContent();
+            products = productRepository.findByCategoryAndSold(category, false, pageable).getContent();
         } else if (typeOfSale != null) {
-            products = productRepository.findByTypeOfSale(typeOfSale, pageable).getContent();
+            products = productRepository.findAllByTypeOfSaleAndSold(typeOfSale, false, pageable).getContent();
         } else {
-            products = productRepository.findAll(pageable).getContent();
+            products = productRepository.findAllBySold(pageable, false).getContent();
         }
 
         return products;

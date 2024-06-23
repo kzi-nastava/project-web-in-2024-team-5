@@ -20,13 +20,19 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, L
 
     Page<Product> findByCategoryAndTypeOfSale(Category category, TypeOfSale typeOfSale, Pageable pageable);
 
+    Page<Product> findByCategoryAndTypeOfSaleAndSold(Category category, TypeOfSale typeOfSale, boolean sold, Pageable pageable);
+
     List<Product> findAll();
 
     Product save(Product product);
 
     Page<Product> findByCategory(Category category, Pageable pageable);
 
+    Page<Product> findByCategoryAndSold(Category category, boolean sold, Pageable pageable);
+
     Page<Product> findByTypeOfSale(TypeOfSale typeOfSale, Pageable pageable);
+
+    Page<Product> findAllByTypeOfSaleAndSold(TypeOfSale typeOfSale, boolean sold, Pageable pageable);
 
     @Query("SELECT p FROM Product p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(p.description) LIKE LOWER(CONCAT('%', :search, '%')) AND p.sold = false")
     Page<Product> findBySearchTerm(String search, Pageable pageable);
