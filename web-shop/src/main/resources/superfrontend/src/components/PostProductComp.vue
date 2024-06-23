@@ -24,6 +24,9 @@
                     <input class ="justify-self-end drop-shadow-lg bg-[#004E9D] text-white h-full rounded-2xl " type = "submit" value = "Postavi proizvod!"></input> 
 
             </form>
+
+                
+
             </div>
     </div>
     </div>
