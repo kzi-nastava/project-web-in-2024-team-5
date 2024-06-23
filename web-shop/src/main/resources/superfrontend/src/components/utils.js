@@ -32,10 +32,10 @@ export function getImageUrl(imagePath) {
   return `/assets/${imagePath}`;
 }
 
-export async function retrieveMyProducts(products) {
+export async function retrieveMyProducts(products, id) {
   try {
     const response = await axios.get(
-      `http://localhost:8080/api/v1/products/user/me`,
+      `http://localhost:8080/api/v1/products/user/${id}`,
     );
     products = response.data;
     return products;

@@ -115,7 +115,7 @@ export default {
       this.prodavac = false;
       this.admin = true;
     }
-    this.fetchMyProducts();
+    await this.fetchMyProducts();
     await this.fetchUsersReviewers();
     await this.fetchReceivedUsers();
   },
@@ -148,7 +148,7 @@ export default {
       return response.data;
     },
     async fetchMyProducts() {
-      const response = await retrieveMyProducts(this.products, 1, 4);
+      const response = await retrieveMyProducts(this.products, this.user.id);
       this.products = response;
     },
   },
