@@ -1,9 +1,16 @@
 <template>
   <div class="flex flex-row gap-4 items-center font-[Open_Sans]">
     <img src="/public/assets/icon.svg" />
-    <RouterLink to="/me" class="text-2xl">{{ user.name }}</RouterLink>
+    <RouterLink
+      :to="{
+        name: 'me',
+      }"
+      class="text-2xl"
+      >{{ user.name }}</RouterLink
+    >
+
     <div class="flex flex-col justify-end">
-      <div @mouseover="this.hover = true">
+      <div @mouseover="this.hover = true" @mouseleave="this.hover = false">
         <img src="/public/assets/strelica.svg" />
       </div>
       <div
@@ -35,7 +42,6 @@ export default {
   methods() {
     function hoverTrue() {
       this.hover = true;
-      console.log(this.hover);
     }
   },
 };
