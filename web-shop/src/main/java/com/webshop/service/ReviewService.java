@@ -24,4 +24,6 @@ public interface ReviewService {
     void updateAverageRating(Long reviewId);
 
     List<ReviewDto> getWhoReviewedMe(Long requestingUserId);
+
+    List<ReviewDto> findAll();
 }

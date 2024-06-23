@@ -42,6 +42,17 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
+    public List<ReviewDto> findAll() {
+        List<Review> reviews = reviewRepository.findAll();
+        List<ReviewDto> reviewDtos = new ArrayList<>();
+
+        for (Review review : reviews) {
+            reviewDtos.add(new ReviewDto(review));
+        }
+        return reviewDtos;
+    }
+
+    @Override
     public boolean reviewUser(Long requesterId, Long reviewedId, Map<String, String> reviewInfo) {
         Optional<User> user = Optional.ofNullable(userRepository.findById(requesterId));
         Optional<User> toBeReviewedUser = Optional.ofNullable(userRepository.findById(reviewedId));
