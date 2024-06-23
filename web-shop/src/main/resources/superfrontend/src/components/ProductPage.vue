@@ -42,14 +42,22 @@
             Poslednja ponuda: {{ this.product.price }}
           </h2>
           <div class = "flex flex-row items-center mb-6">
-          <input class = "w-2/3" v-model = "offer" type = "number" placeholder= "Unesi ponudu"></input>
-          <button
+          <input v-if ="this.user.id != this.seller.id" class = "w-2/3" v-model = "offer" type = "number" placeholder= "Unesi ponudu"></input>
+          <button v-if ="this.user.id != this.seller.id"
             class="bg-blue-500 place-self-end hover:bg-blue-700 w-1/3 text-white font-bold py-2 px-4 rounded-full"
             @click="addOffer"
           >
               
             Daj ponudu
           </button>
+          <button v-else
+            class="bg-red-500 place-self-end hover:bg-red-700 w-full text-white font-bold py-2 px-4 rounded-full"
+            @click="endAuction"
+          >
+              
+            Zavrsi aukciju
+          </button>
+
           </div>
         </div>
 
@@ -59,7 +67,7 @@
           <h2 class="text-2xl text-center">
             {{ this.seller.name + " " + this.seller.lastname }}
           </h2>
-          <h2 class="text-xl text-center">{{ "Prosecna ocena: " }}</h2>
+          <h2 class="text-xl text-center">{{ this.average }}</h2>
           <h2 class="text-lg text-center">
             {{ "Pogledaj sve recenzije... " }}
           </h2>
@@ -70,13 +78,16 @@
 </template>
 <script>
 import axios from "axios";
-import { getImageUrl } from "./utils";
+import { getImageUrl, fetchSelf } from "./utils";
 export default {
   data() {
     return {
+      user: {},
       product: {},
       seller: {},
       offer: {},
+      average: {},
+
     };
   },
   computed: {
@@ -86,11 +97,32 @@ export default {
   },
   async mounted() {
     await this.fetchProduct();
-    this.fetchSeller();
+    await this.fetchSeller();
+    await this.getAverage();
+    this.user = await this.fetchSelf();
+    console.log(this.user);
     console.log(this.seller);
   },
   methods: {
     getImageUrl,
+    fetchSelf,
+    async getAverage() {
+      try{
+        const response = await axios.get(`http://localhost:8080/api/v1/reviews/average?reviewedUserId=${this.product.sellerId}`)
+        this.average = response.data;
+        console.log(this.average);
+      }catch(error) {
+
+      }
+    },
+    async endAuction() {
+      try {
+        const response = await axios.post(
+          `http://localhost:8080/api/v1/products/${this.productId}/end-auction`,
+        );
+        console.log(response.data);
+      } catch (error) {}
+    },
     async buyProduct() {
       try {
         const response = await axios.post(
@@ -122,13 +154,14 @@ export default {
       } catch (error) {}
     },
     async fetchSeller() {
-      try {
-        console.log(this.product.sellerId);
-        const response = await axios.get(
-          `http://localhost:8080/api/v1/users/${this.product.sellerId}`,
-        );
-        this.seller = response.data;
-        console.log(this.seller);
+  try {
+        const response = await axios.get(`
+          http://localhost:8080/api/v1/users/${this.product.sellerId}`
+        );        
+        console.log(response.data);
+        const seller = {...response.data, id: this.product.sellerId};
+        this.seller = seller;
+
       } catch (error) {}
     },
   },
