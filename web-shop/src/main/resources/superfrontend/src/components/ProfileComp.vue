@@ -27,6 +27,19 @@
         <div class="grid grid-cols-4">
           <div v-for="product in products" :key="product.id">
             <ProductCard :product="product" />
+
+            <RouterLink
+              :to="{
+                name: 'editproduct',
+                params: {
+                  id: product.id,
+                },
+              }"
+              v-if="this.prodavac"
+              class="text-blue-500 hover:text-blue-700"
+            >
+              Izmeni proizvod
+            </RouterLink>
           </div>
         </div>
         <h2 class="py-8 text-4xl">Recenzije koje sam dobio</h2>

@@ -16,12 +16,26 @@
         >
           <div class="flex-grow">
             <h2 class="text-[40px]">{{ this.product.name }}</h2>
+
             <p class="text-xl break-words">{{ this.product.description }}</p>
           </div>
           <h2 class="mb-6 text-2xl text-[#B84E15]">
             Price: {{ this.product.price }}
           </h2>
-          <button
+<RouterLink
+              :to="{
+                name: 'editproduct',
+                params: {
+                  id: product.id,
+                },
+              }"
+              v-if="this.user.id == this.seller.id"
+              class="text-center bg-blue-500 place-self-end hover:bg-blue-700 w-full text-white font-bold py-2 px-4 rounded-full"
+             >
+              Izmeni proizvod
+            </RouterLink>
+
+          <button v-if = "this.user.id != this.seller.id"
             class="bg-blue-500 place-self-end hover:bg-blue-700 w-full text-white font-bold py-2 px-4 rounded-full"
             @click="buyProduct"
           >
@@ -158,13 +172,6 @@ export default {
   methods: {
     getImageUrl,
     fetchSelf,
-    async addReview() {
-      this.openedReview = true;
-    },
-    async addReport() {
-      this.openedReport = true;
-
-    },
     async getAverage() {
       try{
         const response = await axios.get(`http://localhost:8080/api/v1/reviews/average?reviewedUserId=${this.product.sellerId}`)
