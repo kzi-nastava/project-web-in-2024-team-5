@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Home from "@/views/Home.vue";
 import AllProducts from "@/views/Products.vue";
-import store from "@/store";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -68,19 +67,9 @@ const router = createRouter({
     },
   ],
 });
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const publicPages = ["/", "/products", "/login", "/register"];
   const authRequired = !publicPages.includes(to.path);
-
-  const user = store.state.user;
-
-  if (authRequired && !user) {
-    return next("/login");
-  }
-
-  if (to.path === "/dashboard" && (!user || user.role !== "admin")) {
-    return next("login");
-  }
 
   next();
 });

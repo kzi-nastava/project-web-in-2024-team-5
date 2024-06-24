@@ -110,7 +110,6 @@ export default {
       } catch (error) {
         console.log(error);
         if (error.response && error.response.status === 401) {
-          alert("You're not logged in!");
           this.isLogged = false;
         }
       }

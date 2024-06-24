@@ -1,22 +1,26 @@
 <template>
-  <div>
+  <div class="container w-[1200px] mx-auto">
     <h1>Here you can log out!</h1>
-    <button @click="logout">Logout</button>
+    <button @click="logoutUser">Logout</button>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import { fetchSelf } from "./utils";
 export default {
+  async mounted() {
+    const res = await fetchSelf()
+    if (!res) {
+      this.$router.push("/")
+    }
+  },
   methods: {
-    async logout() {
+    async logoutUser() {
       try {
-        const response = await axios.post(
-          "http://localhost:8080/api/v1/logout",
-        );
+        const res = axios.post("http://localhost:8080/api/v1/logout")
         this.$router.push("/");
-        EventBus.$emit("userLoggedOut");
-        console.log(response.data);
+        // this.$emit("userLoggedOut");
       } catch (error) {
         console.error(error);
       }
