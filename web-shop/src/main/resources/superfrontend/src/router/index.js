@@ -52,6 +52,11 @@ const router = createRouter({
       component: () => import("../views/PostProduct.vue"),
     },
     {
+      path: "/dashboard",
+      name: "dashboard",
+      component: () => import("../views/DashboardView.vue"),
+    },
+    {
       path: "/:catchAll(.*)",
       redirect: "/register",
     },
