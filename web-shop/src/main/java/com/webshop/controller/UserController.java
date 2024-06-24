@@ -199,7 +199,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/users/me/password")
+    @PostMapping("/users/me/password")
     public ResponseEntity<Void> checkMyPassword(@Validated @RequestBody LoginDto lDto, HttpSession session) {
         UserSession loggedUser = (UserSession) session.getAttribute("User");
 
