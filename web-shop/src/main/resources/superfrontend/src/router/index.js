@@ -57,9 +57,24 @@ const router = createRouter({
       component: () => import("../views/SettingsView.vue"),
     },
     {
+      path: "/profile/:id",
+      name: "profile",
+      component: () => import("../views/ProfileView.vue"),
+    },
+    {
       path: "/dashboard",
       name: "dashboard",
       component: () => import("../views/DashboardView.vue"),
+    },
+    {
+      path: "/reviews/:id",
+      name: "reviews",
+      component: () => import("../views/ReviewView.vue"),
+    },
+    {
+      path: "/reports/:id",
+      name: "reports",
+      component: () => import("../views/ReportView.vue"),
     },
     {
       path: "/:catchAll(.*)",
@@ -68,8 +83,23 @@ const router = createRouter({
   ],
 });
 router.beforeEach(async (to, from, next) => {
-  const publicPages = ["/", "/products", "/login", "/register"];
-  const authRequired = !publicPages.includes(to.path);
+  const publicPages = [
+    "/",
+    "/products",
+    "/products/catchAll(*)",
+    "/profile/catchAll(*)",
+    "/me",
+    "/postavi",
+    "/settings",
+    "/login",
+    "/register",
+  ];
+  const productDetailRegex = /^\/products\/\d+$/;
+  const profileDetailRegex = /^\/profile\/\d+$/;
+  const authRequired =
+    !publicPages.includes(to.path) &&
+    !profileDetailRegex.test(to.path) &&
+    !productDetailRegex.test(to.path);
 
   next();
 });
