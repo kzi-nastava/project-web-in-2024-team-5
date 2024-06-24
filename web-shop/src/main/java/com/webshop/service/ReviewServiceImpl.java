@@ -1,6 +1,6 @@
 package com.webshop.service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -135,7 +135,7 @@ public class ReviewServiceImpl implements ReviewService {
                 review.setComment((String) update.get("comment"));
             }
             if (update.containsKey("date")) {
-                LocalDateTime localDate = LocalDateTime.parse(update.get("date").toString());
+                LocalDate localDate = LocalDate.parse(update.get("date").toString());
                 review.setReviewDate(localDate);
             }
             return reviewRepository.save(review);
@@ -193,7 +193,7 @@ public class ReviewServiceImpl implements ReviewService {
                     review.setComment(comment);
                     review.setReviewingUser(b);
                     review.setScore(score);
-                    review.setReviewDate(LocalDateTime.now());
+                    review.setReviewDate(LocalDate.now());
                     review.setReviewedUser(s);
                     reviewRepository.save(review);
                     updateAverageRating(sellerId);
@@ -218,7 +218,7 @@ public class ReviewServiceImpl implements ReviewService {
                     review.setComment(comment);
                     review.setReviewingUser(s);
                     review.setScore(score);
-                    review.setReviewDate(LocalDateTime.now());
+                    review.setReviewDate(LocalDate.now());
                     review.setReviewedUser(b);
                     reviewRepository.save(review);
                     updateAverageRating(buyerId);

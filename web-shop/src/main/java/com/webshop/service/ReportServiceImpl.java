@@ -1,6 +1,6 @@
 package com.webshop.service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -117,7 +117,7 @@ public class ReportServiceImpl implements ReportService {
                     report.setWhoIsReported(s);
                     report.setReason(reason);
                     report.setStatus(ReportStatus.SUBMITTED);
-                    report.setDatePosted(LocalDateTime.now());
+                    report.setDatePosted(LocalDate.now());
                     reportRepository.save(report);
                     return true;
                 }
@@ -140,7 +140,7 @@ public class ReportServiceImpl implements ReportService {
                     report.setWhoIsReported(b);
                     report.setReason(reason);
                     report.setStatus(ReportStatus.SUBMITTED);
-                    report.setDatePosted(LocalDateTime.now());
+                    report.setDatePosted(LocalDate.now());
                     reportRepository.save(report);
                     return true;
                 }

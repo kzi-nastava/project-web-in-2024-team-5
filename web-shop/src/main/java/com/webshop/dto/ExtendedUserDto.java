@@ -1,6 +1,6 @@
 package com.webshop.dto;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import com.webshop.model.User;
 
@@ -25,7 +25,7 @@ public class ExtendedUserDto {
 
     private String role;
 
-    private LocalDateTime dateOfBirth;
+    private LocalDate dateOfBirth;
 
     private String profilePicture;
 
@@ -104,11 +104,11 @@ public class ExtendedUserDto {
         this.phoneNumber = phoneNumber;
     }
 
-    public LocalDateTime getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(LocalDateTime dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 

@@ -52,23 +52,23 @@ public class UserController {
      * @return
      */
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody LoginDto loginDto, HttpSession session) {
+    public ResponseEntity<ExtendedUserDto> loginUser(@RequestBody LoginDto loginDto, HttpSession session) {
         UserSession checkLoggedUser = (UserSession) session.getAttribute("User");
         if (checkLoggedUser != null) {
-            return new ResponseEntity<>("Already logged in", HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
         if (loginDto.getPassword().isEmpty() || loginDto.getUsername().isEmpty())
-            return new ResponseEntity<>("Please provide both username and password\n", HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 
         User loggedUser = userService.authenticateUser(loginDto);
         if (loggedUser != null) {
             UserSession userSession = new UserSession(loggedUser);
             session.setAttribute("User", userSession);
-            return ResponseEntity.ok("Successfully logged in!");
+            return ResponseEntity.ok(new ExtendedUserDto(loggedUser));
         }
 
-        return new ResponseEntity<>("User does not exist!", HttpStatus.UNAUTHORIZED);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     /**

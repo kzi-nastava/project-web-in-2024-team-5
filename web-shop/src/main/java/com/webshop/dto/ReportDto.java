@@ -1,6 +1,6 @@
 package com.webshop.dto;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import com.webshop.model.Report;
 import com.webshop.model.ReportStatus;
@@ -12,7 +12,7 @@ public class ReportDto {
     private ReportStatus status;
     private Long whoReported;
     private Long whoIsReported;
-    private LocalDateTime reportDate;
+    private LocalDate reportDate;
 
     public ReportDto(Report report) {
         this.id = report.getId();
@@ -63,11 +63,11 @@ public class ReportDto {
         this.status = status;
     }
 
-    public LocalDateTime getReportDate() {
+    public LocalDate getReportDate() {
         return reportDate;
     }
 
-    public void setReportDate(LocalDateTime reportDate) {
+    public void setReportDate(LocalDate reportDate) {
         this.reportDate = reportDate;
     }
 

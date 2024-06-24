@@ -1,6 +1,6 @@
 package com.webshop.dto;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import com.webshop.model.Review;
 
@@ -11,7 +11,7 @@ public class ReviewDto {
 
     private String comment;
 
-    private LocalDateTime reviewDate;
+    private LocalDate reviewDate;
 
     private Long reviewedUserId;
 
@@ -27,7 +27,7 @@ public class ReviewDto {
         this.comment = comment;
         this.reviewingUserId = reviewingUser;
         this.reviewedUserId = reviewingUser;
-        this.reviewDate = LocalDateTime.now();
+        this.reviewDate = LocalDate.now();
     }
 
     public ReviewDto(Review review) {
@@ -60,11 +60,11 @@ public class ReviewDto {
         this.comment = comment;
     }
 
-    public LocalDateTime getReviewDate() {
+    public LocalDate getReviewDate() {
         return reviewDate;
     }
 
-    public void setReviewDate(LocalDateTime reviewDate) {
+    public void setReviewDate(LocalDate reviewDate) {
         this.reviewDate = reviewDate;
     }
 

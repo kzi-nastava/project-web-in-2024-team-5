@@ -1,7 +1,7 @@
 package com.webshop.model;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,7 +24,7 @@ public class Report implements Serializable {
     private String reason;
 
     @Column
-    private LocalDateTime datePosted;
+    private LocalDate datePosted;
 
     @Enumerated(EnumType.STRING)
     @Column
@@ -64,11 +64,11 @@ public class Report implements Serializable {
         this.reason = reason;
     }
 
-    public LocalDateTime getDatePosted() {
+    public LocalDate getDatePosted() {
         return datePosted;
     }
 
-    public void setDatePosted(LocalDateTime datePosted) {
+    public void setDatePosted(LocalDate datePosted) {
         this.datePosted = datePosted;
     }
 
