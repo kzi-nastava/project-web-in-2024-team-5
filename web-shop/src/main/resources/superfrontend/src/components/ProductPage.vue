@@ -9,7 +9,7 @@
           class="object-contain object-center w-1/2"
         />
       </div>
-      <div class="flex flex-col h-[550px]">
+      <div v-if="!sold" class="flex flex-col h-[550px]">
         <div
           v-if="this.product.typeOfSale == 'FIXED_PRICE'"
           class="flex flex-col w-[500px] h-[380px] mb-auto font-[Open_Sans]"
@@ -64,14 +64,63 @@
         <div
           class="bg-white rounded-xl flex flex-col justify-center items-center drop-shadow-lg h-[150px]"
         >
+          <RouterLink :to="{
+              name: 'profile',
+              params: { id: seller.id },
+              }">
           <h2 class="text-2xl text-center">
             {{ this.seller.name + " " + this.seller.lastname }}
           </h2>
+          </RouterLink>
           <h2 class="text-xl text-center">{{ this.average }}</h2>
           <h2 class="text-lg text-center">
             {{ "Pogledaj sve recenzije... " }}
           </h2>
         </div>
+
+      </div>
+      <div v-else class = "h-[550px] w-1/2 flex flex-col mb-auto">
+<div class = "flex-grow justify-self-start">
+            <h2 class="text-[40px]">{{ this.product.productDto.name }}</h2>
+            <p class="text-xl break-words">{{ this.product.productDto.description }}</p>
+
+          </div>
+<div
+          class=" bg-white  rounded-xl flex flex-row justify-center items-center drop-shadow-lg h-[150px]"
+        >
+          <div class = "flex flex-col">
+
+          <RouterLink :to="{
+              name: 'profile',
+              params: { id: seller.id },
+              }">
+          <h2 class="text-2xl text-center">
+            {{ this.seller.name + " " + this.seller.lastname }}
+          </h2>
+            </RouterLink>
+          <h2 class="text-xl text-center">{{ this.average }}</h2>
+          <h2 class="text-lg text-center">
+            {{ "Pogledaj sve recenzije... " }}
+          </h2>
+          </div>
+        </div>
+        <div class = "flex flex-row m-2 justify-between">
+          <RouterLink :to = "{
+            name: 'reviews',
+            params: {
+              id: seller.id,
+            },
+
+          }" class = "w-1/2 p-3 drop-shadow-lg text-center rounded-2xl text-white font-bold text-2xl bg-blue-500">Oceni korisnika</RouterLink>
+          <RouterLink :to = "{
+            name: 'reports',
+            params: {
+              id: seller.id,
+            },
+
+          }" class = "w-1/2 p-3 drop-shadow-lg text-center rounded-2xl text-white font-bold text-2xl bg-red-500">Prijavi korisnika</RouterLink>
+        </div>
+
       </div>
     </div>
   </div>
@@ -87,6 +136,9 @@ export default {
       seller: {},
       offer: {},
       average: {},
+      sold: false,
+      openedReview: false,
+      openedReport: false,
 
     };
   },
@@ -106,6 +158,13 @@ export default {
   methods: {
     getImageUrl,
     fetchSelf,
+    async addReview() {
+      this.openedReview = true;
+    },
+    async addReport() {
+      this.openedReport = true;
+
+    },
     async getAverage() {
       try{
         const response = await axios.get(`http://localhost:8080/api/v1/reviews/average?reviewedUserId=${this.product.sellerId}`)
@@ -128,7 +187,9 @@ export default {
         const response = await axios.post(
           `http://localhost:8080/api/v1/products/${this.productId}/purchase`,
         );
+        this.product.isSold = true;
         console.log(response.data);
+        
       } catch (error) {}
     },
     async addOffer(amount) {
@@ -149,16 +210,21 @@ export default {
         const response = await axios.get(
           `http://localhost:8080/api/v1/products/${this.productId}`,
         );
-
         this.product = response.data;
+        console.log(this.product)
       } catch (error) {}
     },
     async fetchSeller() {
   try {
+
+        if(this.product.sellerId == undefined) {
+          this.sold = true;
+        this.product.sellerId = this.product.productDto.sellerId;
+        }
         const response = await axios.get(`
           http://localhost:8080/api/v1/users/${this.product.sellerId}`
-        );        
-        console.log(response.data);
+        );
+
         const seller = {...response.data, id: this.product.sellerId};
         this.seller = seller;
 
