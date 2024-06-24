@@ -1,7 +1,17 @@
 <template>
-  <div class="container w-[1200px] mx-auto">
-    <h1>Here you can log out!</h1>
-    <button @click="logoutUser">Logout</button>
+  <div
+    class="w-[1200px] flex flex-col justify-items-center items-center m-auto"
+  >
+    <div class="text-center">
+      <h2>Izlogujte se.</h2>
+      <p class="flex flex-row"></p>
+      <button
+        class="mt-10 rounded-lg bg-[#004E9D] text-white w-[225px] h-[40px] drop-shadow-lg"
+        @click.on="logoutUser"
+      >
+        Logout
+      </button>
+    </div>
   </div>
 </template>
 
@@ -10,15 +20,15 @@ import axios from "axios";
 import { fetchSelf } from "./utils";
 export default {
   async mounted() {
-    const res = await fetchSelf()
+    const res = await fetchSelf();
     if (!res) {
-      this.$router.push("/")
+      this.$router.push("/");
     }
   },
   methods: {
     async logoutUser() {
       try {
-        const res = axios.post("http://localhost:8080/api/v1/logout")
+        const res = axios.post("http://localhost:8080/api/v1/logout");
         this.$router.push("/");
         // this.$emit("userLoggedOut");
       } catch (error) {
@@ -30,4 +40,3 @@ export default {
 </script>
 
 <style></style>
-
