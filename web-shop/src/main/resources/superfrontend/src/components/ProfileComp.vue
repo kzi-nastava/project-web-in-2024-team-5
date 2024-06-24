@@ -80,8 +80,8 @@ import {
   fetchSelf,
   fetchUser,
   retrieveMyProducts,
-  retrieveReceivedReviews,
-  retrievePostedReviews,
+  retrieveMyReceivedReviews,
+  retrieveMyPostedReviews,
   getImageUrl,
 } from "./utils.js";
 import ProductCard from "@/components/ProductCardComp.vue";
@@ -140,11 +140,11 @@ export default {
       console.log(this.postedReviews);
     },
     async fetchReceivedReviews() {
-      const response = await retrieveReceivedReviews();
+      const response = await retrieveMyReceivedReviews();
       return response.data;
     },
     async fetchPostedReviews() {
-      const response = await retrievePostedReviews();
+      const response = await retrieveMyPostedReviews();
       return response.data;
     },
     async fetchMyProducts() {
