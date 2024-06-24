@@ -9,7 +9,7 @@
           class="object-contain object-center w-1/2"
         />
       </div>
-      <div v-if="!sold" class="flex flex-col h-[550px]">
+      <div v-if="sold != true" class="flex flex-col h-[550px]">
         <div
           v-if="this.product.typeOfSale == 'FIXED_PRICE'"
           class="flex flex-col w-[500px] h-[380px] mb-auto font-[Open_Sans]"
@@ -95,8 +95,8 @@
       </div>
       <div v-else class = "h-[550px] w-1/2 flex flex-col mb-auto">
 <div class = "flex-grow justify-self-start">
-            <h2 class="text-[40px]">{{ this.product.productDto.name }}</h2>
-            <p class="text-xl break-words">{{ this.product.productDto.description }}</p>
+            <h2 class="text-[40px]">{{ this.product.name }}</h2>
+            <p class="text-xl break-words">{{ this.product.description }}</p>
 
           </div>
 <div
@@ -136,11 +136,47 @@
         </div>
 
       </div>
+
+<Teleport to="body">
+        <modal :show="showauc" @close="showauc = false">
+          <template #header>
+            <h3>Uspešno ste postavili svoju ponudu!</h3>
+          </template>
+          <template #footer >
+            <button class = "bg-red-600 rounded-2xl drop-shadow-lg  px-3 py-1
+              text-lg text-white" @click="showauc = false">Zatvori</button>
+          </template>
+        </modal>
+      </Teleport>
+    <Teleport to="body">
+        <modal :show="showmsg" @close="showmsg = false">
+          <template #header>
+            <h3>Hvala na kupovini!</h3>
+          </template>
+          <template #footer >
+            <button class = "bg-red-600 rounded-2xl drop-shadow-lg  px-3 py-1
+              text-lg text-white" @click="showmsg = false">Zatvori</button>
+          </template>
+        </modal>
+      </Teleport>
+<Teleport to="body">
+        <modal :show="msgauction" @close="msgauction= false">
+          <template #header>
+            <h3>Uspešno ste završili aukciju!</h3>
+          </template>
+          <template #footer >
+            <button class = "bg-red-600 rounded-2xl drop-shadow-lg  px-3 py-1
+              text-lg text-white" @click="msgauction = false">Zatvori</button>
+          </template>
+        </modal>
+      </Teleport>
+
     </div>
   </div>
 </template>
 <script>
 import axios from "axios";
+import Modal from "@/components/SuccessComp.vue";
 import { getImageUrl, fetchSelf } from "./utils";
 export default {
   data() {
@@ -150,9 +186,12 @@ export default {
       seller: {},
       offer: {},
       average: {},
+      msgbought: false,
+      msgauction: false,
       sold: false,
-      openedReview: false,
-      openedReport: false,
+      showmsg: false,
+           openedReport: false,
+      showauc: false,
 
     };
   },
@@ -168,6 +207,10 @@ export default {
     this.user = await this.fetchSelf();
     console.log(this.user);
     console.log(this.seller);
+  },
+  components: {
+    Modal,
+
   },
   methods: {
     getImageUrl,
@@ -186,6 +229,9 @@ export default {
         const response = await axios.post(
           `http://localhost:8080/api/v1/products/${this.productId}/end-auction`,
         );
+        if(response.status == 200) {
+          this.msgauction = true;
+        }
         console.log(response.data);
       } catch (error) {}
     },
@@ -194,7 +240,13 @@ export default {
         const response = await axios.post(
           `http://localhost:8080/api/v1/products/${this.productId}/purchase`,
         );
+        if(response.status === 200 ) {
         this.product.isSold = true;
+          this.sold = true;
+          this.showmsg = true;
+          this.$forceUpdate();
+          console.log(this.productId);
+        }
         console.log(response.data);
         
       } catch (error) {}
@@ -205,6 +257,9 @@ export default {
           price: this.offer,
           productId: Number(this.productId),
         });
+        this.showauc = true;
+
+          this.$forceUpdate();
 
     }
       catch(error) {
@@ -226,7 +281,7 @@ export default {
 
         if(this.product.sellerId == undefined) {
           this.sold = true;
-        this.product.sellerId = this.product.productDto.sellerId;
+        this.product = this.product.productDto;
         }
         const response = await axios.get(`
           http://localhost:8080/api/v1/users/${this.product.sellerId}`
@@ -236,6 +291,10 @@ export default {
         this.seller = seller;
 
       } catch (error) {}
+    },
+    closeModal() {
+      this.showmsg = false;
+      this.sold = true; // Update the state to reflect the sale
     },
   },
 };
