@@ -1,18 +1,18 @@
 <template>
-  <div
-    class="w-[1200px] flex flex-col justify-items-center items-center m-auto"
-  >
-    <div class="text-center">
-      <h2>Izlogujte se.</h2>
-      <p class="flex flex-row"></p>
-      <button
-        class="mt-10 rounded-lg bg-[#004E9D] text-white w-[225px] h-[40px] drop-shadow-lg"
-        @click.on="logoutUser"
-      >
-        Logout
-      </button>
+  <section class="py-14">
+    <div class="w-[1200px] flex flex-col justify-items-center items-center m-auto">
+      <div class="text-center">
+        <h1 class="text-2xl font-bold mb-6 text-center">
+          Izlogujte se
+        </h1>
+        <p class="flex flex-row"></p>
+        <button class="mt-2 rounded-lg bg-[#B84E15] text-white w-[225px] h-[40px] drop-shadow-lg"
+          @click.on="logoutUser">
+          Logout
+        </button>
+      </div>
     </div>
-  </div>
+  </section>
 </template>
 
 <script>

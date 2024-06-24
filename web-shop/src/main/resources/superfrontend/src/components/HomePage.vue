@@ -7,7 +7,7 @@
     </div>
     <div class="container w-[1200px]">
       <h1 class="absolute top-[83px] text-5xl left-[18.75%] font-extrabold">
-        Big Hero Title
+        Super web shop
       </h1>
       <p class="absolute top-[183px] text-xl left-[18.75%] w-96 text-left">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
@@ -104,7 +104,7 @@
 
 <script>
 import axios from "axios";
-import { getImageUrl } from "./utils.js";
+import { fetchSelf, getImageUrl } from "./utils.js";
 import { retrieveProducts } from "./utils.js";
 import ProductCard from "@/components/ProductCardComp.vue";
 export default {
@@ -121,8 +121,9 @@ export default {
       this.products = response;
     },
   },
-  created() {
+  async created() {
     this.fetchProducts();
+    const res = await fetchSelf()
   },
   components: {
     ProductCard,
