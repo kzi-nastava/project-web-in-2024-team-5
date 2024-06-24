@@ -45,7 +45,6 @@ public class ReviewServiceImpl implements ReviewService {
     public List<ReviewDto> findAll() {
         List<Review> reviews = reviewRepository.findAll();
         List<ReviewDto> reviewDtos = new ArrayList<>();
-
         for (Review review : reviews) {
             reviewDtos.add(new ReviewDto(review));
         }
