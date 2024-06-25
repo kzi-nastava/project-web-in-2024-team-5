@@ -161,7 +161,8 @@ public class ProductService {
             if (buyer.isPresent()) {
                 products = buyer.get().getProducts();
                 for (Product prod : products) {
-                    bDtos.add(new BasicProductDto(prod));
+                    if(prod.isSold())
+                        bDtos.add(new BasicProductDto(prod));
                 }
             }
         }
