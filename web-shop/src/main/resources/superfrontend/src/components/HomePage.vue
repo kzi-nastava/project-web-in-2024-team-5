@@ -16,14 +16,14 @@
         commodo consequat.
       </p>
       <div class="flex flex-row justify-center items-center gap-10">
-        <RouterLink to="/register">
+        <RouterLink v-if="!isLogged" to="/register">
           <button
             class="absolute top-[383px] left-[18.75%] drop-shadow-xl rounded-xl w-[105px] h-[41px] bg-[#B84E15]"
           >
             Register
           </button>
         </RouterLink>
-        <RouterLink to="/login">
+        <RouterLink v-if="!isLogged" to="/login">
           <button
             class="absolute top-[390px] left-[25%] drop-shadow-xl rounded-xl w-[76px] h-[27px] bg-white text-s text-black"
           >
@@ -112,6 +112,7 @@ export default {
     return {
       products: [],
       getImageUrl,
+      isLogged: false,
       retrieveProducts,
     };
   },
@@ -123,7 +124,10 @@ export default {
   },
   async created() {
     this.fetchProducts();
-    const res = await fetchSelf()
+    const res = await fetchSelf();
+    if (res) {
+      this.isLogged = true;
+    }
   },
   components: {
     ProductCard,
