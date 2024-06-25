@@ -50,7 +50,6 @@
             <h2 class="text-[40px]">{{ this.product.name }}</h2>
             <p class="text-xl break-words">{{ this.product.description }}</p>
 
-            <h2 class="mb-6 text-xl">Pocetna cena: {{ this.product.price }}</h2>
           </div>
           <h2 class="mb-6 text-2xl text-[#B84E15]">
             Poslednja ponuda: {{ this.product.price }}
@@ -263,7 +262,8 @@ export default {
 
     }
       catch(error) {
-
+        alert("Neusposno postavljanje ponude! Unesite vecu cenu od trenutne!")
+        console.log(error)
       }
 
     },
