@@ -11,9 +11,9 @@
           <h2 class="text-4xl">{{ user.name + " " + user.lastname }}</h2>
           <h2 class="text-4xl">{{ user.email }}</h2>
           <h2 class="text-4xl">{{ user.phoneNumber }}</h2>
-          <RouterLink to="/settings"
-            ><h2 class="text-[#004E9D] text-2xl">Izmeni podatke</h2></RouterLink
-          >
+          <RouterLink to="/settings">
+            <h2 class="text-[#004E9D] text-2xl">Izmeni podatke</h2>
+          </RouterLink>
         </div>
       </div>
       <div v-if="!admin" class="flex flex-col">
@@ -28,31 +28,33 @@
           <div v-for="product in products" :key="product.id">
             <ProductCard :product="product" />
 
-            <RouterLink
-              :to="{
+            <RouterLink :to="{
                 name: 'editproduct',
                 params: {
                   id: product.id,
                 },
-              }"
-              v-if="this.prodavac"
-              class="text-blue-500 hover:text-blue-700"
-            >
+              }" v-if="this.prodavac" class="text-blue-500 hover:text-blue-700">
               Izmeni proizvod
             </RouterLink>
           </div>
         </div>
+
+        <h2 v-if="this.kupac" class="py-8 text-4xl">Proizvodi na kojima imam ponudu</h2>
+        <div class="grid grid-cols-4">
+          <div v-for="product in productsIHaveOfferOn" :key="product.id">
+            <ProductCard :product="product" />
+          </div>
+        </div>
+
         <h2 class="py-8 text-4xl">Recenzije koje sam dobio</h2>
         <div class="grid grid-cols-3">
           <div v-for="review in receivedReviews" :key="review.id">
-            <div
-              class="flex flex-row h-2/3 w-fit justify-start bg-white drop-shadow-lg rounded-2xl"
-            >
+            <div class="flex flex-row h-2/3 w-fit justify-start bg-white drop-shadow-lg rounded-2xl">
               <img src="../../public/assets/person.svg" class="w-1/2" />
               <div class="flex flex-col">
                 <p class="text-2xl">
                   {{
-                    review.reviewer.name + " " + review.reviewer.lastname + " "
+                  review.reviewer.name + " " + review.reviewer.lastname + " "
                   }}
                 </p>
                 <p class="text-2xl">
@@ -66,14 +68,12 @@
         <h2 class="py-8 text-4xl">Recenzije koje sam dao</h2>
         <div class="grid grid-cols-3">
           <div v-for="review in postedReviews" :key="review.id">
-            <div
-              class="flex flex-row h-2/3 w-fit justify-start bg-white drop-shadow-lg rounded-2xl"
-            >
+            <div class="flex flex-row h-2/3 w-fit justify-start bg-white drop-shadow-lg rounded-2xl">
               <img src="../../public/assets/person.svg" class="w-1/2" />
               <div class="flex flex-col">
                 <p class="text-2xl">
                   {{
-                    review.reviewer.name + " " + review.reviewer.lastname + " "
+                  review.reviewer.name + " " + review.reviewer.lastname + " "
                   }}
                 </p>
                 <p class="text-2xl">
@@ -107,6 +107,7 @@ export default {
       postedReviews: [],
       receivedReviews: [],
       products: [],
+      productsIHaveOfferOn: [],
       kupac: false,
       prodavac: false,
       admin: false,
@@ -131,6 +132,7 @@ export default {
     await this.fetchMyProducts();
     await this.fetchUsersReviewers();
     await this.fetchReceivedUsers();
+    await this.fetchProductOffers();
   },
   methods: {
     async fetchUsersReviewers() {
@@ -164,6 +166,10 @@ export default {
       const response = await retrieveMyProducts(this.products, this.user.id);
       this.products = response;
     },
+    async fetchProductOffers() {
+      const response = await axios.get("http://localhost:8080/api/v1/products/offers/me")
+      this.productsIHaveOfferOn = response.data
+    }
   },
   components: {
     ProductCard,

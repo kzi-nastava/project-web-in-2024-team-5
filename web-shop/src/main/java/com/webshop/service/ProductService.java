@@ -170,6 +170,22 @@ public class ProductService {
         return bDtos;
     }
 
+    public List<BasicProductDto> findBuyerOffers(Long id) {
+        List<Product> products;
+        List<BasicProductDto> bDtos = new ArrayList<>();
+
+        Optional<Buyer> buyer = buyerRepository.findById(id);
+        if (buyer.isPresent()) {
+            products = buyer.get().getProducts();
+            for (Product prod : products) {
+                if(!prod.isSold())
+                    bDtos.add(new BasicProductDto(prod));
+            }
+        }
+
+        return bDtos;
+    }
+
     public List<BasicProductDto> findByMe(Long id) {
         List<Product> products;
         List<BasicProductDto> bDtos = new ArrayList<>();

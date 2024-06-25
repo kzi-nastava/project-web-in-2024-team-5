@@ -197,6 +197,19 @@ public class ProductController {
         return products;
     }
 
+    @GetMapping("/offers/me")
+    public ResponseEntity<List<BasicProductDto>> getProductOffersMe(HttpSession session) {
+        UserSession loggedUser = (UserSession) session.getAttribute("User");
+
+        if (loggedUser == null || !loggedUser.getRole().equals("buyer")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        List<BasicProductDto> productDtos = productService.findBuyerOffers(loggedUser.getId());
+
+        return ResponseEntity.ok(productDtos);
+    }
+
     /**
      * Deo Funkcionalnost 3.2 i 2.2
      * Vraca listu proizvoda koji pripadaju datom korisniku
