@@ -7,31 +7,56 @@
 
 
     <label class = "text-3xl font-bold" for = "name">Ime proizvoda</label>
-    <input v-model = "product.name" id = "name" form = "text" maxlength ="50" placeholder="Unesi ime proizvoda"></input>
+    <input required v-model = "product.name" id = "name" form = "text" maxlength ="50" placeholder="Unesi ime proizvoda"></input>
     <label  class = "text-3xl font-bold" for = "price">Cena proizvoda</label>
-    <input v-model = "product.price" id = "price" form = "number" placeholder="Unesi cenu proizvoda"></input>
+    <input  required v-model = "product.price" id = "price" form = "number" placeholder="Unesi cenu proizvoda"></input>
     <label  class = "text-3xl font-bold" for = "desc">Opis</label>
-    <input v-model = "product.description" id ="desc" maxlength = "100" form = "text" placeholder="Unesi opis proizvoda"></input>
+    <input   required v-model = "product.description" id ="desc" maxlength = "100" form = "text" placeholder="Unesi opis proizvoda"></input>
     <label  class = "text-3xl font-bold" for = "category">Kategorija</label>
-    <input v-model = "product.category" id = "category" form = "text" placeholder="Unesi kategoriju proizvoda"></input>
+    <input   required v-model = "product.category" id = "category" form = "text" placeholder="Unesi kategoriju proizvoda"></input>
 
     <label  class = "text-3xl font-bold" for = "picture">Slika</label>
-    <input v-model = "product.imagePath" id ="picture" form = "text"></input>
+    <input   required v-model = "product.imagePath" id ="picture" form = "text"></input>
 
-                    <input class ="justify-self-end drop-shadow-lg bg-[#004E9D] text-white h-full rounded-2xl " type = "submit" value = "Postavi proizvod!"></input> 
+                    <input class ="justify-self-end drop-shadow-lg bg-[#004E9D] text-white h-full rounded-2xl " type = "submit" value ="Izmeni proizvod!"></input> 
 
             </form>
             </div>
     </div>
+<Teleport to="body">
+        <modal :show="showerror" @close="showerror = false">
+          <template #header>
+            <h3>Niste uspešno izmenili proizvod!</h3>
+          </template>
+          <template #footer >
+            <button class = "bg-red-600 rounded-2xl drop-shadow-lg  px-3 py-1
+              text-lg text-white" @click="closeModal">Zatvori</button>
+          </template>
+        </modal>
+      </Teleport>
+<Teleport to="body">
+        <modal :show="showmsg" @close="showmsg = false">
+          <template #header>
+            <h3>Uspešno ste izmenili proizvod!</h3>
+          </template>
+          <template #footer >
+            <button class = "bg-red-600 rounded-2xl drop-shadow-lg  px-3 py-1
+              text-lg text-white" @click="closeModal">Zatvori</button>
+          </template>
+        </modal>
+      </Teleport>
     </div>
 </template>
 <script>
+    import Modal from "@/components/SuccessComp.vue";
     import axios from 'axios';
 export default {
     data() {
         return {
             product: {
                 },
+                showmsg: false,
+                showerror: false,
         }
     },
     async mounted(){
@@ -42,8 +67,19 @@ export default {
             return this.$route.params.id;
             }
         },
+        components: {
+            Modal,
+        },
     methods: {
-
+    closeModal() {
+                if(this.showerror) {
+                    this.showerror = false;
+                }
+                else {
+                    this.showmsg = false;
+                    this.$router.push(`/products/${this.productId}`)
+                }
+            },
     async fetchProduct() {
           try {
             const response = await axios.get(
@@ -57,10 +93,11 @@ export default {
 
             try{
                     const response = await axios.patch(`http://localhost:8080/api/v1/products/${this.productId}`,this.product);
+                    this.showmsg = true;
                     console.log(response);
             }
             catch(error) {
-
+                this.showerror = true;
             }
         },
     },

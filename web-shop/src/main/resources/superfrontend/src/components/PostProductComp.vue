@@ -26,27 +26,67 @@
             </form>
             </div>
     </div>
+<Teleport to="body">
+        <modal :show="showerror" @close="showerror = false">
+          <template #header>
+            <h3>Niste uspešno postavili proizvod na prodaju!</h3>
+          </template>
+          <template #footer >
+            <button class = "bg-red-600 rounded-2xl drop-shadow-lg  px-3 py-1
+              text-lg text-white" @click="closeModal">Zatvori</button>
+          </template>
+        </modal>
+      </Teleport>
+<Teleport to="body">
+        <modal :show="showmsg" @close="showmsg = false">
+          <template #header>
+            <h3>Uspešno ste postavili proizvod na prodaju!</h3>
+          </template>
+          <template #footer >
+            <button class = "bg-red-600 rounded-2xl drop-shadow-lg  px-3 py-1
+              text-lg text-white" @click="closeModal">Zatvori</button>
+          </template>
+        </modal>
+      </Teleport>
     </div>
 </template>
 <script>
-
+    import Modal from "@/components/SuccessComp.vue"
     import axios from 'axios';
 export default {
     data() {
         return {
             product: {
                 },
+                showmsg: false,
+                showerror: false,
         }
     },
+    components: {
+        Modal,
+    },
     methods: {
-        async postProduct() {
+            closeModal() {
+                        if(this.showerror === true) {
+                            this.showerror = false;
+                            
+                        }
+                        else {
+                    this.showmsg = false;
+                        this.$router.push('/');
+                       }
+                },
+                async postProduct() {
 
             try{
                     const response = await axios.post("http://localhost:8080/api/v1/products",this.product);
+                    if(response.status == 200) {
+                        this.showmsg = true;
+                    }
                     console.log(response);
             }
             catch(error) {
-
+                this.showerror = true;
             }
         },
     },
