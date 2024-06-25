@@ -4,6 +4,8 @@ import com.webshop.model.User;
 
 public class ProfileDto {
 
+    Long id;
+
     private String name;
 
     private String lastname;
@@ -16,6 +18,7 @@ public class ProfileDto {
     }
 
     public ProfileDto(User user) {
+        this.id = user.getId();
         this.name = user.getName();
         this.lastname = user.getLastname();
         this.role = user.getUserRole();
@@ -54,4 +57,11 @@ public class ProfileDto {
         this.lastname = lastname;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

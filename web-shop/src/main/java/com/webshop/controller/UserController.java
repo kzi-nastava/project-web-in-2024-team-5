@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -31,6 +32,7 @@ import jakarta.servlet.http.HttpSession;
  * UserController
  */
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/api/v1")
 public class UserController {
 
@@ -50,23 +52,23 @@ public class UserController {
      * @return
      */
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody LoginDto loginDto, HttpSession session) {
+    public ResponseEntity<ExtendedUserDto> loginUser(@RequestBody LoginDto loginDto, HttpSession session) {
         UserSession checkLoggedUser = (UserSession) session.getAttribute("User");
         if (checkLoggedUser != null) {
-            return new ResponseEntity<>("Already logged in", HttpStatus.UNAUTHORIZED);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
         if (loginDto.getPassword().isEmpty() || loginDto.getUsername().isEmpty())
-            return new ResponseEntity<>("Please provide both username and password\n", HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 
         User loggedUser = userService.authenticateUser(loginDto);
         if (loggedUser != null) {
             UserSession userSession = new UserSession(loggedUser);
             session.setAttribute("User", userSession);
-            return ResponseEntity.ok("Successfully logged in!");
+            return ResponseEntity.ok(new ExtendedUserDto(loggedUser));
         }
 
-        return new ResponseEntity<>("User does not exist!", HttpStatus.UNAUTHORIZED);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
     /**
@@ -197,7 +199,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/users/me/password")
+    @PostMapping("/users/me/password")
     public ResponseEntity<Void> checkMyPassword(@Validated @RequestBody LoginDto lDto, HttpSession session) {
         UserSession loggedUser = (UserSession) session.getAttribute("User");
 

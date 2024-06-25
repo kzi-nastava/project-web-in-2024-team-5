@@ -1,7 +1,7 @@
 package com.webshop.model;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,7 +26,7 @@ public class Review implements Serializable {
     private String comment;
 
     @Column
-    private LocalDateTime reviewDate;
+    private LocalDate reviewDate;
 
     @ManyToOne
     @JoinColumn(name = "reviewer_id")
@@ -56,11 +56,11 @@ public class Review implements Serializable {
         this.comment = comment;
     }
 
-    public LocalDateTime getReviewDate() {
+    public LocalDate getReviewDate() {
         return reviewDate;
     }
 
-    public void setReviewDate(LocalDateTime reviewDate) {
+    public void setReviewDate(LocalDate reviewDate) {
         this.reviewDate = reviewDate;
     }
 

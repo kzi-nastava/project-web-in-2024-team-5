@@ -72,18 +72,26 @@ public class ProductService {
             BigDecimal minPrice,
             BigDecimal maxPrice,
             Category category,
-            TypeOfSale typeOfSale) {
-        // TODO OPTIMIZOVATI, PAGINACIJA
-        List<Product> products = initializeProducts(category, typeOfSale);
+            TypeOfSale typeOfSale,
+            String search,
+            Pageable pageable) {
+        // TODO OPTIMIZOVATI
+        List<Product> products = initializeProducts(category, typeOfSale, pageable);
         List<BasicProductDto> productDtos = new ArrayList<>();
 
         minPrice = (minPrice == null) ? BigDecimal.ZERO : minPrice;
 
         maxPrice = (maxPrice == null) ? BigDecimal.valueOf(Double.MAX_VALUE) : maxPrice;
 
+        if (search != null)
+            search = search.trim().toLowerCase();
+        else
+            search = "";
         for (Product prod : products) {
             BigDecimal cena = prod.getPrice();
-            if (cena.compareTo(minPrice) != -1 && cena.compareTo(maxPrice) != 1) {
+            if (cena.compareTo(minPrice) != -1 && cena.compareTo(maxPrice) != 1
+                    && (prod.getDescription().toLowerCase().contains(search) ||
+                            prod.getName().toLowerCase().contains(search))) {
                 productDtos.add(new BasicProductDto(prod));
             }
         }
@@ -153,8 +161,25 @@ public class ProductService {
             if (buyer.isPresent()) {
                 products = buyer.get().getProducts();
                 for (Product prod : products) {
-                    bDtos.add(new BasicProductDto(prod));
+                    if(prod.isSold())
+                        bDtos.add(new BasicProductDto(prod));
                 }
+            }
+        }
+
+        return bDtos;
+    }
+
+    public List<BasicProductDto> findBuyerOffers(Long id) {
+        List<Product> products;
+        List<BasicProductDto> bDtos = new ArrayList<>();
+
+        Optional<Buyer> buyer = buyerRepository.findById(id);
+        if (buyer.isPresent()) {
+            products = buyer.get().getProducts();
+            for (Product prod : products) {
+                if(!prod.isSold())
+                    bDtos.add(new BasicProductDto(prod));
             }
         }
 
@@ -228,17 +253,17 @@ public class ProductService {
         return product;
     }
 
-    private List<Product> initializeProducts(Category category, TypeOfSale typeOfSale) {
+    private List<Product> initializeProducts(Category category, TypeOfSale typeOfSale, Pageable pageable) {
         List<Product> products;
 
         if (category != null && typeOfSale != null) {
-            products = productRepository.findByCategoryAndTypeOfSale(category, typeOfSale);
+            products = productRepository.findByCategoryAndTypeOfSaleAndSold(category, typeOfSale, false, pageable).getContent();
         } else if (category != null) {
-            products = productRepository.findByCategory(category);
+            products = productRepository.findByCategoryAndSold(category, false, pageable).getContent();
         } else if (typeOfSale != null) {
-            products = productRepository.findByTypeOfSale(typeOfSale);
+            products = productRepository.findAllByTypeOfSaleAndSold(typeOfSale, false, pageable).getContent();
         } else {
-            products = productRepository.findAll();
+            products = productRepository.findAllBySold(pageable, false).getContent();
         }
 
         return products;

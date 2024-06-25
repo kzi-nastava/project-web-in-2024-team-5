@@ -3,6 +3,7 @@ package com.webshop.controller;
 import java.util.List;
 import java.util.Map;
 
+import com.webshop.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,9 +30,16 @@ public class ReviewController {
     @Autowired
     private ReviewServiceImpl reviewServiceImpl;
 
+    @GetMapping
+    public ResponseEntity<List<ReviewDto>> getAllReviewsAdmin() {
+
+        List<ReviewDto> reviewDtos =  reviewServiceImpl.findAll();
+        return new ResponseEntity<>(reviewDtos, HttpStatus.OK);
+    }
+
     /**
      * Postavljanje recenzija useru sa idom /{id}.
-     * 
+     *
      * @param session
      * @param id
      * @param reviewInfo
@@ -63,7 +71,7 @@ public class ReviewController {
     /**
      * Funkcionalnosti 2.2 i 3.2, ako je userId prodavac, dobicemo sve recenzije
      * koje je on dobio od kupaca i obrnuto.
-     * 
+     *znam da nemamo
      * @param session
      * @param userId
      * @return
@@ -78,7 +86,7 @@ public class ReviewController {
     /**
      * Funkcionalnosti 2.5 i 3.7 prvi deo, SAMO ako sam dao review useru,
      * dobicu sve recenzije koje je on dao drugima!
-     * 
+     *
      * @param session
      * @param userId
      * @return
@@ -97,7 +105,7 @@ public class ReviewController {
 
     /**
      * Omogoucava da vidis recenzije koje si ti kao korisnik dobio.
-     * 
+     *
      * @param session
      * @return
      */
@@ -113,7 +121,7 @@ public class ReviewController {
 
     /**
      * Funkcionalonost 2.5 i 3.7 pod b), vraca ti recenzije koje si ti dao drugima.
-     * 
+     *
      * @param session
      * @return
      */
@@ -129,7 +137,7 @@ public class ReviewController {
 
     /**
      * Dobijanje prosecne ocene od korisnika.
-     * 
+     *
      * @param reviewedUserId
      * @return
      */
@@ -163,7 +171,7 @@ public class ReviewController {
 
     /**
      * Brisanje reviewa sa idom /{id}
-     * 
+     *
      * @param session
      * @param id
      * @return

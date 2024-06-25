@@ -1,7 +1,7 @@
 package com.webshop.model;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorColumn;
@@ -42,7 +42,7 @@ public class User implements Serializable {
     private String phoneNumber;
 
     @Column
-    private LocalDateTime dateOfBirth;
+    private LocalDate dateOfBirth;
 
     @Column
     private String profilePicture;
@@ -105,11 +105,11 @@ public class User implements Serializable {
         this.phoneNumber = phoneNumber;
     }
 
-    public LocalDateTime getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(LocalDateTime dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 

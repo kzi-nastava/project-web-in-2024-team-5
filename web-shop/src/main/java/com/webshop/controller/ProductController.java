@@ -6,18 +6,12 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.webshop.dto.BasicProductDto;
 import com.webshop.dto.ProductDto;
@@ -35,6 +29,7 @@ import com.webshop.session.UserSession;
 import jakarta.servlet.http.HttpSession;
 
 @RestController()
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/api/v1/products")
 public class ProductController {
 
@@ -176,11 +171,13 @@ public class ProductController {
             @RequestParam(required = false) BigDecimal minPrice,
             @RequestParam(required = false) BigDecimal maxPrice,
             @RequestParam(required = false) String category,
-            @RequestParam(required = false) TypeOfSale typeOfSale) {
+            @RequestParam(required = false) TypeOfSale typeOfSale,
+            @RequestParam(required = false) String search,
+            Pageable pageable) {
 
         Category categoryObj = categoryService.findCategory(category);
 
-        return productService.getFilteredProducts(minPrice, maxPrice, categoryObj, typeOfSale);
+        return productService.getFilteredProducts(minPrice, maxPrice, categoryObj, typeOfSale, search, pageable);
     }
 
     /**
@@ -198,6 +195,19 @@ public class ProductController {
         List<BasicProductDto> products = productService.searchProducts(search, pageable);
 
         return products;
+    }
+
+    @GetMapping("/offers/me")
+    public ResponseEntity<List<BasicProductDto>> getProductOffersMe(HttpSession session) {
+        UserSession loggedUser = (UserSession) session.getAttribute("User");
+
+        if (loggedUser == null || !loggedUser.getRole().equals("buyer")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        List<BasicProductDto> productDtos = productService.findBuyerOffers(loggedUser.getId());
+
+        return ResponseEntity.ok(productDtos);
     }
 
     /**
