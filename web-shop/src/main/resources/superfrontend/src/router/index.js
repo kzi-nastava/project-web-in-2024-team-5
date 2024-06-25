@@ -97,10 +97,6 @@ router.beforeEach(async (to, from, next) => {
     "/",
     "/products",
     "/products/catchAll(*)",
-    "/profile/catchAll(*)",
-    "/me",
-    "/postavi",
-    "/settings",
     "/login",
     "/register",
   ];
