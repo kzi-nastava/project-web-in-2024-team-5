@@ -85,6 +85,11 @@ const router = createRouter({
       path: "/:catchAll(.*)",
       redirect: "/register",
     },
+    {
+      path:"/korisnici",
+      name: "korisnici",
+      component: () => import("../views/KorisniciView.vue")
+    }
   ],
 });
 router.beforeEach(async (to, from, next) => {
