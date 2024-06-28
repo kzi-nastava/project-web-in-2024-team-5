@@ -26,10 +26,14 @@ export async function fetchUser(userId) {
   } catch (error) {}
 }
 export function getImageUrl(imagePath) {
-  if (imagePath != (`/assets/nike.jpg` || `/assets/monitor.jpg`)) {
+  if (imagePath === undefined) {
+    console.log("undefined, nema pomoci");
+  } else if (imagePath.includes("/uploads/")) {
+    return `/assets/${imagePath.slice(9)}`;
+  } else if (imagePath != (`/assets/nike.jpg` || `/assets/monitor.jpg`)) {
     return `/assets/p1.png`;
   }
-  return `/assets/${imagePath}`;
+  return `/assets/p1.png`;
 }
 
 export async function retrieveMyProducts(products, id) {

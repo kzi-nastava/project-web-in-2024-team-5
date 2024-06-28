@@ -19,7 +19,10 @@
           <input v-model="product.category" form="text" placeholder="Unesi kategoriju proizvoda"></input>
 
           <label for="name">Slika</label>
-          <input v-model="product.imagePath" form="text" placeholder="Unesi URL slike proizvoda"></input>
+
+
+<input type="file" @change="handleFileChange" accept="image/*" />
+          <image-upload v-if="file" :action="uploadAction" :file="file" @success="handleImageSuccess" />
 
           <input class="py-1 justify-self-end drop-shadow-lg bg-[#004E9D] text-white h-full rounded-2xl " type="submit"
             value="Postavi proizvod!"></input>
@@ -53,18 +56,25 @@
 </template>
 <script>
 import Modal from "@/components/SuccessComp.vue"
+import ImageUpload from 'image-upload-vue'
 import axios from 'axios';
 export default {
   data() {
     return {
       product: {
       },
+      id: '',
       showmsg: false,
       showerror: false,
+      file: null,
+      imageStyle: "w-full h-64 object-cover rounded-lg",
+      uploadAction: 'http://localhost:8080/api/v1/uploads',
     }
+
   },
   components: {
     Modal,
+    ImageUpload,
   },
   methods: {
     closeModal() {
@@ -74,21 +84,49 @@ export default {
       }
       else {
         this.showmsg = false;
-        this.$router.push('/');
+        this.$router.push(`/products/${this.id}`);
+      }
+    },
+    async uploadFile() {
+      try {
+        const formData = new FormData();
+        formData.append('file', this.file);
+        const response = await axios.post(this.uploadAction, formData, {
+          headers: {
+            'Content-Type' : 'multipart/form-data'
+          }
+        })
+        console.log(response.data);
+        this.product.imagePath = response.data.imageUrl;
+      }
+      catch(error) {
+        console.log(error);
       }
     },
     async postProduct() {
 
+      
       try {
+        if(this.file) {
+          await this.uploadFile();
+        }
         const response = await axios.post("http://localhost:8080/api/v1/products", this.product);
         if (response.status == 200) {
+          this.id = response.data.productId;
           this.showmsg = true;
+
         }
         console.log(response);
       }
       catch (error) {
         this.showerror = true;
       }
+    },
+    handleFileChange(event) {
+      this.file = event.target.files[0];
+    },
+    handleImageSuccess(url) {
+      this.product.imagePath = url;
     },
   },
 };
