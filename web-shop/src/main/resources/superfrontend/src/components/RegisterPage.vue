@@ -1,6 +1,8 @@
 <template>
   <section class="py-16">
-    <div class="container w-[1200px] mx-auto flex flex-col items-center">
+    <div
+      class="font-[Open_Sans] container w-[1200px] mx-auto flex flex-col items-center"
+    >
       <div class="max-w-md p-8 bg-white rounded-lg shadow-lg">
         <h1 class="text-2xl font-bold mb-6 text-center">
           Please enter credentials needed for registration.

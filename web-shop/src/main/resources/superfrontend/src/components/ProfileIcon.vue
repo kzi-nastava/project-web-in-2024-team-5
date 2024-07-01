@@ -9,22 +9,34 @@
       >{{ user.name }}</RouterLink
     >
 
-    <div class="flex flex-col justify-end">
-      <div @mouseover="this.hover = true" @mouseleave="this.hover = false">
+    <div class="relative flex flex-col justify-end">
+      <div @mouseover="hover = true" @mouseleave="hover = false">
         <img src="/public/assets/strelica.svg" />
       </div>
       <div
         v-if="hover"
-        @mouseover="this.hover = true"
-        @mouseleave="this.hover = false"
+        @mouseover="hover = true"
+        @mouseleave="hover = false"
+        class="absolute z-10 top-5 bg-white p-4 rounded-lg shadow-lg border transition-opacity duration-300 ease-in-out"
+        :class="{ 'opacity-100': hover, 'opacity-0': !hover }"
       >
-        <RouterLink to="/logout">Izloguj se</RouterLink>
-        <br />
-        <RouterLink to="/settings">Podešavanja</RouterLink>
+        <RouterLink
+          to="/logout"
+          class="block p-2 text-[#004E9D] text-lg hover:bg-gray-100 rounded-md transition-colors duration-300 ease-in-out"
+        >
+          Izloguj se
+        </RouterLink>
+        <RouterLink
+          to="/settings"
+          class="block p-2 text-[#004E9D] text-lg hover:bg-gray-100 rounded-md transition-colors duration-300 ease-in-out"
+        >
+          Podešavanja
+        </RouterLink>
       </div>
     </div>
   </div>
 </template>
+
 <script>
 export default {
   data() {
@@ -32,17 +44,12 @@ export default {
       hover: false,
     };
   },
-  name: "ProfileIcon",
   props: {
     user: {
       type: Object,
       required: true,
     },
   },
-  methods() {
-    function hoverTrue() {
-      this.hover = true;
-    }
-  },
+  methods() {},
 };
 </script>
